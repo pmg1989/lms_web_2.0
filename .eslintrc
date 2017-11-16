@@ -76,7 +76,7 @@
         "localStorage": true,
         "sessionStorage": true,
         "document": true,
-        "NEWBAND": true,
+        "newband": true,
         "zhuge": true
     }
 }
