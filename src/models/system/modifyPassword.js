@@ -20,8 +20,14 @@ export default {
   },
 
   effects: {
-    * update ({ payload }, { call }) {
-      yield call(update, payload)
+    * update ({ payload }, { call, select }) {
+      const { oldPassword, password } = payload
+      const { userid } = yield select(state => state.app.user)
+      yield call(update, {
+        oldpassword: oldPassword,
+        password,
+        userid,
+      })
     },
   },
 

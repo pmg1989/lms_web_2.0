@@ -1,8 +1,5 @@
-import { request } from 'utils'
+import { request } from 'utils/request'
 
 export async function update (params) {
-  return request('/api/modifyPassword', {
-    method: 'put',
-    data: params,
-  })
+  return request({ wsfunction: 'mod_frontservice_modifypassword', ...params })
 }

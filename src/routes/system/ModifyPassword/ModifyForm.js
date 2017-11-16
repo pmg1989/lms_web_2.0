@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Button } from 'antd'
-import Cookie from 'js-cookie'
 import styles from './ModifyForm.less'
 
 const FormItem = Form.Item
@@ -37,7 +36,6 @@ class ModifyForm extends Component {
 
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
-        values.username = Cookie.get('user_name')
         this.props.onOk(values)
       }
     })
