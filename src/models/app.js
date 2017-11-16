@@ -1,5 +1,6 @@
 import { routerRedux } from 'dva/router'
 import { Cookie, isLogin, userInfo, setLoginOut } from 'utils'
+import { logout } from 'services/app'
 
 const initPower = Cookie.getJSON('user_power')
 
@@ -31,8 +32,8 @@ export default {
     },
   },
   effects: {
-    * logout ({}, { put }) {
-      const data = { success: true } // yield call(logout, parse(payload))
+    * logout ({ }, { call, put }) {
+      const data = yield call(logout)
       if (data && data.success) {
         yield setLoginOut()
         yield put({ type: 'logoutSuccess' })

@@ -3,6 +3,7 @@ import fetch from 'isomorphic-fetch'
 import NProgress from 'nprogress'
 import { message } from 'antd'
 import { wstoken } from 'config'
+import { Cookie } from 'utils'
 
 // message 全局配置
 message.config({
@@ -42,9 +43,13 @@ function handleError (error) {
 
 export function request (data, method = 'POST') {
   NProgress.start()
+  const utoken = Cookie.get('utoken')
   let body = new FormData()
   body.append('wstoken', wstoken)
   body.append('moodlewsrestformat', 'json')
+  if (utoken) {
+    body.append('utoken', utoken)
+  }
   for (let key in data) {
     if (Object.prototype.hasOwnProperty.call(data, key)) {
       body.append(key, data[key])

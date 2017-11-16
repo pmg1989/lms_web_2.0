@@ -1,10 +1,7 @@
-import { request } from 'utils'
+import { request } from 'utils/request'
 
 export async function logout (params) {
-  return request('/api/logout', {
-    method: 'post',
-    data: params,
-  })
+  return request({ wsfunction: 'mod_serviceauthorize_signout', ...params })
 }
 
 export async function userInfo (params) {
