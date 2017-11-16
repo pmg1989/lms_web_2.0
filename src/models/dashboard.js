@@ -18,6 +18,6 @@ export default {
   },
   effects: {
   },
-  reducers: {  
+  reducers: {
   },
 }
