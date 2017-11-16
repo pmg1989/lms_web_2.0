@@ -74,7 +74,9 @@
         "window": true,
         "location": true,
         "localStorage": true,
+        "sessionStorage": true,
         "document": true,
-        "newband": true,
-    }
+        "NEWBAND": true,
+        "zhuge": true,
+    },
 }

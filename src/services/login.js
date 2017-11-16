@@ -1,20 +1,5 @@
-import { request } from 'utils'
-
-export async function getToken () {
-  const data = {
-    client_id: newband.app.admin.CLIENT_ID,
-    client_secret: newband.app.admin.CLIENT_SECRET,
-    grant_type: newband.app.admin.GRANT_TYPE,
-  }
-  return request('/oauth/token', {
-    method: 'post',
-    data,
-  })
-}
+import { request } from 'utils/request'
 
 export async function login (params) {
-  return request('/admin/check', {
-    method: 'post',
-    data: params,
-  })
+  return request({ wsfunction: 'mod_serviceauthorize_signin', ...params })
 }

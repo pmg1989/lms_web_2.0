@@ -1,6 +1,6 @@
 import { routerRedux } from 'dva/router'
 import { setLoginIn, menu } from 'utils'
-import { getToken, login } from 'services/login'
+import { login } from 'services/login'
 
 function getAllPathPowers (menuArray, curPowers) {
   return menuArray.reduce((dir, item) => {
@@ -24,32 +24,40 @@ export default {
     * submit ({
       payload,
     }, { call, put, select }) {
-      const dataToken = yield call(getToken)
-      if (dataToken.success) {
-        const params = { access_token: dataToken.access_token, mobile: payload.username, username: payload.username, password: payload.password }
-        const data = yield call(login, params)
+      const data = yield call(login, {
+        username: payload.username,
+        password: payload.password,
+      })
+      data.role_power = {
+        1: [1, 2],
+        2: [1],
+        21: [1, 2, 3, 4, 5],
+        22: [1, 2, 3, 4, 5],
+        23: [1, 2, 3, 4, 5],
+        3: [1],
+        31: [1, 2, 4],
+      }
 
-        const allPathPowers = getAllPathPowers(menu, data.role_power)
-        setLoginIn(payload.username, dataToken.access_token, data.role_power, allPathPowers)
+      const allPathPowers = getAllPathPowers(menu, data.role_power)
+      setLoginIn(payload.username, null, data.role_power, allPathPowers)
 
-        if (data && data.success) {
-          yield put({
-            type: 'app/loginSuccess',
-            payload: {
-              user: {
-                name: payload.username,
-              },
-              userPower: data.role_power,
+      if (data && data.success) {
+        yield put({
+          type: 'app/loginSuccess',
+          payload: {
+            user: {
+              name: payload.username,
             },
-          })
+            userPower: data.role_power,
+          },
+        })
 
-          const nextLocation = yield select(state => state.routing.locationBeforeTransitions)
-          const nextPathname = nextLocation.state && nextLocation.state.nextPathname && nextLocation.state.nextPathname !== '/no-power' ? nextLocation.state.nextPathname : '/dashboard'
-          yield put(routerRedux.push({
-            pathname: nextPathname,
-            search: nextLocation.state && nextLocation.state.nextSearch,
-          }))
-        }
+        const nextLocation = yield select(state => state.routing.locationBeforeTransitions)
+        const nextPathname = nextLocation.state && nextLocation.state.nextPathname && nextLocation.state.nextPathname !== '/no-power' ? nextLocation.state.nextPathname : '/dashboard'
+        yield put(routerRedux.push({
+          pathname: nextPathname,
+          search: nextLocation.state && nextLocation.state.nextSearch,
+        }))
       }
     },
   },
