@@ -33,7 +33,7 @@ function Header ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVi
       <div className={styles.right}>
         <BadgeBox />
         <Menu className="header-menu" mode="horizontal" onClick={handleClickMenu} style={{ textAlign: 'center' }}>
-          <SubMenu title={<span><Icon type="user" />{user.name}</span>}>
+          <SubMenu title={<span><Icon type="user" />{user.uname}</span>}>
             <Menu.Item key="logout">
               <a>注销</a>
             </Menu.Item>

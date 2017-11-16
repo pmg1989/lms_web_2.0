@@ -24,7 +24,7 @@ export default {
     * submit ({
       payload,
     }, { call, put, select }) {
-      const data = yield call(login, {
+      const { success, data } = yield call(login, {
         username: payload.username,
         password: payload.password,
       })
@@ -37,17 +37,14 @@ export default {
         3: [1],
         31: [1, 2, 4],
       }
-
       const allPathPowers = getAllPathPowers(menu, data.role_power)
-      setLoginIn(payload.username, null, data.role_power, allPathPowers)
+      setLoginIn(data, allPathPowers)
 
-      if (data && data.success) {
+      if (success) {
         yield put({
           type: 'app/loginSuccess',
           payload: {
-            user: {
-              name: payload.username,
-            },
+            user: data,
             userPower: data.role_power,
           },
         })

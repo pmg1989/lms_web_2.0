@@ -2,6 +2,7 @@
 import fetch from 'isomorphic-fetch'
 import NProgress from 'nprogress'
 import { message } from 'antd'
+import { wstoken } from 'config'
 
 // message 全局配置
 message.config({
@@ -42,24 +43,15 @@ function handleError (error) {
 export function request (data, method = 'POST') {
   NProgress.start()
   let body = new FormData()
-  body.append('wstoken', '65b6372750516f21e18d27037edad0e0')
+  body.append('wstoken', wstoken)
   body.append('moodlewsrestformat', 'json')
   for (let key in data) {
     if (Object.prototype.hasOwnProperty.call(data, key)) {
       body.append(key, data[key])
     }
   }
-  const baseURL = 'http://school.newband.com:8082/moodle/webservice/rest/server.php'
+  const baseURL = '/api/moodle/webservice/rest/server.php'
   return fetch(baseURL, { body, method })
-    .then(checkStatus)
-    .then(handelData)
-    .catch(handleError)
-}
-
-export function get (url) {
-  NProgress.start()
-  const baseURL = 'http://school.newband.com:8082/moodle/webservice/rest/server.php'
-  return fetch(baseURL + url)
     .then(checkStatus)
     .then(handelData)
     .catch(handleError)

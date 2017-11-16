@@ -1,5 +1,5 @@
 import { routerRedux } from 'dva/router'
-import { Cookie, isLogin, userName, setLoginOut } from 'utils'
+import { Cookie, isLogin, userInfo, setLoginOut } from 'utils'
 
 const initPower = Cookie.getJSON('user_power')
 
@@ -7,9 +7,7 @@ export default {
   namespace: 'app',
   state: {
     login: !!isLogin(),
-    user: {
-      name: userName || '',
-    },
+    user: userInfo,
     menuPopoverVisible: false,
     siderFold: localStorage.getItem('antdAdminSiderFold') === 'true',
     darkTheme: localStorage.getItem('antdAdminDarkTheme') !== 'false',

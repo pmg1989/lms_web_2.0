@@ -55,22 +55,22 @@ const isLogin = () => {
   return Cookie.get('user_session') && Cookie.get('user_session') > new Date().getTime()
 }
 
-const userName = Cookie.get('user_name')
+const userInfo = Cookie.getJSON('user_info')
 
-const setLoginIn = (name, accessToken, power, pathPowers) => {
+const setLoginIn = (data, pathPowers) => {
   const now = new Date()
   now.setDate(now.getDate() + 1)
   Cookie.set('user_session', now.getTime())
-  Cookie.set('user_name', name)
-  Cookie.set('access_token', accessToken)
-  Cookie.set('user_power', power)
+  Cookie.set('user_info', JSON.stringify(data))
+  Cookie.set('access_token', data.utoken)
+  Cookie.set('user_power', data.role_power)
   localStorage.setItem('allPathPowers', JSON.stringify(pathPowers))
   allPathPowers = pathPowers
 }
 
 const setLoginOut = () => {
   Cookie.remove('user_session')
-  Cookie.remove('user_name')
+  Cookie.remove('user_info')
   Cookie.remove('access_token')
   Cookie.remove('user_power')
   localStorage.removeItem('allPathPowers')
@@ -99,7 +99,7 @@ export {
   menu,
   equalSet,
   isLogin,
-  userName,
+  userInfo,
   setLoginIn,
   setLoginOut,
   checkPower,

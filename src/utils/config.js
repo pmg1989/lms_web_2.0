@@ -6,4 +6,5 @@ export default {
   logoSrc: 'https://o9u2lnvze.qnssl.com/web/global/brand.png',
   logoText: 'NEWBAND',
   needLogin: true,
+  wstoken: '65b6372750516f21e18d27037edad0e0',
 }
