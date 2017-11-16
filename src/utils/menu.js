@@ -5,7 +5,7 @@ import _ from 'lodash'
 const menu = [
   // dashboard
   {
-    id: _.uniqueId(),
+    id: 1,
     key: 'dashboard',
     name: '管理平台',
     icon: 'laptop',
@@ -13,7 +13,7 @@ const menu = [
   },
   // account
   {
-    id: _.uniqueId(),
+    id: 2,
     key: 'account',
     name: '用户管理',
     icon: 'user',
@@ -21,19 +21,19 @@ const menu = [
     power: [1],
     children: [
       {
-        id: _.uniqueId(),
+        id: 21,
         key: 'admin',
         name: '管理员',
         power: [1, 2, 3, 4, 5],
       },
       {
-        id: _.uniqueId(),
+        id: 22,
         key: 'role',
         name: '管理员角色',
         power: [1, 2, 3, 4, 5],
       },
       {
-        id: _.uniqueId(),
+        id: 23,
         key: 'user',
         name: '用户',
         power: [1, 2, 3, 4, 5],
@@ -42,7 +42,7 @@ const menu = [
   },
   // system
   {
-    id: _.uniqueId(),
+    id: 3,
     key: 'system',
     name: '系统管理',
     icon: 'appstore',
@@ -50,99 +50,10 @@ const menu = [
     power: [1],
     children: [
       {
-        id: _.uniqueId(),
+        id: 31,
         key: 'modify-password',
         name: '修改密码',
         power: [1, 2, 4],
-      },
-    ],
-  },
-  // bbs
-  {
-    id: _.uniqueId(),
-    key: 'bbs',
-    name: '前端分页',
-    icon: 'message',
-    clickable: false,
-    power: [1],
-    children: [
-      {
-        id: _.uniqueId(),
-        key: 'category',
-        name: '分类管理',
-        power: [1, 2, 3, 4, 5],
-      },
-    ],
-  },
-  // 多级导航
-  {
-    id: _.uniqueId(),
-    key: 'navigation',
-    name: '测试导航',
-    icon: 'setting',
-    power: [1],
-    children: [
-      {
-        id: _.uniqueId(),
-        key: 'navigation1',
-        name: '二级导航1',
-        power: [1, 2],
-      },
-      {
-        id: _.uniqueId(),
-        key: 'navigation2',
-        name: '二级导航2',
-        clickable: false,
-        power: [1],
-        children: [
-          {
-            id: _.uniqueId(),
-            key: 'navigation21',
-            name: '三级导航1',
-            power: [1, 2],
-          },
-          {
-            id: _.uniqueId(),
-            key: 'navigation22',
-            name: '三级导航2',
-            power: [1, 2],
-          },
-        ],
-      },
-    ],
-  },
-  // UI组件
-  {
-    id: _.uniqueId(),
-    key: 'ui',
-    name: 'UI组件',
-    icon: 'like-o',
-    clickable: false,
-    power: [1],
-    children: [
-      {
-        id: _.uniqueId(),
-        key: 'upload',
-        name: '文件上传',
-        power: [1, 2],
-      },
-      {
-        id: _.uniqueId(),
-        key: 'media-player',
-        name: '音频视频',
-        power: [1, 2],
-      },
-      {
-        id: _.uniqueId(),
-        key: 'drop-menu',
-        name: '下拉操作菜单',
-        power: [1, 2],
-      },
-      {
-        id: _.uniqueId(),
-        key: 'lz-editor',
-        name: 'LzEditor',
-        power: [1, 2],
       },
     ],
   },

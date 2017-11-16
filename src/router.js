@@ -104,64 +104,6 @@ const Routers = function ({ history, app }) {
             },
           ],
         },
-        // bbs
-        {
-          path: 'bbs',
-          name: 'bbs',
-          childRoutes: [
-            {
-              path: 'category',
-              name: 'category',
-              getComponent (nextState, cb) {
-                require.ensure([], (require) => {
-                  registerModel(app, require('./models/bbs/category'))
-                  cb(null, require('./routes/bbs/Category'))
-                }, 'category')
-              },
-            },
-          ],
-        },
-        // ui
-        {
-          path: 'ui',
-          name: 'ui',
-          childRoutes: [
-            {
-              path: 'upload',
-              name: 'upload',
-              getComponent (nextState, cb) {
-                require.ensure([], (require) => {
-                  cb(null, require('./routes/ui/Upload'))
-                }, 'upload')
-              },
-            }, {
-              path: 'media-player',
-              name: 'media-player',
-              getComponent (nextState, cb) {
-                require.ensure([], (require) => {
-                  cb(null, require('./routes/ui/MediaPlayer'))
-                }, 'media-player')
-              },
-            }, {
-              path: 'drop-menu',
-              name: 'drop-menu',
-              getComponent (nextState, cb) {
-                require.ensure([], (require) => {
-                  cb(null, require('./routes/ui/DropMenu'))
-                }, 'drop-menu')
-              },
-            },
-            // , {
-            //   path: 'lz-editor',
-            //   name: 'lz-editor',
-            //   getComponent(nextState, cb) {
-            //     require.ensure([], require => {
-            //       cb(null, require('./routes/ui/LzEditor'))
-            //     }, 'lz-editor')
-            //   }
-            // }
-          ],
-        },
         // no-power
         {
           path: 'no-power',
