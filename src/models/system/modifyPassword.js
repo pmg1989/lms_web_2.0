@@ -1,4 +1,5 @@
 import { getCurPowers } from 'utils'
+import { message } from 'antd'
 import { update } from 'services/system/modifyPassword'
 
 export default {
@@ -23,11 +24,14 @@ export default {
     * update ({ payload }, { call, select }) {
       const { oldPassword, password } = payload
       const { userid } = yield select(state => state.app.user)
-      yield call(update, {
+      const { success } = yield call(update, {
         oldpassword: oldPassword,
         password,
         userid,
       })
+      if (success) {
+        message.success('恭喜你，密码修改成功，可尝试注销重新登录！', 3)
+      }
     },
   },
 

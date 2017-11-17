@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Button } from 'antd'
+import { validPassword } from 'utils/utilsValid'
 import styles from './ModifyForm.less'
 
 const FormItem = Form.Item
@@ -88,6 +89,8 @@ class ModifyForm extends Component {
               {
                 required: true,
                 message: '请输入新密码',
+              }, {
+                validator: validPassword,
               }, {
                 validator: ::this.checkConfirm,
               },

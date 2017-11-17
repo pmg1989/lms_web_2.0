@@ -7,7 +7,8 @@ import { Cookie } from 'utils'
 
 // message 全局配置
 message.config({
-  top: 50,
+  top: 60,
+  duration: 5,
 })
 
 function checkStatus (res) {
@@ -43,13 +44,13 @@ function handleError (error) {
 
 export function request (data, method = 'POST') {
   NProgress.start()
-  const utoken = Cookie.get('utoken')
   let body = new FormData()
-  body.append('wstoken', wstoken)
-  body.append('moodlewsrestformat', 'json')
-  if (utoken) {
-    body.append('utoken', utoken)
+  if (['mod_serviceauthorize_signin', 'mod_serviceauthorize_signout'].includes(data.wsfunction)) {
+    body.append('wstoken', wstoken)
+  } else {
+    body.append('wstoken', Cookie.get('utoken'))
   }
+  body.append('moodlewsrestformat', 'json')
   for (let key in data) {
     if (Object.prototype.hasOwnProperty.call(data, key)) {
       body.append(key, data[key])
