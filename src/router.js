@@ -144,8 +144,8 @@ const Routers = function ({ history, app }) {
 }
 
 Routers.propTypes = {
-  history: PropTypes.object,
-  app: PropTypes.object,
+  history: PropTypes.object.isRequired,
+  app: PropTypes.object.isRequired,
 }
 
 export default Routers
