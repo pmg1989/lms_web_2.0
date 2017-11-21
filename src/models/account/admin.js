@@ -3,13 +3,18 @@ import { getCurPowers } from 'utils'
 import { create, remove, update, query, get } from 'services/account/admin'
 import { query as queryRole } from 'services/account/role'
 
+const page = {
+  current: 1,
+  pageSize: 10,
+}
+
 export default {
   namespace: 'accountAdmin',
   state: {
+    isPostBack: true, // 判断是否是首次加载页面，作为前端分页判断标识符
     list: [],
     pagination: {
-      current: 1,
-      pageSize: 10,
+      ...page,
       total: null,
     },
   },
@@ -30,14 +35,33 @@ export default {
 
   effects: {
     * query ({}, { select, call, put }) {
+      const isPostBack = yield select(({ accountAdmin }) => accountAdmin.isPostBack)
       const pathQuery = yield select(({ routing }) => routing.locationBeforeTransitions.query)
-      const data = yield call(query, pathQuery)
-      if (data && data.success) {
+
+      if (isPostBack) {
+        const { data, success } = yield call(query, { rolename: 'teacher' })
+        if (success) {
+          yield put({
+            type: 'querySuccess',
+            payload: {
+              list: data,
+              pagination: {
+                current: pathQuery.current ? +pathQuery.current : page.current,
+                pageSize: pathQuery.pageSize ? +pathQuery.pageSize : page.pageSize,
+                total: data.length,
+              },
+              isPostBack: false,
+            },
+          })
+        }
+      } else {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.data,
-            pagination: data.page,
+            pagination: {
+              current: pathQuery.current ? +pathQuery.current : page.current,
+              pageSize: pathQuery.pageSize ? +pathQuery.pageSize : page.pageSize,
+            },
           },
         })
       }
@@ -53,10 +77,10 @@ export default {
       if (data && data.success) {
         yield put({ type: 'modal/hideModal' })
         const pathQuery = yield select(({ routing }) => routing.locationBeforeTransitions.query)
-        const { page } = pathQuery
+        const { current } = pathQuery
         yield put(routerRedux.push({
           pathname: location.pathname,
-          query: page ? { ...pathQuery, page: 1 } : pathQuery,
+          query: current ? { ...pathQuery, current: 1 } : pathQuery,
         }))
       }
     },

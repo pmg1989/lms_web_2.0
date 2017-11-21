@@ -22,19 +22,19 @@ const menu = [
       {
         id: 21,
         key: 'admin',
-        name: '管理员',
+        name: '工作人员',
         power: [1, 2, 3, 4, 5],
       },
       {
         id: 22,
         key: 'role',
-        name: '管理员角色',
+        name: '工作人员角色',
         power: [1, 2, 3, 4, 5],
       },
       {
         id: 23,
         key: 'user',
-        name: '用户',
+        name: '学生',
         power: [1, 2, 3, 4, 5],
       },
     ],

@@ -43,6 +43,7 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
   const listProps = {
     accountAdmin,
     loading,
+    location,
     updatePower,
     deletePower,
     onDeleteItem (id) {

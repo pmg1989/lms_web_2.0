@@ -1,10 +1,7 @@
-import { request } from 'utils'
+import { request } from 'utils/request'
 
 export async function query (params) {
-  return request('/api/admin', {
-    method: 'get',
-    data: params,
-  })
+  return request({ wsfunction: 'mod_frontservice_getuserinfo', ...params })
 }
 
 export async function get (params) {
