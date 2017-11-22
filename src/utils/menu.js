@@ -1,5 +1,6 @@
-// power = { 1: "查看菜单", 2: "查看详情", 3: "新增", 4: "修改", 5: "删除", 6: "审核", 7: "上传" }
-// options = { MENU: "查看菜单", DETAIL: "查看详情", ADD: "新增", UPDATE: "修改", DELETE: "删除", CHECK: "审核", UPLOAD: "上传" }
+// 权限的基本操作 详细可参见 ../constants/options.js
+// power = { 1: "查看菜单", 2: "查看详情", 3: "新增", 4: "修改", 5: "删除" }
+// options = { MENU: "查看菜单", DETAIL: "查看详情", ADD: "新增", UPDATE: "修改", DELETE: "删除" }
 
 const menu = [
   // dashboard
@@ -23,7 +24,7 @@ const menu = [
         id: 21,
         key: 'admin',
         name: '工作人员',
-        power: [1, 2, 3, 4, 5],
+        power: [1, 2, 3, 4, 5, 6, 8, 9],
       },
       {
         id: 22,
