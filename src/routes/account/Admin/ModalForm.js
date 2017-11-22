@@ -5,8 +5,9 @@ import { validPhone } from 'utils/utilsValid'
 import { categorys, subjects, getModalType } from 'utils/dictionary'
 
 const FormItem = Form.Item
-
 const Option = Select.Option
+
+const levelList = Array.from(Array(21).keys())
 
 const formItemLayout = {
   labelCol: {
@@ -166,6 +167,22 @@ const ModalForm = ({
             {Object.entries(subjects).map(([key, value]) => {
               return <Option key={key} value={key}>{value}</Option>
             })}
+          </Select>)}
+        </FormItem>
+        <FormItem label="当前等级" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('teacher_level', {
+            initialValue: curItem.teacher_level,
+            rules: [
+              {
+                required: true,
+                message: '请选择当前等级',
+              },
+            ],
+          })(<Select disabled={disabled} placeholder="--请选择当前等级--">
+            {levelList.map((levev, key) => {
+              return <Option key={key} value={`V${levev + 1}`}>{`V${levev + 1}`}</Option>
+            })}
+            <Option value="other">other</Option>
           </Select>)}
         </FormItem>
         <FormItem label="教室" hasFeedback {...formItemLayout}>
