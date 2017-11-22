@@ -80,9 +80,9 @@ const Search = ({
               initialValue: category || '',
             })(<Select style={{ width: 90 }}>
               <Option value="">全部</Option>
-              <Option value="profession">专业</Option>
-              <Option value="hd">互动</Option>
-              <Option value="jl">交流</Option>
+              <Option value="profession">专业课</Option>
+              <Option value="hd">互动课</Option>
+              <Option value="jl">交流课</Option>
             </Select>)
             }
           </FormItem>
@@ -93,6 +93,13 @@ const Search = ({
               <Option value="">全部</Option>
               <Option value="vocal">声乐</Option>
               <Option value="theory">乐理</Option>
+              <Option value="piano">键盘</Option>
+              <Option value="guitar">吉他</Option>
+              <Option value="eguitar">电吉他</Option>
+              <Option value="composition">作曲</Option>
+              <Option value="record">录音</Option>
+              <Option value="rhythm">节奏</Option>
+              <Option value="yoga">瑜伽</Option>
             </Select>)
             }
           </FormItem>

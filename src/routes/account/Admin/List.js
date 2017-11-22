@@ -104,15 +104,26 @@ function List ({
   let total = pagination.total
 
   const getFilterList = () => {
-    const { field, keyword, current, pageSize } = location.query
+    const { field, keyword, roleName, category, subject, current, pageSize } = location.query
     const currentPage = current || pagination.current
     const sizePage = pageSize || pagination.pageSize
 
-    if (field) {
-      const filterTotalList = list.filter(item => item[field].indexOf(decodeURI(keyword)) > -1)
-      total = filterTotalList.length
-      const filterList = filterTotalList.slice((currentPage - 1) * (sizePage), currentPage * sizePage)
-      return filterList
+    if (field || roleName || category || subject) {
+      if (roleName) {
+        list = list.filter(item => item.roleName === roleName)
+      }
+      if (category) {
+        list = list.filter(item => item.teacher_category === category)
+      }
+      if (subject) {
+        list = list.filter(item => item.teacher_subject === subject)
+      }
+      if (field) {
+        list = list.filter(item => item[field].indexOf(decodeURI(keyword)) > -1)
+      }
+      total = list.length
+      list = list.slice((currentPage - 1) * (sizePage), currentPage * sizePage)
+      return list
     }
     return list
   }
