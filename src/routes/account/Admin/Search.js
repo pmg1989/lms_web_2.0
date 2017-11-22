@@ -1,16 +1,30 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Button, Row, Col, Icon } from 'antd'
+import { Form, Button, Row, Col, Icon, Select } from 'antd'
 import { SearchGroup } from 'components'
 
+const FormItem = Form.Item
+const Option = Select.Option
+let searchGroupProps = {}
+let searchValues = {}
+
 const Search = ({
-  field,
-  keyword,
+  query: {
+    field,
+    keyword,
+    roleName,
+    category,
+    subject,
+  },
   addPower,
   onSearch,
   onAdd,
+  form: {
+    getFieldDecorator,
+    validateFields,
+  },
 }) => {
-  const searchGroupProps = {
+  searchGroupProps = {
     field,
     keyword,
     size: 'large',
@@ -20,19 +34,76 @@ const Search = ({
       defaultValue: field || 'firstname',
     },
     onSearch: (value) => {
-      onSearch(value)
+      validateFields((errors, values) => {
+        if (errors) {
+          return
+        }
+        searchValues = value
+        let data = {}
+        if (values.roleName) {
+          data.roleName = values.roleName
+        }
+        if (values.category) {
+          data.category = values.category
+        }
+        if (values.subject) {
+          data.subject = values.subject
+        }
+        if (value.keyword) {
+          data.keyword = value.keyword
+          data.field = value.field
+        }
+        onSearch(data)
+      })
     },
   }
 
   return (
     <Row gutter={24}>
-      <Col lg={8} md={12} sm={16} xs={24} style={{ marginBottom: 16 }}>
-        <SearchGroup {...searchGroupProps} />
+      <Col>
+        <Form layout="inline">
+          <FormItem label="角色" style={{ marginBottom: 20, marginRight: 40 }}>
+            {getFieldDecorator('roleName', {
+              initialValue: roleName || '',
+            })(<Select style={{ width: 90 }}>
+              <Option value="">全部</Option>
+              <Option value="admin">管理员</Option>
+              <Option value="teacher">老师</Option>
+              <Option value="courseCreator">校长</Option>
+              <Option value="hr">HR专员</Option>
+              <Option value="specialist">课程专家</Option>
+            </Select>)
+            }
+          </FormItem>
+          <FormItem label="类别" style={{ marginBottom: 20, marginRight: 40 }}>
+            {getFieldDecorator('category', {
+              initialValue: category || '',
+            })(<Select style={{ width: 90 }}>
+              <Option value="">全部</Option>
+              <Option value="profession">专业</Option>
+              <Option value="hd">互动</Option>
+              <Option value="jl">交流</Option>
+            </Select>)
+            }
+          </FormItem>
+          <FormItem label="科目" style={{ marginBottom: 20, marginRight: 40 }}>
+            {getFieldDecorator('subject', {
+              initialValue: subject || '',
+            })(<Select style={{ width: 90 }}>
+              <Option value="">全部</Option>
+              <Option value="vocal">声乐</Option>
+              <Option value="theory">乐理</Option>
+            </Select>)
+            }
+          </FormItem>
+          <FormItem style={{ marginBottom: 20, marginRight: 0 }}>
+            <SearchGroup {...searchGroupProps} />
+          </FormItem>
+          <FormItem style={{ marginBottom: 20, float: 'right', marginRight: 0 }}>
+            {addPower && <Button size="large" type="ghost" onClick={onAdd}><Icon type="plus-circle-o" />添加</Button>}
+          </FormItem>
+        </Form>
       </Col>
-      {addPower &&
-      <Col lg={{ offset: 8, span: 8 }} md={12} sm={8} xs={24} style={{ marginBottom: 16, textAlign: 'right' }}>
-        <Button size="large" type="ghost" onClick={onAdd}><Icon type="plus-circle-o" />添加</Button>
-      </Col>}
     </Row>
   )
 }
@@ -41,9 +112,14 @@ Search.propTypes = {
   form: PropTypes.object.isRequired,
   onSearch: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
-  field: PropTypes.string,
-  keyword: PropTypes.string,
+  query: PropTypes.object,
   addPower: PropTypes.bool.isRequired,
 }
 
-export default Form.create()(Search)
+export default Form.create({
+  onValuesChange () {
+    setTimeout(() => {
+      searchGroupProps.onSearch(searchValues)
+    }, 0)
+  },
+})(Search)

@@ -14,5 +14,8 @@ export function getSubject (type) {
     guitar: '吉他',
     eguitar: '电吉他',
     composition: '作曲',
+    record: '录音',
+    rhythm: '节奏',
+    yoga: '瑜伽',
   }[type.toLowerCase()] || '未知'
 }

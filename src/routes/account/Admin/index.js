@@ -13,22 +13,16 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
   const updatePower = checkPower(UPDATE, curPowers)
   const deletePower = checkPower(DELETE, curPowers)
 
-  const { field, keyword } = location.query
-
   const searchProps = {
-    field,
-    keyword,
+    query: location.query,
     addPower,
     onSearch (fieldsValue) {
-      const { pathname } = location
-      fieldsValue.keyword.length
-        ? dispatch(routerRedux.push({
-          pathname,
-          query: {
-            ...fieldsValue,
-          },
-        }))
-        : dispatch(routerRedux.push({ pathname }))
+      dispatch(routerRedux.push({
+        pathname: location.pathname,
+        query: {
+          ...fieldsValue,
+        },
+      }))
     },
     onAdd () {
       dispatch({
