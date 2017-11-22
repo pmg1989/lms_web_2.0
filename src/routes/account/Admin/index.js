@@ -63,7 +63,6 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
       })
     },
     onResignItem (item) {
-      console.log(item)
       dispatch({
         type: 'accountAdmin/toggleResign',
         payload: {
