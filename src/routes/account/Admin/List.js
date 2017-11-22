@@ -35,16 +35,16 @@ function List ({
   const columns = [
     {
       title: '用户名',
+      dataIndex: 'user_name',
+      key: 'user_name',
+    }, {
+      title: '真实姓名',
       dataIndex: 'firstname',
       key: 'firstname',
     }, {
       title: '手机号',
       dataIndex: 'phone2',
       key: 'phone2',
-    }, {
-      title: '邮箱',
-      dataIndex: 'email',
-      key: 'email',
     }, {
       title: '类别',
       dataIndex: 'teacher_category',
@@ -57,13 +57,13 @@ function List ({
       render: subject => <span>{getSubject(subject)}</span>,
     }, {
       title: '角色',
-      dataIndex: 'roleName',
-      key: 'roleName',
+      dataIndex: 'role_name',
+      key: 'role_name',
       render: roleName => <span>{getRoleName(roleName)}</span>,
     }, {
       title: '加入时间',
-      dataIndex: 'createTime',
-      key: 'createTime',
+      dataIndex: 'create_time',
+      key: 'create_time',
     }, {
       title: '请假状态',
       dataIndex: 'teacher_status',
@@ -105,7 +105,7 @@ function List ({
 
     if (field || roleName || category || subject) {
       const filterTotalList = list.filter((item) => {
-        const hasRoleName = roleName ? item.roleName === roleName : true
+        const hasRoleName = roleName ? item.role_name === roleName : true
         const hasCategory = category ? item.teacher_category === category : true
         const hasSubject = subject ? item.teacher_subject === subject : true
         const hasKeyWords = keyword ? item[field].includes(decodeURI(keyword)) : true

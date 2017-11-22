@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Radio, Modal, Icon, Select } from 'antd'
+import { Form, Input, InputNumber, Modal, Icon, Select, Checkbox, Row, Col } from 'antd'
 import { validPhone } from 'utils/utilsValid'
+import { categorys, subjects } from 'utils/dictionary'
 
 const FormItem = Form.Item
 
@@ -30,6 +31,9 @@ const ModalForm = ({
   if (!curItem.roleList) {
     curItem.roleList = []
   }
+  if (!curItem.classRooms) {
+    curItem.classRooms = []
+  }
 
   const handleOk = () => {
     validateFields((errors, values) => {
@@ -45,7 +49,7 @@ const ModalForm = ({
   }
 
   const modalFormOpts = {
-    title: type === 'create' ? <div><Icon type="plus-circle-o" /> 新建管理员</div> : <div><Icon type="edit" /> 修改管理员</div>,
+    title: type === 'create' ? <div><Icon type="plus-circle-o" /> 新建工作人员</div> : <div><Icon type="edit" /> 修改工作人员</div>,
     visible,
     wrapClassName: 'vertical-center-modal',
     confirmLoading: loading.effects['accountAdmin/showModal'],
@@ -59,85 +63,142 @@ const ModalForm = ({
   return (
     <Modal {...modalFormOpts}>
       <Form>
-        <FormItem label="用户名：" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('name', {
-            initialValue: curItem.name,
+        <FormItem label="登录账号" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('username', {
+            initialValue: curItem.username,
             rules: [
               {
                 required: true,
-                message: '用户名不能为空',
+                message: '请输入登录账号',
               },
             ],
-          })(<Input />)}
+          })(<Input placeholder="请输入登录账号" />)}
         </FormItem>
-        <FormItem label="性别" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('isMale', {
-            initialValue: curItem.isMale,
+        <FormItem label="真实姓名" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('firstname', {
+            initialValue: curItem.firstname,
             rules: [
               {
                 required: true,
-                type: 'boolean',
-                message: '请选择性别',
+                message: '请输入真实姓名',
               },
             ],
-          })(
-            <Radio.Group>
-              <Radio value>男</Radio>
-              <Radio value={false}>女</Radio>
-            </Radio.Group>
-          )}
+          })(<Input placeholder="请输入真实姓名" />)}
         </FormItem>
-        <FormItem label="手机号：" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('phone', {
-            initialValue: curItem.phone,
+        <FormItem label="手机号" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('phone2', {
+            initialValue: curItem.phone2,
             rules: [
               {
                 required: true,
-                message: '手机号不能为空',
+                message: '请输入手机号码',
               },
               {
                 validator: validPhone,
               },
             ],
-          })(<Input />)}
+          })(<Input placeholder="请输入手机号码" />)}
         </FormItem>
-        <FormItem label="邮箱：" hasFeedback {...formItemLayout}>
+        <FormItem label="邮箱" hasFeedback {...formItemLayout}>
           {getFieldDecorator('email', {
             initialValue: curItem.email,
             rules: [
               {
                 required: true,
-                message: '邮箱不能为空',
+                message: '请输入邮箱',
               },
               {
                 type: 'email',
                 message: '邮箱格式不正确',
               },
             ],
-          })(<Input type="email" />)}
-          {/* (<InputEmailComplete/>)} */}
+          })(<Input type="email" placeholder="请输入邮箱" />)}
         </FormItem>
-        <FormItem label="角色：" hasFeedback {...formItemLayout}>
+        <FormItem label="保底课时" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('teacher_lessonsum_monthly', {
+            initialValue: curItem.teacher_lessonsum_monthly || 30,
+            rules: [
+              {
+                required: true,
+                message: '请输入保底课时',
+              },
+            ],
+          })(<InputNumber min={0} placeholder="请输入保底课时" />)}
+        </FormItem>
+        <FormItem label="角色" hasFeedback {...formItemLayout}>
           {getFieldDecorator('roleId', {
             initialValue: curItem.roleId && curItem.roleId.toString(),
             rules: [
               {
                 required: true,
-                message: '角色不能为空',
+                message: '请选择角色',
               },
             ],
           })(<Select placeholder="--请选择角色--">{curItem.roleList.map(item => <Option key={item.id} value={item.id.toString()}>{item.name}</Option>)}</Select>)}
         </FormItem>
-        <FormItem label="地区：" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('address', {
-            initialValue: curItem.address,
+        <FormItem label="类别" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('teacher_category', {
+            initialValue: curItem.teacher_category,
             rules: [
               {
                 required: true,
-                message: '地区不能为空',
+                message: '请选择类别',
               },
             ],
-          })(<Input />)}
+          })(<Select placeholder="--请选择类别--">
+            {Object.entries(categorys).map(([key, value]) => {
+              return <Option key={key} value={key}>{value}</Option>
+            })}
+          </Select>)}
+        </FormItem>
+        <FormItem label="科目" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('teacher_subject', {
+            initialValue: curItem.teacher_subject,
+            rules: [
+              {
+                required: true,
+                message: '请选择科目',
+              },
+            ],
+          })(<Select placeholder="--请选择科目--">
+            {Object.entries(subjects).map(([key, value]) => {
+              return <Option key={key} value={key}>{value}</Option>
+            })}
+          </Select>)}
+        </FormItem>
+        <FormItem label="教室" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('teacher_classroom_name', {
+            initialValue: curItem.teacher_classroom_name,
+            rules: [
+              {
+                required: true,
+                message: '请选择教室',
+              },
+            ],
+          })(<Select placeholder="--请选择教室--">
+            {curItem.classRooms.map(item => <Option key={item.id} value={item.id}>{item.name}</Option>)}
+          </Select>)}
+        </FormItem>
+        <FormItem label="工作日" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('teacher_workday', {
+            initialValue: curItem.teacher_workday && curItem.teacher_workday.split(','),
+            rules: [
+              {
+                required: true,
+                message: '请选择工作日',
+              },
+            ],
+          })(<Checkbox.Group>
+            <Row>
+              <Col span={6}><Checkbox value="1">周一</Checkbox></Col>
+              <Col span={6}><Checkbox value="2">周二</Checkbox></Col>
+              <Col span={6}><Checkbox value="3">周三</Checkbox></Col>
+              <Col span={6}><Checkbox value="4">周四</Checkbox></Col>
+              <Col span={6}><Checkbox value="5">周五</Checkbox></Col>
+              <Col span={6}><Checkbox value="6">周六</Checkbox></Col>
+              <Col span={6}><Checkbox value="7">周日</Checkbox></Col>
+            </Row>
+          </Checkbox.Group>)}
         </FormItem>
       </Form>
     </Modal>

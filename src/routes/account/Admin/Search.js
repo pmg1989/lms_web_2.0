@@ -30,9 +30,9 @@ const Search = ({
     keyword,
     size: 'large',
     select: true,
-    selectOptions: [{ value: 'firstname', name: '用户名' }, { value: 'phone2', name: '手机号' }, { value: 'email', name: '邮箱' }],
+    selectOptions: [{ value: 'user_name', name: '用户名' }, { value: 'firstname', name: '真实姓名' }, { value: 'phone2', name: '手机号' }],
     selectProps: {
-      defaultValue: field || 'firstname',
+      defaultValue: field || 'user_name',
     },
     onSearch: (value) => {
       validateFields((errors, values) => {
