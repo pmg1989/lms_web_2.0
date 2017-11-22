@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { checkPower } from 'utils'
-import { ADD, UPDATE, DELETE } from 'constants/options'
+import { ADD, UPDATE, DETAIL, RESIGN, LEAVE } from 'constants/options'
 import AdminList from './List'
 import AdminSearch from './Search'
 import AdminModal from './ModalForm'
@@ -11,7 +11,9 @@ import AdminModal from './ModalForm'
 function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading }) {
   const addPower = checkPower(ADD, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
-  const deletePower = checkPower(DELETE, curPowers)
+  const detailPower = checkPower(DETAIL, curPowers)
+  const resignPower = checkPower(RESIGN, curPowers)
+  const leavePower = checkPower(LEAVE, curPowers)
 
   const searchProps = {
     query: location.query,
@@ -39,10 +41,9 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
     loading,
     location,
     updatePower,
-    deletePower,
-    onDeleteItem (id) {
-      dispatch({ type: 'accountAdmin/delete', payload: { id } })
-    },
+    detailPower,
+    resignPower,
+    leavePower,
     onEditItem (item) {
       dispatch({
         type: 'accountAdmin/showModal',
@@ -52,13 +53,26 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
         },
       })
     },
-    onStatusItem (item) {
+    onDetailItem (item) {
       dispatch({
-        type: 'accountAdmin/updateStatus',
+        type: 'accountAdmin/showModal',
+        payload: {
+          type: 'update',
+          curItem: item,
+        },
+      })
+    },
+    onResignItem (item) {
+      console.log(item)
+      dispatch({
+        type: 'accountAdmin/toggleResign',
         payload: {
           curItem: item,
         },
       })
+    },
+    onLeaveItem () {
+
     },
   }
 

@@ -1,6 +1,6 @@
 import { routerRedux } from 'dva/router'
 import { getCurPowers } from 'utils'
-import { create, remove, update, query, get } from 'services/account/admin'
+import { create, update, query, get } from 'services/account/admin'
 import { query as queryRole } from 'services/account/role'
 
 const page = {
@@ -66,12 +66,6 @@ export default {
         })
       }
     },
-    * delete ({ payload }, { call, put }) {
-      const data = yield call(remove, { id: payload.id })
-      if (data && data.success) {
-        yield put({ type: 'query' })
-      }
-    },
     * create ({ payload }, { select, call, put }) {
       const data = yield call(create, payload.curItem)
       if (data && data.success) {
@@ -91,11 +85,17 @@ export default {
         yield put({ type: 'query' })
       }
     },
-    * updateStatus ({ payload }, { call, put }) {
-      const { curItem } = payload
-      const data = yield call(update, { ...curItem, status: !curItem.status })
-      if (data && data.success) {
-        yield put({ type: 'query' })
+    * toggleResign ({ payload }, { call, put }) {
+      const { curItem: { suspended, id } } = payload
+      const { success } = yield call(update, {
+        userid: id,
+        suspended: suspended === 1 ? 0 : 1,
+      })
+      if (success) {
+        yield put({
+          type: 'toggleResignSuccess',
+          payload: { id },
+        })
       }
     },
     * showModal ({ payload }, { call, put }) {
@@ -122,6 +122,10 @@ export default {
   reducers: {
     querySuccess (state, action) {
       return { ...state, ...action.payload }
+    },
+    toggleResignSuccess (state, action) {
+      const list = state.list.map(item => (item.id === action.payload.id ? { ...item, suspended: item.suspended === 1 ? 0 : 1 } : item))
+      return { ...state, list }
     },
   },
 }

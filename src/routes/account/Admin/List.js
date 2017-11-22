@@ -1,13 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Menu, Tag } from 'antd'
+import { Menu, Tag } from 'antd'
 import moment from 'moment'
 import { DataTable, DropMenu } from 'components'
 import { getRoleName, getCategory, getSubject } from 'utils/dictionary'
-import { UPDATE, STATUS, DELETE } from 'constants/options'
+import { UPDATE, DETAIL, RESIGN, LEAVE } from 'constants/options'
 import styles from './List.less'
-
-const confirm = Modal.confirm
 
 function List ({
   accountAdmin: {
@@ -17,25 +15,20 @@ function List ({
   location,
   loading,
   updatePower,
-  deletePower,
-  onDeleteItem,
+  detailPower,
+  resignPower,
+  leavePower,
   onEditItem,
-  onStatusItem,
+  onDetailItem,
+  onResignItem,
+  onLeaveItem,
 }) {
-  const handleDeleteItem = (record) => {
-    confirm({
-      title: '您确定要删除这条记录吗?',
-      onOk () {
-        onDeleteItem(record.id)
-      },
-    })
-  }
-
   const handleMenuClick = (key, record) => {
     return {
       [UPDATE]: onEditItem,
-      [STATUS]: onStatusItem,
-      [DELETE]: handleDeleteItem,
+      [DETAIL]: onDetailItem,
+      [RESIGN]: onResignItem,
+      [LEAVE]: onLeaveItem,
     }[key](record)
   }
 
@@ -92,9 +85,10 @@ function List ({
       render: (text, record) => (
         <DropMenu>
           <Menu onClick={({ key }) => handleMenuClick(key, record)}>
-            {updatePower && <Menu.Item key={STATUS}>{record.status ? '禁用' : '启用'}</Menu.Item>}
+            {detailPower && <Menu.Item key={DETAIL}>查看</Menu.Item>}
             {updatePower && <Menu.Item key={UPDATE}>编辑</Menu.Item>}
-            {deletePower && <Menu.Item key={DELETE}>删除</Menu.Item>}
+            {leavePower && <Menu.Item key={LEAVE}>{record.teacher_status === 'normal' ? '请假' : '销假'}</Menu.Item>}
+            {resignPower && <Menu.Item key={RESIGN}>{record.suspended === 1 ? '重新入职' : '离职'}</Menu.Item>}
           </Menu>
         </DropMenu>
       ),
@@ -148,10 +142,13 @@ List.propTypes = {
   loading: PropTypes.object.isRequired,
   accountAdmin: PropTypes.object.isRequired,
   updatePower: PropTypes.bool.isRequired,
-  deletePower: PropTypes.bool.isRequired,
-  onStatusItem: PropTypes.func.isRequired,
-  onDeleteItem: PropTypes.func.isRequired,
+  detailPower: PropTypes.bool.isRequired,
+  resignPower: PropTypes.bool.isRequired,
+  leavePower: PropTypes.bool.isRequired,
   onEditItem: PropTypes.func.isRequired,
+  onDetailItem: PropTypes.func.isRequired,
+  onResignItem: PropTypes.func.isRequired,
+  onLeaveItem: PropTypes.func.isRequired,
 }
 
 export default List
