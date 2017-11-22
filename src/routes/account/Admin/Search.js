@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Button, Row, Col, Icon, Select } from 'antd'
 import { SearchGroup } from 'components'
+import { roleNames, categorys, subjects } from 'utils/dictionary'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -67,11 +68,9 @@ const Search = ({
               initialValue: roleName || '',
             })(<Select style={{ width: 90 }}>
               <Option value="">全部</Option>
-              <Option value="admin">管理员</Option>
-              <Option value="teacher">老师</Option>
-              <Option value="courseCreator">校长</Option>
-              <Option value="hr">HR专员</Option>
-              <Option value="specialist">课程专家</Option>
+              {Object.entries(roleNames).map(([key, value]) => {
+                return <Option key={key} value={key}>{value}</Option>
+              })}
             </Select>)
             }
           </FormItem>
@@ -80,9 +79,9 @@ const Search = ({
               initialValue: category || '',
             })(<Select style={{ width: 90 }}>
               <Option value="">全部</Option>
-              <Option value="profession">专业课</Option>
-              <Option value="hd">互动课</Option>
-              <Option value="jl">交流课</Option>
+              {Object.entries(categorys).map(([key, value]) => {
+                return <Option key={key} value={key}>{value}</Option>
+              })}
             </Select>)
             }
           </FormItem>
@@ -91,15 +90,9 @@ const Search = ({
               initialValue: subject || '',
             })(<Select style={{ width: 90 }}>
               <Option value="">全部</Option>
-              <Option value="vocal">声乐</Option>
-              <Option value="theory">乐理</Option>
-              <Option value="piano">键盘</Option>
-              <Option value="guitar">吉他</Option>
-              <Option value="eguitar">电吉他</Option>
-              <Option value="composition">作曲</Option>
-              <Option value="record">录音</Option>
-              <Option value="rhythm">节奏</Option>
-              <Option value="yoga">瑜伽</Option>
+              {Object.entries(subjects).map(([key, value]) => {
+                return <Option key={key} value={key}>{value}</Option>
+              })}
             </Select>)
             }
           </FormItem>

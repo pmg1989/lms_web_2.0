@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Modal, Menu, Tag } from 'antd'
 import moment from 'moment'
 import { DataTable, DropMenu } from 'components'
-import { getCategory, getSubject } from 'utils/dictionary'
+import { getRoleName, getCategory, getSubject } from 'utils/dictionary'
 import { UPDATE, STATUS, DELETE } from 'constants/options'
 import styles from './List.less'
 
@@ -66,6 +66,7 @@ function List ({
       title: '角色',
       dataIndex: 'roleName',
       key: 'roleName',
+      render: roleName => <span>{getRoleName(roleName)}</span>,
     }, {
       title: '加入时间',
       dataIndex: 'createTime',
