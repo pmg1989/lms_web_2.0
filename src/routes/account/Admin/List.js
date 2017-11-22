@@ -104,21 +104,16 @@ function List ({
     const sizePage = pageSize || pagination.pageSize
 
     if (field || roleName || category || subject) {
-      if (roleName) {
-        list = list.filter(item => item.roleName === roleName)
-      }
-      if (category) {
-        list = list.filter(item => item.teacher_category === category)
-      }
-      if (subject) {
-        list = list.filter(item => item.teacher_subject === subject)
-      }
-      if (field) {
-        list = list.filter(item => item[field].indexOf(decodeURI(keyword)) > -1)
-      }
-      total = list.length
-      list = list.slice((currentPage - 1) * (sizePage), currentPage * sizePage)
-      return list
+      const filterTotalList = list.filter((item) => {
+        const hasRoleName = roleName ? item.roleName === roleName : true
+        const hasCategory = category ? item.teacher_category === category : true
+        const hasSubject = subject ? item.teacher_subject === subject : true
+        const hasKeyWords = keyword ? item[field].includes(decodeURI(keyword)) : true
+        return hasRoleName && hasCategory && hasSubject && hasKeyWords
+      })
+      total = filterTotalList.length
+      const filterList = filterTotalList.slice((currentPage - 1) * (sizePage), currentPage * sizePage)
+      return filterList
     }
     return list
   }
