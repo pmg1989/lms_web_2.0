@@ -57,7 +57,7 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
       dispatch({
         type: 'accountAdmin/showModal',
         payload: {
-          type: 'update',
+          type: 'detail',
           curItem: item,
         },
       })

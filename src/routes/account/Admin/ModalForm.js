@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Modal, Icon, Select, Checkbox, Row, Col } from 'antd'
 import { validPhone } from 'utils/utilsValid'
-import { categorys, subjects } from 'utils/dictionary'
+import { categorys, subjects, getModalType } from 'utils/dictionary'
 
 const FormItem = Form.Item
 
@@ -34,6 +34,8 @@ const ModalForm = ({
   if (!curItem.classRooms) {
     curItem.classRooms = []
   }
+  const disabled = type === 'detail'
+  const { name, icon } = getModalType(type)
 
   const handleOk = () => {
     validateFields((errors, values) => {
@@ -49,7 +51,7 @@ const ModalForm = ({
   }
 
   const modalFormOpts = {
-    title: type === 'create' ? <div><Icon type="plus-circle-o" /> 新建工作人员</div> : <div><Icon type="edit" /> 修改工作人员</div>,
+    title: <div><Icon type={icon} /> {name} - 工作人员</div>,
     visible,
     wrapClassName: 'vertical-center-modal',
     confirmLoading: loading.effects['accountAdmin/showModal'],
@@ -72,7 +74,7 @@ const ModalForm = ({
                 message: '请输入登录账号',
               },
             ],
-          })(<Input placeholder="请输入登录账号" />)}
+          })(<Input disabled={disabled} placeholder="请输入登录账号" />)}
         </FormItem>
         <FormItem label="真实姓名" hasFeedback {...formItemLayout}>
           {getFieldDecorator('firstname', {
@@ -83,7 +85,7 @@ const ModalForm = ({
                 message: '请输入真实姓名',
               },
             ],
-          })(<Input placeholder="请输入真实姓名" />)}
+          })(<Input disabled={disabled} placeholder="请输入真实姓名" />)}
         </FormItem>
         <FormItem label="手机号" hasFeedback {...formItemLayout}>
           {getFieldDecorator('phone2', {
@@ -97,7 +99,7 @@ const ModalForm = ({
                 validator: validPhone,
               },
             ],
-          })(<Input placeholder="请输入手机号码" />)}
+          })(<Input disabled={disabled} placeholder="请输入手机号码" />)}
         </FormItem>
         <FormItem label="邮箱" hasFeedback {...formItemLayout}>
           {getFieldDecorator('email', {
@@ -112,7 +114,7 @@ const ModalForm = ({
                 message: '邮箱格式不正确',
               },
             ],
-          })(<Input type="email" placeholder="请输入邮箱" />)}
+          })(<Input disabled={disabled} type="email" placeholder="请输入邮箱" />)}
         </FormItem>
         <FormItem label="保底课时" hasFeedback {...formItemLayout}>
           {getFieldDecorator('teacher_lessonsum_monthly', {
@@ -123,7 +125,7 @@ const ModalForm = ({
                 message: '请输入保底课时',
               },
             ],
-          })(<InputNumber min={0} placeholder="请输入保底课时" />)}
+          })(<InputNumber disabled={disabled} min={0} placeholder="请输入保底课时" />)}
         </FormItem>
         <FormItem label="角色" hasFeedback {...formItemLayout}>
           {getFieldDecorator('roleId', {
@@ -134,7 +136,7 @@ const ModalForm = ({
                 message: '请选择角色',
               },
             ],
-          })(<Select placeholder="--请选择角色--">{curItem.roleList.map(item => <Option key={item.id} value={item.id.toString()}>{item.name}</Option>)}</Select>)}
+          })(<Select disabled={disabled} placeholder="--请选择角色--">{curItem.roleList.map(item => <Option key={item.id} value={item.id.toString()}>{item.name}</Option>)}</Select>)}
         </FormItem>
         <FormItem label="类别" hasFeedback {...formItemLayout}>
           {getFieldDecorator('teacher_category', {
@@ -145,7 +147,7 @@ const ModalForm = ({
                 message: '请选择类别',
               },
             ],
-          })(<Select placeholder="--请选择类别--">
+          })(<Select disabled={disabled} placeholder="--请选择类别--">
             {Object.entries(categorys).map(([key, value]) => {
               return <Option key={key} value={key}>{value}</Option>
             })}
@@ -160,7 +162,7 @@ const ModalForm = ({
                 message: '请选择科目',
               },
             ],
-          })(<Select placeholder="--请选择科目--">
+          })(<Select disabled={disabled} placeholder="--请选择科目--">
             {Object.entries(subjects).map(([key, value]) => {
               return <Option key={key} value={key}>{value}</Option>
             })}
@@ -175,7 +177,7 @@ const ModalForm = ({
                 message: '请选择教室',
               },
             ],
-          })(<Select placeholder="--请选择教室--">
+          })(<Select disabled={disabled} placeholder="--请选择教室--">
             {curItem.classRooms.map(item => <Option key={item.id} value={item.id}>{item.name}</Option>)}
           </Select>)}
         </FormItem>
@@ -188,7 +190,7 @@ const ModalForm = ({
                 message: '请选择工作日',
               },
             ],
-          })(<Checkbox.Group>
+          })(<Checkbox.Group disabled={disabled}>
             <Row>
               <Col span={6}><Checkbox value="1">周一</Checkbox></Col>
               <Col span={6}><Checkbox value="2">周二</Checkbox></Col>

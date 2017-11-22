@@ -35,3 +35,11 @@ export const roleNames = {
 export function getRoleName (role = '') {
   return subjects[role.toLowerCase()] || '未知'
 }
+
+export function getModalType (type) {
+  return {
+    create: { name: '新建', icon: 'plus-circle-o' },
+    update: { name: '修改', icon: 'edit' },
+    detail: { name: '查看', icon: 'exclamation-circle-o' },
+  }[type.toLowerCase()] || '未知'
+}
