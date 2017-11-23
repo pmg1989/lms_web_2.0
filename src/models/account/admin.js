@@ -106,7 +106,7 @@ export default {
     },
     * showModal ({ payload }, { call, put }) {
       const { type, curItem } = payload
-      let newData = { curItem: {} }
+      let newData = {}
 
       yield put({ type: 'modal/showModal', payload: { type } })
 
@@ -114,20 +114,20 @@ export default {
         yield put({ type: 'setOldId', payload: { oldId: curItem.id } })
         const { data, success } = yield call(queryItem, { userid: curItem.id })
         if (success) {
-          newData.curItem = data
+          newData = data
         }
       }
 
       const dataCR = yield call(queryClassRooms)
       if (dataCR.success) {
-        newData.curItem.classRooms = dataCR.data
+        newData.classRooms = dataCR.data
       }
 
       // const { data, success } = yield call(queryRole)
       // if (success) {
       //   newData.curItem.roleList = data
       // }
-      yield put({ type: 'modal/setItem', payload: newData })
+      yield put({ type: 'modal/setItem', payload: { curItem: newData } })
     },
   },
 

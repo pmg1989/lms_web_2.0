@@ -113,7 +113,6 @@ class ModalForm extends Component {
       loading,
       form: {
         getFieldDecorator,
-        resetFields,
       },
       onCancel,
     } = this.props
@@ -135,9 +134,6 @@ class ModalForm extends Component {
       confirmLoading: loading.models.accountAdmin,
       onOk: this.handleOk,
       onCancel,
-      afterClose () {
-        resetFields() // 必须项，编辑后如未确认保存，关闭时必须重置数据
-      },
     }
 
     return (
