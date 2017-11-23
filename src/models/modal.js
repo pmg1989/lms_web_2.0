@@ -9,7 +9,8 @@ export default {
   },
   reducers: {
     showModal (state, action) {
-      return { ...state, visible: true, ...action.payload }
+      const { id = 1 } = action.payload
+      return { ...state, visible: true, ...action.payload, id }
     },
     hideModal (state) {
       return { ...state, visible: false, curItem: {} }

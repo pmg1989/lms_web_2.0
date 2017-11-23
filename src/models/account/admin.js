@@ -1,6 +1,6 @@
 import { routerRedux } from 'dva/router'
 import { getCurPowers } from 'utils'
-import { create, update, query, queryItem, queryClassRooms } from 'services/account/admin'
+import { create, update, query, queryItem, queryClassRooms, updateLevel } from 'services/account/admin'
 // import { query as queryRole } from 'services/account/role'
 
 const page = {
@@ -129,6 +129,23 @@ export default {
       // }
       yield put({ type: 'modal/setItem', payload: { curItem: newData } })
     },
+    * showLeaveModal ({ payload }, { put }) {
+      const { type, curItem } = payload
+      yield put({ type: 'modal/showModal', payload: { type, curItem, id: 2 } })
+      yield put({ type: 'setOldId', payload: { oldId: curItem.id } })
+    },
+    * levelTeacher ({ payload }, { call, put, select }) {
+      const { curItem } = payload
+      const { data, success } = yield call(updateLevel, { ...curItem })
+      if (success) {
+        const oldId = yield select(({ accountAdmin }) => accountAdmin.oldId)
+        yield put({ type: 'modal/hideModal' })
+        yield put({
+          type: 'updateSuccess',
+          payload: { curItem: data, oldId },
+        })
+      }
+    },
   },
 
   reducers: {
@@ -144,7 +161,7 @@ export default {
     },
     updateSuccess (state, action) {
       const { curItem, oldId } = action.payload
-      const list = state.list.map(item => (item.id === oldId ? curItem : item))
+      const list = state.list.map(item => (item.id === oldId ? { ...item, ...curItem } : item))
       return { ...state, list }
     },
     createSuccess (state, action) {

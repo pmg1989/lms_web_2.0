@@ -4,9 +4,10 @@ import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { checkPower } from 'utils'
 import { ADD, UPDATE, DETAIL, RESIGN, LEAVE } from 'constants/options'
-import AdminList from './List'
-import AdminSearch from './Search'
-import AdminModal from './ModalForm'
+import List from './List'
+import Search from './Search'
+import ModalForm from './ModalForm'
+import LevelModal from './LevelModal'
 
 function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading }) {
   const addPower = checkPower(ADD, curPowers)
@@ -70,8 +71,14 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
         },
       })
     },
-    onLeaveItem () {
-
+    onLeaveItem (item) {
+      dispatch({
+        type: 'accountAdmin/showLeaveModal',
+        payload: {
+          type: 'update',
+          curItem: item,
+        },
+      })
     },
   }
 
@@ -93,11 +100,28 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
     },
   }
 
+  const levalModalProps = {
+    modal,
+    loading,
+    onOk (data) {
+      dispatch({
+        type: 'accountAdmin/levelTeacher',
+        payload: {
+          curItem: data,
+        },
+      })
+    },
+    onCancel () {
+      dispatch({ type: 'modal/hideModal' })
+    },
+  }
+
   return (
     <div className="content-inner">
-      <AdminSearch {...searchProps} />
-      <AdminList {...listProps} />
-      {modal.visible && <AdminModal {...modalProps} />}
+      <Search {...searchProps} />
+      <List {...listProps} />
+      {modal.visible && modal.id === 1 && <ModalForm {...modalProps} />}
+      {modal.visible && modal.id === 2 && <LevelModal {...levalModalProps} />}
     </div>
   )
 }

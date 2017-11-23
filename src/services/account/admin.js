@@ -19,3 +19,7 @@ export async function update (params) {
 export async function create (params) {
   return request({ wsfunction: 'mod_frontservice_createuser', ...params })
 }
+
+export async function updateLevel (params) {
+  return request({ wsfunction: 'mod_frontservice_leave_teacher', ...params })
+}
