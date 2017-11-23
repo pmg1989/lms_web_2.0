@@ -27,7 +27,7 @@ export default {
           const curPowers = getCurPowers(pathname)
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
-            dispatch({ type: 'query', payload: {} })
+            dispatch({ type: 'query' })
           }
         }
       })
@@ -35,9 +35,8 @@ export default {
   },
 
   effects: {
-    * query ({ payload }, { select, call, put }) {
-      const { forceChangePostBack } = payload
-      const isPostBack = yield select(({ accountAdmin }) => accountAdmin.isPostBack || forceChangePostBack)
+    * query ({}, { select, call, put }) {
+      const isPostBack = yield select(({ accountAdmin }) => accountAdmin.isPostBack)
       const pathQuery = yield select(({ routing }) => routing.locationBeforeTransitions.query)
 
       if (isPostBack) {
@@ -80,15 +79,14 @@ export default {
         }))
       }
     },
-    * update ({ payload }, { call, put }) {
-      const { success } = yield call(update, payload.curItem)
+    * update ({ payload }, { call, put, select }) {
+      const oldId = yield select(({ accountAdmin }) => accountAdmin.oldId)
+      const { data, success } = yield call(update, payload.curItem)
       if (success) {
         yield put({ type: 'modal/hideModal' })
         yield put({
-          type: 'query',
-          payload: {
-            forceChangePostBack: true,
-          },
+          type: 'updateSuccess',
+          payload: { curItem: data, oldId },
         })
       }
     },
@@ -128,6 +126,7 @@ export default {
       //   newData.curItem.roleList = data
       // }
       yield put({ type: 'modal/setItem', payload: newData })
+      yield put({ type: 'setOldId', payload: { oldId: curItem.id } })
     },
   },
 
@@ -137,6 +136,14 @@ export default {
     },
     toggleResignSuccess (state, action) {
       const list = state.list.map(item => (item.id === action.payload.id ? { ...item, suspended: item.suspended === 1 ? 0 : 1 } : item))
+      return { ...state, list }
+    },
+    setOldId (state, action) {
+      return { ...state, ...action.payload }
+    },
+    updateSuccess (state, action) {
+      const { curItem, oldId } = action.payload
+      const list = state.list.map(item => (item.id === oldId ? curItem : item))
       return { ...state, list }
     },
   },
