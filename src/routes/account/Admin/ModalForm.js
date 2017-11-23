@@ -132,7 +132,7 @@ class ModalForm extends Component {
       title: <div><Icon type={icon} /> {name} - 工作人员</div>,
       visible,
       wrapClassName: 'vertical-center-modal',
-      confirmLoading: loading.effects['accountAdmin/showModal'],
+      confirmLoading: loading.models.accountAdmin,
       onOk: this.handleOk,
       onCancel,
       afterClose () {
