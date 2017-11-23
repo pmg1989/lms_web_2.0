@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Modal, Icon, Select, Checkbox, Row, Col } from 'antd'
 import { validPhone } from 'utils/utilsValid'
-import { categorys, subjects, getModalType } from 'utils/dictionary'
+import { categorys, subjects, getModalType, roleNames } from 'utils/dictionary'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -30,6 +30,7 @@ class ModalForm extends Component {
     this.state = {
       mySubjects: Object.entries(subjects),
       myLevelList: Array.from(Array(21).keys()),
+      isTeacher: true,
     }
   }
 
@@ -37,6 +38,7 @@ class ModalForm extends Component {
     if (!this.props.modal.curItem.teacher_category && nextProps.modal.curItem.teacher_category) {
       this.handleCategoryChange(nextProps.modal.curItem.teacher_category, false)
       this.handleSubjectChange(nextProps.modal.curItem.teacher_subject, false)
+      // this.handleRoleChange(nextProps.modal.curItem.roleId)
     }
   }
 
@@ -52,6 +54,10 @@ class ModalForm extends Component {
       }
       onOk(data)
     })
+  }
+
+  handleRoleChange = (role) => {
+    this.setState({ isTeacher: role === 'teacher' })
   }
 
   handleCategoryChange = (category, needSetValue = true) => {
@@ -99,7 +105,7 @@ class ModalForm extends Component {
       },
       onCancel,
     } = this.props
-    const { mySubjects, myLevelList } = this.state
+    const { mySubjects, myLevelList, isTeacher } = this.state
 
     if (!curItem.roleList) {
       curItem.roleList = []
@@ -176,17 +182,6 @@ class ModalForm extends Component {
               ],
             })(<Input disabled={disabled} type="email" placeholder="请输入邮箱" />)}
           </FormItem>
-          <FormItem label="保底课时" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('teacher_lessonsum_monthly', {
-              initialValue: curItem.teacher_lessonsum_monthly || 30,
-              rules: [
-                {
-                  required: true,
-                  message: '请输入保底课时',
-                },
-              ],
-            })(<InputNumber disabled={disabled} min={0} placeholder="请输入保底课时" />)}
-          </FormItem>
           <FormItem label="角色" hasFeedback {...formItemLayout}>
             {getFieldDecorator('roleId', {
               initialValue: curItem.roleId && curItem.roleId.toString(),
@@ -196,9 +191,14 @@ class ModalForm extends Component {
                   message: '请选择角色',
                 },
               ],
-            })(<Select disabled={disabled} placeholder="--请选择角色--">{curItem.roleList.map(item => <Option key={item.id} value={item.id.toString()}>{item.name}</Option>)}</Select>)}
+              onChange: this.handleRoleChange,
+            })(<Select disabled={disabled} placeholder="--请选择角色--">
+              {Object.entries(roleNames).map(([key, value]) => {
+                return <Option key={key} value={key}>{value}</Option>
+              })}
+            </Select>)}
           </FormItem>
-          <FormItem label="类别" hasFeedback {...formItemLayout}>
+          {isTeacher && <FormItem label="类别" hasFeedback {...formItemLayout}>
             {getFieldDecorator('teacher_category', {
               initialValue: curItem.teacher_category,
               rules: [
@@ -213,8 +213,8 @@ class ModalForm extends Component {
                 return <Option key={key} value={key}>{value}</Option>
               })}
             </Select>)}
-          </FormItem>
-          <FormItem label="科目" hasFeedback {...formItemLayout}>
+          </FormItem>}
+          {isTeacher && <FormItem label="科目" hasFeedback {...formItemLayout}>
             {getFieldDecorator('teacher_subject', {
               initialValue: curItem.teacher_subject,
               rules: [
@@ -229,8 +229,8 @@ class ModalForm extends Component {
                 return <Option key={key} value={key}>{value}</Option>
               })}
             </Select>)}
-          </FormItem>
-          <FormItem label="当前等级" hasFeedback {...formItemLayout}>
+          </FormItem>}
+          {isTeacher && <FormItem label="当前等级" hasFeedback {...formItemLayout}>
             {getFieldDecorator('teacher_level', {
               initialValue: curItem.teacher_level,
               rules: [
@@ -245,8 +245,19 @@ class ModalForm extends Component {
               })}
               <Option value="other">other</Option>
             </Select>)}
-          </FormItem>
-          <FormItem label="教室" hasFeedback {...formItemLayout}>
+          </FormItem>}
+          {isTeacher && <FormItem label="保底课时" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('teacher_lessonsum_monthly', {
+              initialValue: curItem.teacher_lessonsum_monthly || 30,
+              rules: [
+                {
+                  required: true,
+                  message: '请输入保底课时',
+                },
+              ],
+            })(<InputNumber disabled={disabled} min={0} placeholder="请输入保底课时" />)}
+          </FormItem>}
+          {isTeacher && <FormItem label="教室" hasFeedback {...formItemLayout}>
             {getFieldDecorator('teacher_classroom_name', {
               initialValue: curItem.teacher_classroom_name,
               rules: [
@@ -258,8 +269,8 @@ class ModalForm extends Component {
             })(<Select disabled={disabled} placeholder="--请选择教室--">
               {curItem.classRooms.map(item => <Option key={item.id} value={item.id}>{item.name}</Option>)}
             </Select>)}
-          </FormItem>
-          <FormItem label="工作日" hasFeedback {...formItemLayout}>
+          </FormItem>}
+          {isTeacher && <FormItem label="工作日" hasFeedback {...formItemLayout}>
             {getFieldDecorator('teacher_workday', {
               initialValue: curItem.teacher_workday && curItem.teacher_workday.split(','),
               rules: [
@@ -279,7 +290,7 @@ class ModalForm extends Component {
                 <Col span={6}><Checkbox value="7">周日</Checkbox></Col>
               </Row>
             </Checkbox.Group>)}
-          </FormItem>
+          </FormItem>}
         </Form>
       </Modal>
     )
