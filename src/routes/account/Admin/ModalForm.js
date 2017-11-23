@@ -33,6 +33,13 @@ class ModalForm extends Component {
     }
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (!this.props.modal.curItem.teacher_category && nextProps.modal.curItem.teacher_category) {
+      this.handleCategoryChange(nextProps.modal.curItem.teacher_category, false)
+      this.handleSubjectChange(nextProps.modal.curItem.teacher_subject, false)
+    }
+  }
+
   handleOk = () => {
     const { form: { validateFields }, modal: { curItem }, onOk } = this.props
     validateFields((errors, values) => {
@@ -47,7 +54,7 @@ class ModalForm extends Component {
     })
   }
 
-  handleCategoryChange = (category) => {
+  handleCategoryChange = (category, needSetValue = true) => {
     if (category === 'profession') {
       this.setState({
         mySubjects: Object.entries(subjects).filter(item => ['vocal', 'piano', 'guitar', 'theory', 'composition'].includes(item[0])),
@@ -61,13 +68,13 @@ class ModalForm extends Component {
         mySubjects: Object.entries(subjects).filter(item => ['record'].includes(item[0])),
       })
     }
-    this.props.form.setFieldsValue({
+    needSetValue && this.props.form.setFieldsValue({
       teacher_subject: '',
       teacher_level: '',
     })
   }
 
-  handleSubjectChange = (subject) => {
+  handleSubjectChange = (subject, needSetValue = true) => {
     if (['vocal', 'piano', 'guitar'].includes(subject)) {
       this.setState({
         myLevelList: Array.from(Array(21).keys()),
@@ -77,7 +84,7 @@ class ModalForm extends Component {
         myLevelList: [],
       })
     }
-    this.props.form.setFieldsValue({
+    needSetValue && this.props.form.setFieldsValue({
       teacher_level: '',
     })
   }
