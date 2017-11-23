@@ -97,7 +97,7 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
     <div className="content-inner">
       <AdminSearch {...searchProps} />
       <AdminList {...listProps} />
-      <AdminModal {...modalProps} />
+      {modal.visible && <AdminModal {...modalProps} />}
     </div>
   )
 }

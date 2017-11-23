@@ -10,14 +10,14 @@ export function getCategory (category = '') {
 
 export const subjects = {
   vocal: '声乐',
-  theory: '乐理',
   piano: '键盘',
   guitar: '吉他',
-  eguitar: '电吉他',
-  composition: '作曲',
-  record: '录音',
-  rhythm: '节奏',
+  // eguitar: '电吉他',
   yoga: '瑜伽',
+  rhythm: '节奏',
+  record: '录音',
+  theory: '乐理',
+  composition: '流行音乐创作实践',
 }
 
 export function getSubject (subject = '') {

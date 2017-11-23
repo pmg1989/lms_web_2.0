@@ -7,8 +7,6 @@ import { categorys, subjects, getModalType } from 'utils/dictionary'
 const FormItem = Form.Item
 const Option = Select.Option
 
-const levelList = Array.from(Array(21).keys())
-
 const formItemLayout = {
   labelCol: {
     span: 6,
@@ -30,6 +28,8 @@ class ModalForm extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      mySubjects: Object.entries(subjects),
+      myLevelList: Array.from(Array(21).keys()),
     }
   }
 
@@ -47,6 +47,41 @@ class ModalForm extends Component {
     })
   }
 
+  handleCategoryChange = (category) => {
+    if (category === 'profession') {
+      this.setState({
+        mySubjects: Object.entries(subjects).filter(item => ['vocal', 'piano', 'guitar', 'theory', 'composition'].includes(item[0])),
+      })
+    } else if (category === 'hd') {
+      this.setState({
+        mySubjects: Object.entries(subjects).filter(item => ['yoga', 'rhythm'].includes(item[0])),
+      })
+    } else if (category === 'jl') {
+      this.setState({
+        mySubjects: Object.entries(subjects).filter(item => ['record'].includes(item[0])),
+      })
+    }
+    this.props.form.setFieldsValue({
+      teacher_subject: '',
+      teacher_level: '',
+    })
+  }
+
+  handleSubjectChange = (subject) => {
+    if (['vocal', 'piano', 'guitar'].includes(subject)) {
+      this.setState({
+        myLevelList: Array.from(Array(21).keys()),
+      })
+    } else {
+      this.setState({
+        myLevelList: [],
+      })
+    }
+    this.props.form.setFieldsValue({
+      teacher_level: '',
+    })
+  }
+
   render () {
     const {
       modal: { curItem, type, visible },
@@ -57,6 +92,7 @@ class ModalForm extends Component {
       },
       onCancel,
     } = this.props
+    const { mySubjects, myLevelList } = this.state
 
     if (!curItem.roleList) {
       curItem.roleList = []
@@ -164,6 +200,7 @@ class ModalForm extends Component {
                   message: '请选择类别',
                 },
               ],
+              onChange: this.handleCategoryChange,
             })(<Select disabled={disabled} placeholder="--请选择类别--">
               {Object.entries(categorys).map(([key, value]) => {
                 return <Option key={key} value={key}>{value}</Option>
@@ -179,8 +216,9 @@ class ModalForm extends Component {
                   message: '请选择科目',
                 },
               ],
+              onChange: this.handleSubjectChange,
             })(<Select disabled={disabled} placeholder="--请选择科目--">
-              {Object.entries(subjects).map(([key, value]) => {
+              {mySubjects.map(([key, value]) => {
                 return <Option key={key} value={key}>{value}</Option>
               })}
             </Select>)}
@@ -195,7 +233,7 @@ class ModalForm extends Component {
                 },
               ],
             })(<Select disabled={disabled} placeholder="--请选择当前等级--">
-              {levelList.map((levev, key) => {
+              {myLevelList.map((levev, key) => {
                 return <Option key={key} value={`V${levev + 1}`}>{`V${levev + 1}`}</Option>
               })}
               <Option value="other">other</Option>
