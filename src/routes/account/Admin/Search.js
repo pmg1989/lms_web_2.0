@@ -13,7 +13,7 @@ const Search = ({
   query: {
     field,
     keyword,
-    roleName,
+    rolename,
     category,
     subject,
   },
@@ -30,9 +30,9 @@ const Search = ({
     keyword,
     size: 'large',
     select: true,
-    selectOptions: [{ value: 'user_name', name: '用户名' }, { value: 'firstname', name: '真实姓名' }, { value: 'phone2', name: '手机号' }],
+    selectOptions: [{ value: 'username', name: '用户名' }, { value: 'firstname', name: '真实姓名' }, { value: 'phone2', name: '手机号' }],
     selectProps: {
-      defaultValue: field || 'user_name',
+      defaultValue: field || 'username',
     },
     onSearch: (value) => {
       validateFields((errors, values) => {
@@ -41,8 +41,8 @@ const Search = ({
         }
         searchValues = value
         let data = {}
-        if (values.roleName) {
-          data.roleName = values.roleName
+        if (values.rolename) {
+          data.rolename = values.rolename
         }
         if (values.category) {
           data.category = values.category
@@ -64,8 +64,8 @@ const Search = ({
       <Col>
         <Form layout="inline">
           <FormItem label="角色" style={{ marginBottom: 20, marginRight: 40 }}>
-            {getFieldDecorator('roleName', {
-              initialValue: roleName || '',
+            {getFieldDecorator('rolename', {
+              initialValue: rolename || '',
             })(<Select style={{ width: 90 }}>
               <Option value="">全部</Option>
               {Object.entries(roleNames).map(([key, value]) => {

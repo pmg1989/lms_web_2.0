@@ -35,8 +35,8 @@ function List ({
   const columns = [
     {
       title: '用户名',
-      dataIndex: 'user_name',
-      key: 'user_name',
+      dataIndex: 'username',
+      key: 'username',
     }, {
       title: '真实姓名',
       dataIndex: 'firstname',
@@ -57,8 +57,8 @@ function List ({
       render: subject => <span>{getSubject(subject)}</span>,
     }, {
       title: '角色',
-      dataIndex: 'role_name',
-      key: 'role_name',
+      dataIndex: 'rolename',
+      key: 'rolename',
       render: roleName => <span>{getRoleName(roleName)}</span>,
     }, {
       title: '加入时间',
@@ -99,13 +99,13 @@ function List ({
   let total = pagination.total
 
   const getFilterList = () => {
-    const { field, keyword, roleName, category, subject, current, pageSize } = location.query
+    const { field, keyword, rolename, category, subject, current, pageSize } = location.query
     const currentPage = current || pagination.current
     const sizePage = pageSize || pagination.pageSize
 
-    if (field || roleName || category || subject) {
+    if (field || rolename || category || subject) {
       const filterTotalList = list.filter((item) => {
-        const hasRoleName = roleName ? item.role_name === roleName : true
+        const hasRoleName = rolename ? item.rolename === rolename : true
         const hasCategory = category ? item.teacher_category === category : true
         const hasSubject = subject ? item.teacher_subject === subject : true
         const hasKeyWords = keyword ? item[field].includes(decodeURI(keyword)) : true
