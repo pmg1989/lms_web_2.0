@@ -110,6 +110,7 @@ export default {
       yield put({ type: 'modal/showModal', payload: { type } })
 
       if (curItem) {
+        yield put({ type: 'setOldId', payload: { oldId: curItem.id } })
         const { data, success } = yield call(queryItem, { userid: curItem.id })
         if (success) {
           newData.curItem = data
@@ -126,7 +127,6 @@ export default {
       //   newData.curItem.roleList = data
       // }
       yield put({ type: 'modal/setItem', payload: newData })
-      yield put({ type: 'setOldId', payload: { oldId: curItem.id } })
     },
   },
 
