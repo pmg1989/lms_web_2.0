@@ -48,15 +48,22 @@ class ModalForm extends Component {
       if (errors) {
         return
       }
-      const data = {
-        ...values,
-        userid: curItem.id,
-      }
+      const data = values
       data.teacher_workday = values.teacher_workday.sort().join(',')
-      delete data.email
-      data.teacher_classroom = data.teacher_classroom_name
-      delete data.teacher_classroom_name
-      delete data.rolename
+      if (curItem.id) {
+        data.userid = curItem.id // 温馨提示： 记得到时候修改onOk里面 userid => id
+        delete data.email
+        data.teacher_classroom = data.teacher_classroom_name
+        delete data.teacher_classroom_name
+        delete data.rolename
+      } else {
+        data.password = data.phone2.substr(data.phone2.length - 6)
+
+        data.phone = data.phone2
+        delete data.phone2
+        data.teacher_classroom = data.teacher_classroom_name
+        delete data.teacher_classroom_name
+      }
       onOk(data)
     })
   }

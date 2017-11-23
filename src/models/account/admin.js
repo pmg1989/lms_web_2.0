@@ -67,15 +67,16 @@ export default {
         })
       }
     },
-    * create ({ payload }, { select, call, put }) {
-      const data = yield call(create, payload.curItem)
-      if (data && data.success) {
+    * create ({ payload }, { call, put }) {
+      const { data, success } = yield call(create, payload.curItem)
+      if (success) {
         yield put({ type: 'modal/hideModal' })
-        const pathQuery = yield select(({ routing }) => routing.locationBeforeTransitions.query)
-        const { current } = pathQuery
+        yield put({
+          type: 'createSuccess',
+          payload: { curItem: data },
+        })
         yield put(routerRedux.push({
           pathname: location.pathname,
-          query: current ? { ...pathQuery, current: 1 } : pathQuery,
         }))
       }
     },
@@ -145,6 +146,12 @@ export default {
       const { curItem, oldId } = action.payload
       const list = state.list.map(item => (item.id === oldId ? curItem : item))
       return { ...state, list }
+    },
+    createSuccess (state, action) {
+      return {
+        ...state,
+        list: [action.payload.curItem, ...state.list],
+      }
     },
   },
 }

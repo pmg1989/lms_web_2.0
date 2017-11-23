@@ -17,8 +17,5 @@ export async function update (params) {
 }
 
 export async function create (params) {
-  return request('/api/admin', {
-    method: 'post',
-    data: params,
-  })
+  return request({ wsfunction: 'mod_frontservice_createuser', ...params })
 }
