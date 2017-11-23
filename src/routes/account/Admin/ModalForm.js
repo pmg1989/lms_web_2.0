@@ -50,8 +50,13 @@ class ModalForm extends Component {
       }
       const data = {
         ...values,
-        id: curItem.id,
+        userid: curItem.id,
       }
+      data.teacher_workday = values.teacher_workday.sort().join(',')
+      delete data.email
+      data.teacher_classroom = data.teacher_classroom_name
+      delete data.teacher_classroom_name
+      delete data.rolename
       onOk(data)
     })
   }
@@ -183,8 +188,8 @@ class ModalForm extends Component {
             })(<Input disabled={disabled} type="email" placeholder="请输入邮箱" />)}
           </FormItem>
           <FormItem label="角色" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('roleId', {
-              initialValue: curItem.roleId && curItem.roleId.toString(),
+            {getFieldDecorator('rolename', {
+              initialValue: curItem.rolename,
               rules: [
                 {
                   required: true,

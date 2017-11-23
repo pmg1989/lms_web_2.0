@@ -80,7 +80,7 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
     loading,
     onOk (data) {
       dispatch({
-        type: data.id
+        type: data.userid
           ? 'accountAdmin/update'
           : 'accountAdmin/create',
         payload: {

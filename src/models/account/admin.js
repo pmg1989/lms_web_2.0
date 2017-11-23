@@ -12,6 +12,7 @@ export default {
   namespace: 'accountAdmin',
   state: {
     isPostBack: true, // 判断是否是首次加载页面，作为前端分页判断标识符
+    curId: '', // 存储获取列表时的id, 因为在修改信息获取详细数据时id会变
     list: [],
     pagination: {
       ...page,
@@ -26,7 +27,7 @@ export default {
           const curPowers = getCurPowers(pathname)
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
-            dispatch({ type: 'query' })
+            dispatch({ type: 'query', payload: {} })
           }
         }
       })
@@ -34,8 +35,9 @@ export default {
   },
 
   effects: {
-    * query ({}, { select, call, put }) {
-      const isPostBack = yield select(({ accountAdmin }) => accountAdmin.isPostBack)
+    * query ({ payload }, { select, call, put }) {
+      const { forceChangePostBack } = payload
+      const isPostBack = yield select(({ accountAdmin }) => accountAdmin.isPostBack || forceChangePostBack)
       const pathQuery = yield select(({ routing }) => routing.locationBeforeTransitions.query)
 
       if (isPostBack) {
@@ -79,10 +81,15 @@ export default {
       }
     },
     * update ({ payload }, { call, put }) {
-      const data = yield call(update, payload.curItem)
-      if (data && data.success) {
+      const { success } = yield call(update, payload.curItem)
+      if (success) {
         yield put({ type: 'modal/hideModal' })
-        yield put({ type: 'query' })
+        yield put({
+          type: 'query',
+          payload: {
+            forceChangePostBack: true,
+          },
+        })
       }
     },
     * toggleResign ({ payload }, { call, put }) {
