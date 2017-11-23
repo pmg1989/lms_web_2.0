@@ -299,7 +299,7 @@ class ModalForm extends Component {
                 <Col span={6}><Checkbox value="4">周四</Checkbox></Col>
                 <Col span={6}><Checkbox value="5">周五</Checkbox></Col>
                 <Col span={6}><Checkbox value="6">周六</Checkbox></Col>
-                <Col span={6}><Checkbox value="7">周日</Checkbox></Col>
+                <Col span={6}><Checkbox value="0">周日</Checkbox></Col>
               </Row>
             </Checkbox.Group>)}
           </FormItem>}
