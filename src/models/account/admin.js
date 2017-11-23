@@ -1,6 +1,6 @@
 import { routerRedux } from 'dva/router'
 import { getCurPowers } from 'utils'
-import { create, update, query, queryItem, queryClassRooms, updateLevel } from 'services/account/admin'
+import { create, update, query, queryItem, queryClassRooms, updateLevel, updateCancelLevel } from 'services/account/admin'
 // import { query as queryRole } from 'services/account/role'
 
 const page = {
@@ -143,6 +143,17 @@ export default {
         yield put({
           type: 'updateSuccess',
           payload: { curItem: data, oldId },
+        })
+      }
+    },
+    * cancelLevelTeacher ({ payload }, { call, put }) {
+      const { curItem: { id } } = payload
+      const { data, success } = yield call(updateCancelLevel, { userid: id })
+      if (success) {
+        yield put({ type: 'modal/hideModal' })
+        yield put({
+          type: 'updateSuccess',
+          payload: { curItem: data, oldId: id },
         })
       }
     },

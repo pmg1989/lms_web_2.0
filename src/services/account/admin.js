@@ -23,3 +23,7 @@ export async function create (params) {
 export async function updateLevel (params) {
   return request({ wsfunction: 'mod_frontservice_leave_teacher', ...params })
 }
+
+export async function updateCancelLevel (params) {
+  return request({ wsfunction: 'mod_frontservice_unleave_teacher', ...params })
+}
