@@ -1,7 +1,9 @@
 import { routerRedux } from 'dva/router'
 import { getCurPowers } from 'utils'
-import { create, update, query, queryItem, queryClassRooms, updateLevel, updateCancelLevel } from 'services/account/admin'
-// import { query as queryRole } from 'services/account/role'
+import { create, update, query, queryItem, updateLevel, updateCancelLevel } from 'services/account/admin'
+import { query as queryRole } from 'services/account/role'
+// import { query as querySchools } from 'services/common/school'
+import { query as queryClassRooms } from 'services/common/classroom'
 
 const page = {
   current: 1,
@@ -118,15 +120,20 @@ export default {
         }
       }
 
+      // const dataSchools = yield call(querySchools)
+      // if (dataSchools.success) {
+      //   newData.classRooms = dataSchools.data
+      // }
+
       const dataCR = yield call(queryClassRooms)
       if (dataCR.success) {
         newData.classRooms = dataCR.data
       }
 
-      // const { data, success } = yield call(queryRole)
-      // if (success) {
-      //   newData.curItem.roleList = data
-      // }
+      const dataRole = yield call(queryRole)
+      if (dataRole.success) {
+        newData.roleList = dataRole.list
+      }
       yield put({ type: 'modal/setItem', payload: { curItem: newData } })
     },
     * showLeaveModal ({ payload }, { put }) {

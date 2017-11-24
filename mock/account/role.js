@@ -33,7 +33,8 @@ let roleList = Mock.mock({
   'data|3': [
     {
       'id|+1': 1,
-      'name|+1': ['管理员', '教师', '学生'],
+      'name|+1': ['管理员', '教师', 'HR专员'],
+      'enname|+1': ['admin', 'teacher', 'hr'],
       'power|+1': [dic[1], dic[2], dic[3]],
     },
   ],

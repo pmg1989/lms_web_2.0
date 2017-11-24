@@ -1,7 +1,8 @@
-import { request } from 'utils'
+import { request } from 'utils/request'
+import requestMock from 'utils/request-mock'
 
 export async function query (params) {
-  return request('/api/role', {
+  return requestMock('/api/role', {
     method: 'get',
     data: params,
   })

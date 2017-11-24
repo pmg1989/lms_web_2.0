@@ -14,7 +14,7 @@ export default {
     publicPath: `/${version}/`,
     outputPath: `./dist/${version}`,
     proxy: {
-        "/api": {
+        "/api/moodle": {
             "target": process.env.PROXY_HOST || 'http://school.newband.com:8082',
             "changeOrigin": true,
             "pathRewrite": { "^/api": "/" }

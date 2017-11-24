@@ -8,10 +8,6 @@ export async function queryItem (params) {
   return request({ wsfunction: 'mod_frontservice_getuserbyid', ...params })
 }
 
-export async function queryClassRooms (params) {
-  return request({ wsfunction: 'mod_frontservice_getclassrooms', ...params })
-}
-
 export async function update (params) {
   return request({ wsfunction: 'mod_frontservice_modifyprofile', ...params })
 }
