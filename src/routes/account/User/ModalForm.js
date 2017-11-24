@@ -2,15 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Modal, Icon } from 'antd'
 import { getModalType } from 'utils/dictionary'
+import ContractList from './ContractList'
 
 const FormItem = Form.Item
 
 const formItemLayout = {
   labelCol: {
-    span: 6,
+    span: 4,
   },
   wrapperCol: {
-    span: 14,
+    span: 17,
   },
 }
 
@@ -26,6 +27,7 @@ const ModalForm = ({
   const modalFormOpts = {
     title: <div><Icon type={icon} /> {name} - 学员</div>,
     visible,
+    maskClosable: false,
     width: 800,
     wrapClassName: 'vertical-center-modal',
     confirmLoading: loading.models.accountUser,
@@ -60,6 +62,9 @@ const ModalForm = ({
           {getFieldDecorator('idnumber', {
             initialValue: curItem.idnumber,
           })(<Input disabled />)}
+        </FormItem>
+        <FormItem label="报名课程" {...formItemLayout}>
+          {curItem.contractList && <ContractList contractList={curItem.contractList} />}
         </FormItem>
       </Form>
     </Modal>

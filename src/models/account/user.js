@@ -1,5 +1,6 @@
 import { getCurPowers } from 'utils'
 import { query, queryItem, update } from 'services/account/admin'
+import { queryContractList } from 'services/account/user'
 
 const page = {
   current: 1,
@@ -10,7 +11,6 @@ export default {
   namespace: 'accountUser',
   state: {
     isPostBack: true, // 判断是否是首次加载页面，作为前端分页判断标识符
-    curId: '', // 存储获取列表时的id, 因为在修改信息获取详细数据时id会变
     list: [],
     pagination: {
       ...page,
@@ -83,11 +83,14 @@ export default {
       yield put({ type: 'modal/showModal', payload: { type } })
 
       if (curItem) {
-        yield put({ type: 'setOldId', payload: { oldId: curItem.id } })
         const { data, success } = yield call(queryItem, { userid: curItem.id })
         if (success) {
           newData = data
         }
+      }
+      const { data, success } = yield call(queryContractList, { userid: curItem.id })
+      if (success) {
+        newData.contractList = data
       }
 
       yield put({ type: 'modal/setItem', payload: { curItem: newData } })
@@ -100,11 +103,6 @@ export default {
     },
     setOldId (state, action) {
       return { ...state, ...action.payload }
-    },
-    updateSuccess (state, action) {
-      const { curItem, oldId } = action.payload
-      const list = state.list.map(item => (item.id === oldId ? { ...item, ...curItem } : item))
-      return { ...state, list }
     },
   },
 }
