@@ -1,14 +1,19 @@
-import { routerRedux } from 'dva/router'
 import { getCurPowers } from 'utils'
-import { create, remove, update, query, get, removeBatch } from 'services/account/user'
+import { query, queryItem, update } from 'services/account/admin'
+
+const page = {
+  current: 1,
+  pageSize: 10,
+}
 
 export default {
   namespace: 'accountUser',
   state: {
+    isPostBack: true, // 判断是否是首次加载页面，作为前端分页判断标识符
+    curId: '', // 存储获取列表时的id, 因为在修改信息获取详细数据时id会变
     list: [],
     pagination: {
-      current: 1,
-      pageSize: 10,
+      ...page,
       total: null,
     },
   },
@@ -28,55 +33,47 @@ export default {
   },
 
   effects: {
-    * query ({}, { select, call, put }) {
+    * query ({ }, { select, call, put }) {
+      const isPostBack = yield select(({ accountUser }) => accountUser.isPostBack)
       const pathQuery = yield select(({ routing }) => routing.locationBeforeTransitions.query)
-      const data = yield call(query, pathQuery)
-      if (data.success) {
+
+      if (isPostBack) {
+        const { data, success } = yield call(query, { rolename: 'student' })
+        if (success) {
+          yield put({
+            type: 'querySuccess',
+            payload: {
+              list: data,
+              pagination: {
+                current: pathQuery.current ? +pathQuery.current : page.current,
+                pageSize: pathQuery.pageSize ? +pathQuery.pageSize : page.pageSize,
+                total: data.length,
+              },
+              isPostBack: false,
+            },
+          })
+        }
+      } else {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.list,
-            pagination: data.page,
+            pagination: {
+              current: pathQuery.current ? +pathQuery.current : page.current,
+              pageSize: pathQuery.pageSize ? +pathQuery.pageSize : page.pageSize,
+            },
           },
         })
       }
     },
-    * delete ({ payload }, { call, put }) {
-      const data = yield call(remove, { id: payload.id })
-      if (data && data.success) {
-        yield put({ type: 'query' })
-      }
-    },
-    * deleteBatch ({ payload }, { call, put }) {
-      const data = yield call(removeBatch, { ids: payload.ids })
-      if (data && data.success) {
-        yield put({ type: 'query' })
-      }
-    },
-    * create ({ payload }, { select, call, put }) {
-      const data = yield call(create, payload.curItem)
-      if (data && data.success) {
+    * update ({ payload }, { call, put, select }) {
+      const oldId = yield select(({ accountUser }) => accountUser.oldId)
+      const { data, success } = yield call(update, payload.curItem)
+      if (success) {
         yield put({ type: 'modal/hideModal' })
-        const pathQuery = yield select(({ routing }) => routing.locationBeforeTransitions.query)
-        const { page } = pathQuery
-        yield put(routerRedux.push({
-          pathname: location.pathname,
-          query: page ? { ...pathQuery, page: 1 } : pathQuery,
-        }))
-      }
-    },
-    * update ({ payload }, { call, put }) {
-      const data = yield call(update, payload.curItem)
-      if (data && data.success) {
-        yield put({ type: 'modal/hideModal' })
-        yield put({ type: 'query' })
-      }
-    },
-    * updateStatus ({ payload }, { call, put }) {
-      const { curItem } = payload
-      const data = yield call(update, { ...curItem, status: !curItem.status })
-      if (data && data.success) {
-        yield put({ type: 'query' })
+        yield put({
+          type: 'updateSuccess',
+          payload: { curItem: data, oldId },
+        })
       }
     },
     * showModal ({ payload }, { call, put }) {
@@ -85,18 +82,29 @@ export default {
 
       yield put({ type: 'modal/showModal', payload: { type } })
 
-      const data = yield call(get, { id: curItem.id })
-      if (data && data.success) {
-        newData.curItem = data.data
+      if (curItem) {
+        yield put({ type: 'setOldId', payload: { oldId: curItem.id } })
+        const { data, success } = yield call(queryItem, { userid: curItem.id })
+        if (success) {
+          newData = data
+        }
       }
 
-      yield put({ type: 'modal/setItem', payload: newData })
+      yield put({ type: 'modal/setItem', payload: { curItem: newData } })
     },
   },
 
   reducers: {
     querySuccess (state, action) {
       return { ...state, ...action.payload }
+    },
+    setOldId (state, action) {
+      return { ...state, ...action.payload }
+    },
+    updateSuccess (state, action) {
+      const { curItem, oldId } = action.payload
+      const list = state.list.map(item => (item.id === oldId ? { ...item, ...curItem } : item))
+      return { ...state, list }
     },
   },
 }
