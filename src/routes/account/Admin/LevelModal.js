@@ -34,7 +34,7 @@ const ModalForm = ({
         return
       }
       const data = {
-        ...values,
+        available: values.available,
         teacherid: curItem.id,
       }
       const rangeValue = values.available

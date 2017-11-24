@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Tag } from 'antd'
+import { Menu, Tag, Modal } from 'antd'
 import moment from 'moment'
 import { DataTable, DropMenu } from 'components'
 import { getRoleName, getCategory, getSubject } from 'utils/dictionary'
 import { UPDATE, DETAIL, RESIGN, LEAVE } from 'constants/options'
 import styles from './List.less'
+
+const confirm = Modal.confirm
 
 function List ({
   accountAdmin: {
@@ -23,12 +25,34 @@ function List ({
   onResignItem,
   onLeaveItem,
 }) {
+  const handleResignItem = (record) => {
+    confirm({
+      title: `您确定要${record.suspended === 1 ? '重新入职' : '离职'}${record.firstname}吗?`,
+      onOk () {
+        onResignItem(record)
+      },
+    })
+  }
+
+  const handleLeaveItem = (record) => {
+    if (record.teacher_status === 'normal') {
+      onLeaveItem(record)
+    } else {
+      confirm({
+        title: `您确定要取消${record.firstname}的请假吗?`,
+        onOk () {
+          onLeaveItem(record)
+        },
+      })
+    }
+  }
+
   const handleMenuClick = (key, record) => {
     return {
       [UPDATE]: onEditItem,
       [DETAIL]: onDetailItem,
-      [RESIGN]: onResignItem,
-      [LEAVE]: onLeaveItem,
+      [RESIGN]: handleResignItem,
+      [LEAVE]: handleLeaveItem,
     }[key](record)
   }
 

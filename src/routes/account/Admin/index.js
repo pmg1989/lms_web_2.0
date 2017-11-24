@@ -2,15 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { Modal } from 'antd'
 import { checkPower } from 'utils'
 import { ADD, UPDATE, DETAIL, RESIGN, LEAVE } from 'constants/options'
 import List from './List'
 import Search from './Search'
 import ModalForm from './ModalForm'
 import LevelModal from './LevelModal'
-
-const confirm = Modal.confirm
 
 function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading }) {
   const addPower = checkPower(ADD, curPowers)
@@ -67,15 +64,10 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
       })
     },
     onResignItem (item) {
-      confirm({
-        title: `您确定要${item.suspended === 1 ? '重新入职' : '离职'}${item.firstname}吗?`,
-        onOk () {
-          dispatch({
-            type: 'accountAdmin/toggleResign',
-            payload: {
-              curItem: item,
-            },
-          })
+      dispatch({
+        type: 'accountAdmin/toggleResign',
+        payload: {
+          curItem: item,
         },
       })
     },
@@ -89,15 +81,10 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
           },
         })
       } else {
-        confirm({
-          title: `您确定要取消${item.firstname}的请假吗?`,
-          onOk () {
-            dispatch({
-              type: 'accountAdmin/cancelLevelTeacher',
-              payload: {
-                curItem: item,
-              },
-            })
+        dispatch({
+          type: 'accountAdmin/cancelLevelTeacher',
+          payload: {
+            curItem: item,
           },
         })
       }
