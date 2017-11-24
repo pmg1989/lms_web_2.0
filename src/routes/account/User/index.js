@@ -48,16 +48,6 @@ function User ({ location, curPowers, dispatch, accountUser, modal, loading }) {
   const modalProps = {
     modal,
     loading,
-    onOk (data) {
-      dispatch({
-        type: data.id
-          ? 'accountUser/update'
-          : 'accountUser/create',
-        payload: {
-          curItem: data,
-        },
-      })
-    },
     onCancel () {
       dispatch({ type: 'modal/hideModal' })
     },
@@ -67,7 +57,7 @@ function User ({ location, curPowers, dispatch, accountUser, modal, loading }) {
     <div className="content-inner">
       <UserSearch {...searchProps} />
       <UserList {...listProps} />
-      <UserModal {...modalProps} />
+      {modal.visible && <UserModal {...modalProps} />}
     </div>
   )
 }
