@@ -67,10 +67,15 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
       })
     },
     onResignItem (item) {
-      dispatch({
-        type: 'accountAdmin/toggleResign',
-        payload: {
-          curItem: item,
+      confirm({
+        title: `您确定要${item.suspended === 1 ? '重新入职' : '离职'}${item.firstname}吗?`,
+        onOk () {
+          dispatch({
+            type: 'accountAdmin/toggleResign',
+            payload: {
+              curItem: item,
+            },
+          })
         },
       })
     },

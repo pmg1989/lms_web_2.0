@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Modal, Icon, DatePicker } from 'antd'
+import { Form, Modal, Icon, DatePicker, Input } from 'antd'
 import moment from 'moment'
 import { getModalType } from 'utils/dictionary'
 
@@ -60,6 +60,11 @@ const ModalForm = ({
   return (
     <Modal {...modalFormOpts}>
       <Form>
+        <FormItem label="老师姓名" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('firstname', {
+            initialValue: curItem.firstname,
+          })(<Input disabled />)}
+        </FormItem>
         <FormItem label="请假时间" hasFeedback {...formItemLayout}>
           {getFieldDecorator('available', {
             initialValue: '',
