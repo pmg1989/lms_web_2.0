@@ -130,10 +130,14 @@ class ModalForm extends Component {
     const modalFormOpts = {
       title: <div><Icon type={icon} /> {name} - 工作人员</div>,
       visible,
+      maskClosable: false,
       wrapClassName: 'vertical-center-modal',
       confirmLoading: loading.models.accountAdmin,
       onOk: this.handleOk,
       onCancel,
+    }
+    if (disabled) {
+      modalFormOpts.footer = null
     }
 
     return (
