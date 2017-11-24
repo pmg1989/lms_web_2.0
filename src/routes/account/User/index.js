@@ -31,6 +31,7 @@ function User ({ location, curPowers, dispatch, accountUser, modal, loading }) {
 
   const listProps = {
     accountUser,
+    location,
     loading,
     updatePower,
     onEditItem (item) {

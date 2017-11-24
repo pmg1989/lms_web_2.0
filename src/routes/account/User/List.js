@@ -10,6 +10,7 @@ function List ({
     list,
     pagination,
   },
+  location,
   loading,
   updatePower,
   onEditItem,
@@ -71,19 +72,40 @@ function List ({
     },
   ]
 
+  let total = pagination.total
+
+  const getFilterList = () => {
+    const { field, keyword, current, pageSize } = location.query
+    const currentPage = current || pagination.current
+    const sizePage = pageSize || pagination.pageSize
+
+    if (field) {
+      const filterTotalList = list.filter((item) => {
+        // const hasRoleName = rolename ? item.rolename === rolename : true
+        const hasKeyWords = keyword ? item[field].includes(decodeURI(keyword)) : true
+        return hasKeyWords
+      })
+      total = filterTotalList.length
+      const filterList = filterTotalList.slice((currentPage - 1) * (sizePage), currentPage * sizePage)
+      return filterList
+    }
+    return list
+  }
+
   return (
     <DataTable
       className={styles.table}
       columns={columns}
-      dataSource={list}
+      dataSource={getFilterList()}
       loading={loading.effects['accountUser/query']}
-      pagination={pagination}
+      pagination={{ ...pagination, total }}
       rowKey={record => record.id}
     />
   )
 }
 
 List.propTypes = {
+  location: PropTypes.object.isRequired,
   accountUser: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
   updatePower: PropTypes.bool.isRequired,
