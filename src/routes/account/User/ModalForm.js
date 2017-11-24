@@ -1,10 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, Icon } from 'antd'
+import { Form, Input, Modal, Icon, Tabs, } from 'antd'
 import { getModalType } from 'utils/dictionary'
 import ContractList from './ContractList'
 
 const FormItem = Form.Item
+const TabPane = Tabs.TabPane
 
 const formItemLayout = {
   labelCol: {
@@ -35,6 +36,8 @@ const ModalForm = ({
     footer: null,
   }
 
+  const { contractList } = curItem
+
   return (
     <Modal {...modalFormOpts}>
       <Form>
@@ -64,7 +67,18 @@ const ModalForm = ({
           })(<Input disabled />)}
         </FormItem>
         <FormItem label="报名课程" {...formItemLayout}>
-          {curItem.contractList && <ContractList contractList={curItem.contractList} />}
+          {contractList &&
+          <Tabs defaultActiveKey="1" size="small">
+            <TabPane tab={<span><Icon type="clock-circle-o" />正在学习</span>} key="1">
+              <ContractList status={1} list={contractList.studinglist} />
+            </TabPane>
+            <TabPane tab={<span><Icon type="question-circle-o" />待开课</span>} key="2">
+              <ContractList status={0} list={contractList.comminglist} />
+            </TabPane>
+            <TabPane tab={<span><Icon type="check-circle-o" /> 已结课</span>} key="3">
+              <ContractList status={2} list={contractList.passedlist} />
+            </TabPane>
+          </Tabs>}
         </FormItem>
       </Form>
     </Modal>

@@ -1,0 +1,36 @@
+.list_box {
+    height: 45vh;
+    border: 1px solid #e3e3e3;
+    overflow: scroll;
+}
+
+.list {
+    padding: 0 20px;
+
+    .item {
+        color: #999;
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #ddd;
+
+        .left, .right {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .left {
+            flex: 1;
+
+            .title {
+                font-size: 16px;
+                color: #333;
+            }
+        }
+
+        .right {
+            text-align: right;
+        }
+    }
+}
