@@ -35,11 +35,12 @@ const Contract = ({ type, status, item }) => {
             </span>
           }
           {status === 2 && '已结课'}
+          {isProfession && <span> -- {item.teacher_name}</span>}
         </span>
       </div>
       <div className={styles.right}>
         <span>已完成 · {item.attended_lesson_cnt} / {item.constract_lesson_cnt}</span>
-        {isProfession && status === 1 && <Button type="primary" size="small">设置老师</Button>}
+        {isProfession && status === 1 && <span><Button type="primary" size="small">设置老师</Button></span>}
       </div>
     </div>
   )
