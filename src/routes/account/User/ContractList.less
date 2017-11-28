@@ -1,11 +1,16 @@
 .list_box {
     height: 45vh;
-    border: 1px solid #e3e3e3;
+    // border: 1px solid #e3e3e3;
     overflow: scroll;
 }
 
 .list {
     padding: 0 20px;
+
+    .flex_box {
+        display: flex;
+        border-bottom: 1px solid #ddd;
+    }
 
     .item {
         color: #999;
@@ -13,6 +18,19 @@
         justify-content: space-between;
         padding: 10px 0;
         border-bottom: 1px solid #ddd;
+        align-items: center;
+
+        &.flex_item {
+            width: 50%;
+            padding-left: 30px;
+            padding-right: 30px;
+            border-bottom: none;
+
+            &:first-child {
+                padding-left: 0;
+                border-right: 1px solid #ccc;
+            }
+        }
 
         .left, .right {
             display: flex;

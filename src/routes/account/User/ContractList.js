@@ -1,12 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Tag } from 'antd'
+import { Tag, Button } from 'antd'
 import moment from 'moment'
-// import classnames from 'classnames'
+import classnames from 'classnames'
 import { getCategory } from 'utils/dictionary'
 import styles from './ContractList.less'
 
 const now = new Date().getTime()
+
+const Empty = ({ children }) => (
+  <div className={styles.empty_box}>{children}</div>
+)
+
+Empty.propTypes = {
+  children: PropTypes.element.isRequired,
+}
 
 const Contract = ({ type, status, item }) => {
   const isProfession = type === 'profession'
@@ -15,7 +23,7 @@ const Contract = ({ type, status, item }) => {
   const isBeginning = hasNext && (currentAvailable - (now / 1000) < 60 * 60 * 24)
 
   return (
-    <div className={styles.item}>
+    <div className={classnames(styles.item, !isProfession && styles.flex_item)}>
       <div className={styles.left}>
         <span className={styles.title}>{getCategory(type)} - {isProfession && <Tag color="orange">{item.category_summary}</Tag>}</span>
         <span className={styles.content}>
@@ -31,6 +39,7 @@ const Contract = ({ type, status, item }) => {
       </div>
       <div className={styles.right}>
         <span>已完成 · {item.attended_lesson_cnt} / {item.constract_lesson_cnt}</span>
+        {isProfession && status === 1 && <Button type="primary" size="small">设置老师</Button>}
       </div>
     </div>
   )
@@ -49,18 +58,20 @@ const ContractList = ({ list, status }) => {
         return (
           <div key={key} className={styles.list}>
             <Contract type="profession" status={status} item={item.profession} />
-            {item.hd.hdid && <Contract type="hd" title="互动课" status={status} item={item.hd} />}
-            {item.jl.jlid && <Contract type="jl" title="交流课" status={status} item={item.jl} />}
+            <div className={styles.flex_box}>
+              {item.hd.hdid && <Contract type="hd" title="互动课" status={status} item={item.hd} />}
+              {item.jl.jlid && <Contract type="jl" title="交流课" status={status} item={item.jl} />}
+            </div>
           </div>
         )
       })}
-      {/* {list.isEmpty() &&
+      {list.length === 0 &&
         <div className={styles.list}>
-          <Empty type="music">
+          <Empty>
             <span>暂无课程</span>
           </Empty>
         </div>
-      } */}
+      }
     </div>
   )
 }
