@@ -1,12 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Tag } from 'antd'
 import moment from 'moment'
+// import classnames from 'classnames'
 import { getCategory } from 'utils/dictionary'
 import styles from './ContractList.less'
 
 const now = new Date().getTime()
 
 const Contract = ({ type, status, item }) => {
+  const isProfession = type === 'profession'
   const currentAvailable = item.current_lesson_available
   const hasNext = !!currentAvailable
   const isBeginning = hasNext && (currentAvailable - (now / 1000) < 60 * 60 * 24)
@@ -14,7 +17,7 @@ const Contract = ({ type, status, item }) => {
   return (
     <div className={styles.item}>
       <div className={styles.left}>
-        <span className={styles.title}>{getCategory(type)}</span>
+        <span className={styles.title}>{getCategory(type)} - {isProfession && <Tag color="orange">{item.category_summary}</Tag>}</span>
         <span className={styles.content}>
           {status === 0 && '待开课'}
           {status === 1 && !hasNext && '下节课 未预约'}
