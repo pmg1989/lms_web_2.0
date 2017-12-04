@@ -24,7 +24,7 @@ const ModalForm = ({
 }) => {
   const { name, icon } = getModalType(type)
   const modalFormOpts = {
-    title: <div><Icon type={icon} /> {name} - 学员</div>,
+    title: <div><Icon type={icon} /> {name} - 设置任课老师</div>,
     visible,
     maskClosable: false,
     width: 600,

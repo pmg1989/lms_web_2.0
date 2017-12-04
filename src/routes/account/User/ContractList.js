@@ -42,7 +42,7 @@ const Contract = ({ type, status, item, onShowTeacherModal, setTeacherPower, get
         <span>已完成 · {item.attended_lesson_cnt} / {item.constract_lesson_cnt}</span>
         {isProfession && status === 1 &&
         <span>
-          {setTeacherPower && <Button type="primary" size="small" onClick={onShowTeacherModal}>设置老师</Button>}
+          {setTeacherPower && <Button type="primary" size="small" onClick={() => onShowTeacherModal(item)}>设置老师</Button>}
           {getHistoryPower && <Button className={styles.margin_left} type="primary" size="small" onClick={onShowTeacherModal}>查看历史</Button>}
         </span>}
       </div>

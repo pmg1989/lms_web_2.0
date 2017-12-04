@@ -67,12 +67,13 @@ function User ({ location, curPowers, dispatch, accountUser, modal, loading }) {
     onCancel () {
       dispatch({ type: 'modal/hideModal' })
     },
-    onShowTeacherModal () {
+    onShowTeacherModal (item) {
       dispatch({
         type: 'accountUser/showTeacherModal',
         payload: {
           type: 'update',
           id: 2,
+          contract: item,
         },
       })
     },

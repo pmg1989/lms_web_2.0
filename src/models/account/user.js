@@ -96,13 +96,13 @@ export default {
       yield put({ type: 'modal/setItem', payload: { curItem: newData } })
     },
     * showTeacherModal ({ payload }, { call, put }) {
-      const { type, id } = payload
+      const { type, id, contract } = payload
 
       yield put({ type: 'modal/showModal', payload: { type, id } })
 
       const { data, success } = yield call(query, { rolename: 'teacher' })
       if (success) {
-        yield put({ type: 'modal/setSubItem', payload: { teacherList: data } })
+        yield put({ type: 'modal/setSubItem', payload: { teacherList: data, contract } })
       }
     },
   },
