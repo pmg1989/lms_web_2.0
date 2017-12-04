@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu } from 'antd'
 import { DataTable, DropMenu } from 'components'
-import { UPDATE } from 'constants/options'
+import { DETAIL, UPDATE } from 'constants/options'
 import styles from './List.less'
 
 function List ({
@@ -12,11 +12,14 @@ function List ({
   },
   location,
   loading,
+  detailPower,
   updatePower,
+  onDetailItem,
   onEditItem,
 }) {
   const handleMenuClick = (key, record) => {
     return {
+      [DETAIL]: onDetailItem,
       [UPDATE]: onEditItem,
     }[key](record)
   }
@@ -64,6 +67,7 @@ function List ({
       render: (text, record) => (
         <DropMenu>
           <Menu onClick={({ key }) => handleMenuClick(key, record)}>
+            {detailPower && <Menu.Item key={DETAIL}>查看</Menu.Item>}
             {updatePower && <Menu.Item key={UPDATE}>编辑</Menu.Item>}
           </Menu>
         </DropMenu>
@@ -108,7 +112,9 @@ List.propTypes = {
   location: PropTypes.object.isRequired,
   accountUser: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
+  detailPower: PropTypes.bool.isRequired,
   updatePower: PropTypes.bool.isRequired,
+  onDetailItem: PropTypes.func.isRequired,
   onEditItem: PropTypes.func.isRequired,
 }
 

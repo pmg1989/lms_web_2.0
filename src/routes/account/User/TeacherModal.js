@@ -27,7 +27,7 @@ const ModalForm = ({
     title: <div><Icon type={icon} /> {name} - 学员</div>,
     visible,
     maskClosable: false,
-    width: 800,
+    width: 600,
     wrapClassName: 'vertical-center-modal',
     confirmLoading: loading.models.accountUser,
     onCancel,

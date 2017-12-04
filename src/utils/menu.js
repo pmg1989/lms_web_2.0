@@ -36,7 +36,7 @@ const menu = [
         id: 23,
         key: 'user',
         name: '学生',
-        power: [1, 2, 3, 4, 5],
+        power: [1, 2, 6, 10, 11],
       },
     ],
   },

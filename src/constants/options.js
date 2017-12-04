@@ -9,6 +9,8 @@ export const DETAIL = 6 // 详情
 export const FROZEN = 7 // 冻结账户
 export const RESIGN = 8 // 离职
 export const LEAVE = 9 // 请假
+export const SET_TEACHER = 10 // 设置老师
+export const GET_HISTORY_LIST = 11 // 查看合同的操作历史记录
 
 export const powerName = {
   [MENU]: '查看菜单',
@@ -21,4 +23,6 @@ export const powerName = {
   [FROZEN]: '冻结账户',
   [RESIGN]: '离职',
   [LEAVE]: '请假',
+  [SET_TEACHER]: '设置老师',
+  [GET_HISTORY_LIST]: '查看历史',
 }

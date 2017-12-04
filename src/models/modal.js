@@ -12,12 +12,20 @@ export default {
       const { id = 1 } = action.payload
       return { ...state, visible: true, ...action.payload, id }
     },
-    hideModal (state) {
-      return { ...state, visible: false, curItem: {} }
+    hideModal (state, action) {
+      const { showParent = false } = (action && action.payload) || {}
+      if (showParent) {
+        return { ...state, id: 1 }
+      }
+      return { ...state, visible: false, curItem: {}, id: 1 }
     },
     setItem (state, action) {
       const { curItem, id = 1 } = action.payload
       return { ...state, curItem, id }
+    },
+    setSubItem (state, action) {
+      const { curItem } = state
+      return { ...state, curItem: { ...curItem, ...action.payload }, loading: false }
     },
   },
 }

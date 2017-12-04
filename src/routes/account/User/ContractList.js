@@ -16,7 +16,7 @@ Empty.propTypes = {
   children: PropTypes.element.isRequired,
 }
 
-const Contract = ({ type, status, item }) => {
+const Contract = ({ type, status, item, onShowTeacherModal, setTeacherPower, getHistoryPower }) => {
   const isProfession = type === 'profession'
   const currentAvailable = item.current_lesson_available
   const hasNext = !!currentAvailable
@@ -35,12 +35,16 @@ const Contract = ({ type, status, item }) => {
             </span>
           }
           {status === 2 && '已结课'}
-          {isProfession && <span> -- {item.teacher_name}</span>}
+          {isProfession && <span>{item.teacher_name && ` -- ${item.teacher_name}`}</span>}
         </span>
       </div>
       <div className={styles.right}>
         <span>已完成 · {item.attended_lesson_cnt} / {item.constract_lesson_cnt}</span>
-        {isProfession && status === 1 && <span><Button type="primary" size="small">设置老师</Button></span>}
+        {isProfession && status === 1 &&
+        <span>
+          {setTeacherPower && <Button type="primary" size="small" onClick={onShowTeacherModal}>设置老师</Button>}
+          {getHistoryPower && <Button className={styles.margin_left} type="primary" size="small" onClick={onShowTeacherModal}>查看历史</Button>}
+        </span>}
       </div>
     </div>
   )
@@ -50,18 +54,21 @@ Contract.propTypes = {
   type: PropTypes.string.isRequired,
   status: PropTypes.number.isRequired,
   item: PropTypes.object.isRequired,
+  onShowTeacherModal: PropTypes.func.isRequired,
+  setTeacherPower: PropTypes.bool.isRequired,
+  getHistoryPower: PropTypes.bool.isRequired,
 }
 
-const ContractList = ({ list, status }) => {
+const ContractList = ({ list, status, ...contractProps }) => {
   return (
     <div className={styles.list_box}>
       {list.map((item, key) => {
         return (
           <div key={key} className={styles.list}>
-            <Contract type="profession" status={status} item={item.profession} />
+            <Contract type="profession" status={status} item={item.profession} {...contractProps} />
             <div className={styles.flex_box}>
-              {item.hd.hdid && <Contract type="hd" title="互动课" status={status} item={item.hd} />}
-              {item.jl.jlid && <Contract type="jl" title="交流课" status={status} item={item.jl} />}
+              {item.hd.hdid && <Contract type="hd" title="互动课" status={status} item={item.hd} {...contractProps} />}
+              {item.jl.jlid && <Contract type="jl" title="交流课" status={status} item={item.jl} {...contractProps} />}
             </div>
           </div>
         )
@@ -80,6 +87,7 @@ const ContractList = ({ list, status }) => {
 ContractList.propTypes = {
   list: PropTypes.array.isRequired,
   status: PropTypes.number.isRequired,
+  onShowTeacherModal: PropTypes.func.isRequired,
 }
 
 export default ContractList
