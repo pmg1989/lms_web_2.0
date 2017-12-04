@@ -43,7 +43,7 @@ function User ({ location, curPowers, dispatch, accountUser, modal, loading }) {
       dispatch({
         type: 'accountUser/showModal',
         payload: {
-          type: 'update',
+          type: 'detail',
           curItem: item,
         },
       })
