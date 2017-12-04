@@ -23,7 +23,7 @@ const ModalForm = ({
   form: {
     getFieldDecorator,
   },
-  ...contractListProps,
+  ...contractListProps
 }) => {
   const { name, icon } = getModalType(type)
   const modalFormOpts = {
