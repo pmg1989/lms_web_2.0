@@ -69,17 +69,17 @@ const ModalForm = ({
           </FormItem>
           <FormItem label="报名课程" {...formItemLayout}>
             {contractList &&
-          <Tabs defaultActiveKey="1" size="small">
-            <TabPane tab={<span><Icon type="clock-circle-o" />正在学习</span>} key="1">
-              <ContractList status={1} list={contractList.studinglist} {...contractListProps} />
-            </TabPane>
-            <TabPane tab={<span><Icon type="question-circle-o" />待开课</span>} key="2">
-              <ContractList status={0} list={contractList.comminglist} {...contractListProps} />
-            </TabPane>
-            <TabPane tab={<span><Icon type="check-circle-o" /> 已结课</span>} key="3">
-              <ContractList status={2} list={contractList.passedlist} {...contractListProps} />
-            </TabPane>
-          </Tabs>}
+            <Tabs defaultActiveKey="1" size="small">
+              <TabPane tab={<span><Icon type="clock-circle-o" />正在学习</span>} key="1">
+                <ContractList status={1} list={contractList.studinglist} {...contractListProps} />
+              </TabPane>
+              <TabPane tab={<span><Icon type="question-circle-o" />待开课</span>} key="2">
+                <ContractList status={0} list={contractList.comminglist} {...contractListProps} />
+              </TabPane>
+              <TabPane tab={<span><Icon type="check-circle-o" /> 已结课</span>} key="3">
+                <ContractList status={2} list={contractList.passedlist} {...contractListProps} />
+              </TabPane>
+            </Tabs>}
           </FormItem>
         </Form>
       </Spin>
