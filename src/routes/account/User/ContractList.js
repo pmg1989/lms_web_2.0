@@ -35,7 +35,7 @@ const Contract = ({ type, status, item, onShowTeacherModal, onShowHistoryListMod
             </span>
           }
           {status === 2 && '已结课'}
-          {isProfession && <span>{item.teacher_name && ` -- ${item.teacher_name}`}</span>}
+          {isProfession && <span>&nbsp;&nbsp;{!!item.modifylog.teacher_name.length && item.modifylog.teacher_name.reverse().map((cur, index) => index === 0 ? cur.teacher_name : `<--${cur.teacher_name}`)}</span>}
         </span>
       </div>
       <div className={styles.right}>
