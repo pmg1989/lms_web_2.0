@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, Icon, Tabs } from 'antd'
+import { Form, Input, Modal, Icon, Tabs, Spin } from 'antd'
 import { getModalType } from 'utils/dictionary'
 import ContractList from './ContractList'
 
@@ -32,7 +32,6 @@ const ModalForm = ({
     maskClosable: false,
     width: 800,
     wrapClassName: 'vertical-center-modal',
-    confirmLoading: loading.models.accountUser,
     onCancel,
     footer: null,
   }
@@ -41,34 +40,35 @@ const ModalForm = ({
 
   return (
     <Modal {...modalFormOpts}>
-      <Form>
-        <FormItem label="用户名" {...formItemLayout}>
-          {getFieldDecorator('username', {
-            initialValue: curItem.username,
-          })(<Input disabled />)}
-        </FormItem>
-        <FormItem label="真实姓名" {...formItemLayout}>
-          {getFieldDecorator('firstname', {
-            initialValue: curItem.firstname,
-          })(<Input disabled />)}
-        </FormItem>
-        <FormItem label="手机号" {...formItemLayout}>
-          {getFieldDecorator('phone2', {
-            initialValue: curItem.phone2,
-          })(<Input disabled />)}
-        </FormItem>
-        <FormItem label="校区" {...formItemLayout}>
-          {getFieldDecorator('school', {
-            initialValue: curItem.school,
-          })(<Input disabled />)}
-        </FormItem>
-        <FormItem label="学号" {...formItemLayout}>
-          {getFieldDecorator('idnumber', {
-            initialValue: curItem.idnumber,
-          })(<Input disabled />)}
-        </FormItem>
-        <FormItem label="报名课程" {...formItemLayout}>
-          {contractList &&
+      <Spin size="large" spinning={loading.effects['accountUser/showModal']}>
+        <Form>
+          <FormItem label="用户名" {...formItemLayout}>
+            {getFieldDecorator('username', {
+              initialValue: curItem.username,
+            })(<Input disabled />)}
+          </FormItem>
+          <FormItem label="真实姓名" {...formItemLayout}>
+            {getFieldDecorator('firstname', {
+              initialValue: curItem.firstname,
+            })(<Input disabled />)}
+          </FormItem>
+          <FormItem label="手机号" {...formItemLayout}>
+            {getFieldDecorator('phone2', {
+              initialValue: curItem.phone2,
+            })(<Input disabled />)}
+          </FormItem>
+          <FormItem label="校区" {...formItemLayout}>
+            {getFieldDecorator('school', {
+              initialValue: curItem.school,
+            })(<Input disabled />)}
+          </FormItem>
+          <FormItem label="学号" {...formItemLayout}>
+            {getFieldDecorator('idnumber', {
+              initialValue: curItem.idnumber,
+            })(<Input disabled />)}
+          </FormItem>
+          <FormItem label="报名课程" {...formItemLayout}>
+            {contractList &&
           <Tabs defaultActiveKey="1" size="small">
             <TabPane tab={<span><Icon type="clock-circle-o" />正在学习</span>} key="1">
               <ContractList status={1} list={contractList.studinglist} {...contractListProps} />
@@ -80,8 +80,9 @@ const ModalForm = ({
               <ContractList status={2} list={contractList.passedlist} {...contractListProps} />
             </TabPane>
           </Tabs>}
-        </FormItem>
-      </Form>
+          </FormItem>
+        </Form>
+      </Spin>
     </Modal>
   )
 }
