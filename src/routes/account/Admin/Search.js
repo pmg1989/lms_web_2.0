@@ -2,12 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Button, Row, Col, Icon, Select } from 'antd'
 import { SearchGroup } from 'components'
+import { queryString } from 'utils'
 import { roleNames, categorys, subjects } from 'utils/dictionary'
 
 const FormItem = Form.Item
 const Option = Select.Option
 let searchGroupProps = {}
-let searchValues = {}
+let searchValues = {
+  keyword: queryString('keyword'),
+  field: queryString('field'),
+}
 
 const Search = ({
   query: {
