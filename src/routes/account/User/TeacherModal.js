@@ -29,7 +29,8 @@ const ModalForm = ({
       if (errors) {
         return
       }
-      console.log(values)
+      values.contractid = curItem.contract.contractid
+      values.coursecategory = curItem.contract.categoryid
       onOk(values)
     })
   }
@@ -61,6 +62,7 @@ const ModalForm = ({
       <Form>
         <FormItem label="任课老师" {...formItemLayout}>
           {getFieldDecorator('teacherid', {
+            initialValue: (teacherList.find(item => item.teacher_name === curItem.contract.firstname) || {}).id,
             rules: [
               {
                 required: true,
@@ -73,9 +75,7 @@ const ModalForm = ({
             optionFilterProp="children"
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
-            {teacherList.map((item, key) => {
-              return <Option key={key} value={item.id}>{item.firstname}</Option>
-            })}
+            {teacherList.map((item, key) => <Option key={key} value={item.id}>{item.firstname}</Option>)}
           </Select>)}
         </FormItem>
         <FormItem label="备注信息" hasFeedback {...formItemLayout}>

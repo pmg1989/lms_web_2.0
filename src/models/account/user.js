@@ -1,6 +1,6 @@
 import { getCurPowers } from 'utils'
 import { query, queryItem, update } from 'services/account/admin'
-import { queryContractList } from 'services/account/user'
+import { queryContractList, updateTeacher } from 'services/account/user'
 
 const page = {
   current: 1,
@@ -103,6 +103,13 @@ export default {
       const { data, success } = yield call(query, { rolename: 'teacher' })
       if (success) {
         yield put({ type: 'modal/setSubItem', payload: { teacherList: data, contract } })
+      }
+    },
+    * setTeacher ({ payload }, { call, put }) {
+      const { curItem } = payload
+      const { success } = yield call(updateTeacher, curItem)
+      if (success) {
+        yield put({ type: 'modal/hideModal', payload: { showParent: true } })
       }
     },
   },

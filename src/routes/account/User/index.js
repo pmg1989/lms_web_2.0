@@ -82,6 +82,14 @@ function User ({ location, curPowers, dispatch, accountUser, modal, loading }) {
   const teacherModalProps = {
     modal,
     loading,
+    onOk (curItem) {
+      dispatch({
+        type: 'accountUser/setTeacher',
+        payload: {
+          curItem,
+        },
+      })
+    },
     onCancel () {
       dispatch({ type: 'modal/hideModal', payload: { showParent: true } })
     },
