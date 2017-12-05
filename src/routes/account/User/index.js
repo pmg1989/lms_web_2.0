@@ -8,6 +8,7 @@ import List from './List'
 import Search from './Search'
 import Modal from './ModalForm'
 import TeacherModal from './TeacherModal'
+import HistoryListModal from './HistoryListModal'
 
 function User ({ location, curPowers, dispatch, accountUser, modal, loading }) {
   const detailPower = checkPower(DETAIL, curPowers)
@@ -77,6 +78,16 @@ function User ({ location, curPowers, dispatch, accountUser, modal, loading }) {
         },
       })
     },
+    onShowHistoryListModal (item) {
+      dispatch({
+        type: 'accountUser/showHistoryListModal',
+        payload: {
+          type: 'detail',
+          id: 3,
+          contract: item,
+        },
+      })
+    },
   }
 
   const teacherModalProps = {
@@ -95,12 +106,21 @@ function User ({ location, curPowers, dispatch, accountUser, modal, loading }) {
     },
   }
 
+  const historyListModalProps = {
+    modal,
+    loading,
+    onCancel () {
+      dispatch({ type: 'modal/hideModal', payload: { showParent: true } })
+    },
+  }
+
   return (
     <div className="content-inner">
       <Search {...searchProps} />
       <List {...listProps} />
       {modal.visible && modal.id >= 1 && <Modal {...modalProps} />}
       {modal.visible && modal.id === 2 && <TeacherModal {...teacherModalProps} />}
+      {modal.visible && modal.id === 3 && <HistoryListModal {...historyListModalProps} />}
     </div>
   )
 }

@@ -16,7 +16,7 @@ Empty.propTypes = {
   children: PropTypes.element.isRequired,
 }
 
-const Contract = ({ type, status, item, onShowTeacherModal, setTeacherPower, getHistoryPower }) => {
+const Contract = ({ type, status, item, onShowTeacherModal, onShowHistoryListModal, setTeacherPower, getHistoryPower }) => {
   const isProfession = type === 'profession'
   const currentAvailable = item.current_lesson_available
   const hasNext = !!currentAvailable
@@ -43,7 +43,7 @@ const Contract = ({ type, status, item, onShowTeacherModal, setTeacherPower, get
         {isProfession && status === 1 &&
         <span>
           {setTeacherPower && <Button type="primary" size="small" onClick={() => onShowTeacherModal(item)}>设置老师</Button>}
-          {getHistoryPower && <Button className={styles.margin_left} type="primary" size="small" onClick={onShowTeacherModal}>查看历史</Button>}
+          {getHistoryPower && <Button className={styles.margin_left} type="primary" size="small" onClick={() => onShowHistoryListModal(item)}>查看历史</Button>}
         </span>}
       </div>
     </div>
@@ -55,6 +55,7 @@ Contract.propTypes = {
   status: PropTypes.number.isRequired,
   item: PropTypes.object.isRequired,
   onShowTeacherModal: PropTypes.func.isRequired,
+  onShowHistoryListModal: PropTypes.func.isRequired,
   setTeacherPower: PropTypes.bool.isRequired,
   getHistoryPower: PropTypes.bool.isRequired,
 }

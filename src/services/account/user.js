@@ -7,3 +7,7 @@ export async function queryContractList (params) {
 export async function updateTeacher (params) {
   return request({ wsfunction: 'mod_frontservice_modifycontract', ...params })
 }
+
+export async function queryHistoryList (params) {
+  return request({ wsfunction: 'mod_frontservice_get_contract_log', ...params })
+}
