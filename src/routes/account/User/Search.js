@@ -1,14 +1,27 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Row, Col } from 'antd'
+import { Form, Row, Col, Select } from 'antd'
 import SearchGroup from 'components/Search'
 
+const FormItem = Form.Item
+const Option = Select.Option
+
+let searchGroupProps = {}
+let searchValues = {}
+
 const Search = ({
-  field,
-  keyword,
+  query: {
+    field,
+    keyword,
+    hasTeacher,
+  },
   onSearch,
+  form: {
+    getFieldDecorator,
+    validateFields,
+  },
 }) => {
-  const searchGroupProps = {
+  searchGroupProps = {
     field,
     keyword,
     size: 'large',
@@ -18,14 +31,42 @@ const Search = ({
       defaultValue: field || 'firstname',
     },
     onSearch: (value) => {
-      onSearch(value)
+      validateFields((errors, values) => {
+        if (errors) {
+          return
+        }
+        searchValues = value
+        let data = {}
+        if (values.hasTeacher) {
+          data.hasTeacher = values.hasTeacher
+        }
+        if (value.keyword) {
+          data.keyword = value.keyword
+          data.field = value.field
+        }
+        onSearch(data)
+      })
     },
   }
 
   return (
     <Row gutter={24}>
-      <Col lg={8} md={12} sm={16} xs={24} style={{ marginBottom: 16 }}>
-        <SearchGroup {...searchGroupProps} />
+      <Col>
+        <Form layout="inline">
+          <FormItem label="是否已分配老师" style={{ marginBottom: 20, marginRight: 40 }}>
+            {getFieldDecorator('hasTeacher', {
+              initialValue: hasTeacher || '',
+            })(<Select style={{ width: 90 }}>
+              <Option value="">全部</Option>
+              <Option value="0">未分配</Option>
+              <Option value="1">已分配</Option>
+            </Select>)
+            }
+          </FormItem>
+          <FormItem style={{ marginBottom: 20, marginRight: 0 }}>
+            <SearchGroup {...searchGroupProps} />
+          </FormItem>
+        </Form>
       </Col>
     </Row>
   )
@@ -35,8 +76,13 @@ Search.propTypes = {
   form: PropTypes.object.isRequired,
   onSearch: PropTypes.func,
   onAdd: PropTypes.func,
-  field: PropTypes.string,
-  keyword: PropTypes.string,
+  query: PropTypes.object,
 }
 
-export default Form.create()(Search)
+export default Form.create({
+  onValuesChange () {
+    setTimeout(() => {
+      searchGroupProps.onSearch(searchValues)
+    }, 0)
+  },
+})(Search)

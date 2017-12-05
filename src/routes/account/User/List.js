@@ -79,15 +79,15 @@ function List ({
   let total = pagination.total
 
   const getFilterList = () => {
-    const { field, keyword, current, pageSize } = location.query
+    const { field, keyword, hasTeacher, current, pageSize } = location.query
     const currentPage = current || pagination.current
     const sizePage = pageSize || pagination.pageSize
 
-    if (field) {
+    if (field || hasTeacher) {
       const filterTotalList = list.filter((item) => {
-        // const hasRoleName = rolename ? item.rolename === rolename : true
+        const hasTeachers = hasTeacher ? item.student_has_teacher === (+hasTeacher === 1) : true
         const hasKeyWords = keyword ? item[field].includes(decodeURI(keyword)) : true
-        return hasKeyWords
+        return hasKeyWords && hasTeachers
       })
       total = filterTotalList.length
       const filterList = filterTotalList.slice((currentPage - 1) * (sizePage), currentPage * sizePage)

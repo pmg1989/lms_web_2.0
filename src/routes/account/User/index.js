@@ -16,21 +16,15 @@ function User ({ location, curPowers, dispatch, accountUser, modal, loading }) {
   const setTeacherPower = checkPower(SET_TEACHER, curPowers)
   const getHistoryPower = checkPower(GET_HISTORY_LIST, curPowers)
 
-  const { field, keyword } = location.query
-
   const searchProps = {
-    field,
-    keyword,
+    query: location.query,
     onSearch (fieldsValue) {
-      const { pathname } = location
-      fieldsValue.keyword.length
-        ? dispatch(routerRedux.push({
-          pathname,
-          query: {
-            ...fieldsValue,
-          },
-        }))
-        : dispatch(routerRedux.push({ pathname }))
+      dispatch(routerRedux.push({
+        pathname: location.pathname,
+        query: {
+          ...fieldsValue,
+        },
+      }))
     },
   }
 

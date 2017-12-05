@@ -22,20 +22,20 @@ const menu = [
     children: [
       {
         id: 21,
+        key: 'role',
+        name: '角色管理',
+        power: [1, 2, 3, 4, 5],
+      },
+      {
+        id: 22,
         key: 'admin',
         name: '工作人员',
         power: [1, 2, 3, 4, 5, 6, 8, 9],
       },
       {
-        id: 22,
-        key: 'role',
-        name: '工作人员角色',
-        power: [1, 2, 3, 4, 5],
-      },
-      {
         id: 23,
         key: 'user',
-        name: '学生',
+        name: '学员',
         power: [1, 2, 6, 10, 11],
       },
     ],
