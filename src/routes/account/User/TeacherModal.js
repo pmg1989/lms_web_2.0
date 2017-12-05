@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, Icon } from 'antd'
+import { Form, Select, Input, Modal, Icon } from 'antd'
 import { getModalType } from 'utils/dictionary'
 
 const FormItem = Form.Item
+const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
@@ -17,11 +18,22 @@ const formItemLayout = {
 const ModalForm = ({
   modal: { curItem, type, visible },
   loading,
+  onOk,
   onCancel,
   form: {
-    getFieldDecorator,
+    getFieldDecorator, validateFields,
   },
 }) => {
+  function handleOk () {
+    validateFields((errors, values) => {
+      if (errors) {
+        return
+      }
+      console.log(values)
+      onOk(values)
+    })
+  }
+
   const { name, icon } = getModalType(type)
   const modalFormOpts = {
     title: <div><Icon type={icon} /> {name} - 设置任课老师</div>,
@@ -30,17 +42,52 @@ const ModalForm = ({
     width: 600,
     wrapClassName: 'vertical-center-modal',
     confirmLoading: loading.models.accountUser,
+    onOk: handleOk,
     onCancel,
-    footer: null,
+  }
+
+  let teacherList = []
+  if (curItem.teacherList) {
+    const categoryIdnumber = curItem.contract && curItem.contract.category_idnumber
+    teacherList = curItem.teacherList.filter(item => (
+      categoryIdnumber === 'composition' ?
+        item.teacher_category === 'profession' :
+        categoryIdnumber.split('-')[0].includes(item.teacher_subject)
+    ))
   }
 
   return (
     <Modal {...modalFormOpts}>
       <Form>
-        <FormItem label="用户名" {...formItemLayout}>
-          {getFieldDecorator('username', {
-            initialValue: curItem.username,
-          })(<Input disabled />)}
+        <FormItem label="任课老师" {...formItemLayout}>
+          {getFieldDecorator('teacherid', {
+            rules: [
+              {
+                required: true,
+                message: '请选择任课老师',
+              },
+            ],
+          })(<Select
+            showSearch
+            placeholder="请选择任课老师"
+            optionFilterProp="children"
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          >
+            {teacherList.map((item, key) => {
+              return <Option key={key} value={item.id}>{item.firstname}</Option>
+            })}
+          </Select>)}
+        </FormItem>
+        <FormItem label="备注信息" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('modify_note', {
+            initialValue: '',
+            rules: [
+              {
+                required: true,
+                message: '请输入备注信息',
+              },
+            ],
+          })(<Input placeholder="请输入备注信息" />)}
         </FormItem>
       </Form>
     </Modal>
@@ -51,6 +98,7 @@ ModalForm.propTypes = {
   modal: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
+  onOk: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
 }
 
