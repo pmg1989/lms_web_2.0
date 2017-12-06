@@ -17,8 +17,10 @@ const Search = ({
   query: {
     field,
     keyword,
+    school,
     hasTeacher,
   },
+  schools,
   onSearch,
   form: {
     getFieldDecorator,
@@ -41,6 +43,9 @@ const Search = ({
         }
         searchValues = value
         let data = {}
+        if (values.school) {
+          data.school = values.school
+        }
         if (values.hasTeacher) {
           data.hasTeacher = values.hasTeacher
         }
@@ -57,6 +62,15 @@ const Search = ({
     <Row gutter={24}>
       <Col>
         <Form layout="inline">
+          <FormItem label="校区" style={{ marginBottom: 20, marginRight: 40 }}>
+            {getFieldDecorator('school', {
+              initialValue: school || '',
+            })(<Select style={{ width: 90 }}>
+              <Option value="">全部</Option>
+              {schools.map(item => <Option key={item.id} value={item.school}>{item.name}</Option>)}
+            </Select>)
+            }
+          </FormItem>
           <FormItem label="是否已分配老师" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('hasTeacher', {
               initialValue: hasTeacher || '',
@@ -81,6 +95,7 @@ Search.propTypes = {
   onSearch: PropTypes.func,
   onAdd: PropTypes.func,
   query: PropTypes.object,
+  schools: PropTypes.array.isRequired,
 }
 
 export default Form.create({

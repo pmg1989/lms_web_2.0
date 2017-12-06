@@ -5,6 +5,7 @@ import { Link } from 'dva/router'
 import QueueAnim from 'rc-queue-anim'
 import Immutable from 'immutable'
 import { menu } from 'utils'
+import { stringify } from 'qs'
 
 const immutableMenu = Immutable.fromJS(menu)
 
@@ -14,6 +15,7 @@ function Menus ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKey
   const getMenus = (menuArray, isSiderFold, parentPath = '/') => {
     return menuArray.map((item) => {
       const linkTo = parentPath + item.key
+      const query = item.query ? `?${stringify(item.query)}` : ''
       if (item.children) {
         return (
           <Menu.SubMenu key={linkTo} title={<span>{item.icon ? <Icon type={item.icon} /> : ''}{isSiderFold && topMenus.indexOf(item.key) >= 0 ? '' : item.name}</span>}>
@@ -23,7 +25,7 @@ function Menus ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKey
       }
       return (
         <Menu.Item key={linkTo}>
-          <Link to={linkTo}>
+          <Link to={`${linkTo}${query}`}>
             {item.icon ? <Icon type={item.icon} /> : ''}
             {isSiderFold && topMenus.indexOf(item.key) >= 0 ? '' : item.name}
           </Link>

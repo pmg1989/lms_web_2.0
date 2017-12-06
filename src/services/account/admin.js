@@ -1,8 +1,7 @@
 import { request } from 'utils/request'
-import { userInfo } from 'utils'
 
 export async function query (params) {
-  return request({ wsfunction: 'mod_frontservice_getuserinfo', school: userInfo.school, ...params })
+  return request({ wsfunction: 'mod_frontservice_getuserinfo', ...params })
 }
 
 export async function queryItem (params) {

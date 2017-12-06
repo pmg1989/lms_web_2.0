@@ -1,10 +1,11 @@
 import { getCurPowers } from 'utils'
 import { query, queryItem, update } from 'services/account/admin'
 import { queryContractList, updateTeacher, queryHistoryList } from 'services/account/user'
+import { query as querySchools } from 'services/common/school'
 
 const page = {
   current: 1,
-  pageSize: 10,
+  pageSize: 1,
 }
 
 export default {
@@ -12,6 +13,7 @@ export default {
   state: {
     isPostBack: true, // 判断是否是首次加载页面，作为前端分页判断标识符
     list: [],
+    schools: [],
     pagination: {
       ...page,
       total: null,
@@ -25,6 +27,7 @@ export default {
           const curPowers = getCurPowers(pathname)
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
+            dispatch({ type: 'querySchools' })
             dispatch({ type: 'query' })
           }
         }
@@ -38,7 +41,7 @@ export default {
       const pathQuery = yield select(({ routing }) => routing.locationBeforeTransitions.query)
 
       if (isPostBack) {
-        const { data, success } = yield call(query, { rolename: 'student' })
+        const { data, success } = yield call(query, { rolename: 'student', school: pathQuery.school })
         if (success) {
           yield put({
             type: 'querySuccess',
@@ -61,6 +64,17 @@ export default {
               current: pathQuery.current ? +pathQuery.current : page.current,
               pageSize: pathQuery.pageSize ? +pathQuery.pageSize : page.pageSize,
             },
+          },
+        })
+      }
+    },
+    * querySchools ({ }, { call, put }) {
+      const { data, success } = yield call(querySchools)
+      if (success) {
+        yield put({
+          type: 'querySchoolsSuccess',
+          payload: {
+            schools: data,
           },
         })
       }
@@ -126,6 +140,9 @@ export default {
 
   reducers: {
     querySuccess (state, action) {
+      return { ...state, ...action.payload }
+    },
+    querySchoolsSuccess (state, action) {
       return { ...state, ...action.payload }
     },
     setOldId (state, action) {

@@ -18,6 +18,7 @@ function User ({ location, curPowers, dispatch, accountUser, modal, loading }) {
 
   const searchProps = {
     query: location.query,
+    schools: accountUser.schools,
     onSearch (fieldsValue) {
       dispatch(routerRedux.push({
         pathname: location.pathname,
