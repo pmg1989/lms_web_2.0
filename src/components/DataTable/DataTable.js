@@ -1,12 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import { Table } from 'antd'
 import classnames from 'classnames'
 import TableBodyWrapper from './TableBodyWrapper'
 
-function DataTable ({ dispatch, location, className, pagination, animate, ...props }) {
+function DataTable ({ dispatch, location, className, pagination, onPageChange, animate, ...props }) {
   const getBodyWrapperProps = {
     page: location.query.current || 1,
     current: pagination.current || 1,
@@ -14,25 +13,21 @@ function DataTable ({ dispatch, location, className, pagination, animate, ...pro
 
   const getBodyWrapper = body => (<TableBodyWrapper {...getBodyWrapperProps} body={body} />)
 
-  const onPageChange = (page) => {
+  const handlePageChange = (page) => {
     const { query } = location
-    const pathname = location.pathname
-    dispatch(routerRedux.push({
-      pathname,
-      query: {
-        ...query,
-        current: page.current,
-        pageSize: page.pageSize,
-      },
-    }))
+    onPageChange({
+      ...query,
+      current: page.current,
+      pageSize: page.pageSize,
+    })
   }
 
   let tableProps = {
     simple: true,
     bordered: true,
     scroll: { x: 1200 },
-    onChange: onPageChange,
-    pagination: !!pagination && { ...pagination, showSizeChanger: true, showQuickJumper: true, showTotal: total => `共 ${total} 条` },
+    onChange: handlePageChange,
+    pagination: !!pagination && { ...pagination, showSizeChanger: false, showQuickJumper: false, showTotal: total => `共 ${total} 条` },
     ...props,
   }
   if (animate) {
@@ -60,6 +55,7 @@ DataTable.propTypes = {
   columns: PropTypes.array.isRequired,
   dataSource: PropTypes.array.isRequired,
   className: PropTypes.string,
+  onPageChange: PropTypes.func.isRequired,
 }
 
 DataTable.defaultProps = {

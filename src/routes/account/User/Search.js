@@ -42,18 +42,9 @@ const Search = ({
           return
         }
         searchValues = value
-        let data = {}
-        if (values.school) {
-          data.school = values.school
-        }
-        if (values.hasTeacher) {
-          data.hasTeacher = values.hasTeacher
-        }
-        if (value.keyword) {
-          data.keyword = value.keyword
-          data.field = value.field
-        }
-        onSearch(data)
+        values.keyword = value.keyword
+        values.field = value.field
+        onSearch(values)
       })
     },
   }

@@ -104,6 +104,16 @@ function queryString (value) {
   return null
 }
 
+function renderQuery (query, payload) {
+  const searchQuery = { ...query, ...payload }
+  for (let key in searchQuery) {
+    if (!searchQuery[key]) {
+      delete searchQuery[key]
+    }
+  }
+  return searchQuery
+}
+
 export {
   Cookie,
   menu,
@@ -115,4 +125,5 @@ export {
   checkPower,
   getCurPowers,
   queryString,
+  renderQuery,
 }

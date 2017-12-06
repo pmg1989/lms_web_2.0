@@ -7,11 +7,12 @@ import styles from './List.less'
 
 function List ({
   accountUser: {
+    searchQuery,
     list,
     pagination,
   },
-  location,
   loading,
+  onPageChange,
   detailPower,
   // updatePower,
   onDetailItem,
@@ -79,7 +80,7 @@ function List ({
   let total = pagination.total
 
   const getFilterList = () => {
-    const { field, keyword, hasTeacher, current, pageSize } = location.query
+    const { field, keyword, hasTeacher, current, pageSize } = searchQuery
     const currentPage = current || pagination.current
     const sizePage = pageSize || pagination.pageSize
 
@@ -103,16 +104,17 @@ function List ({
       dataSource={getFilterList()}
       loading={loading.effects['accountUser/query']}
       pagination={{ ...pagination, total }}
+      onPageChange={onPageChange}
       rowKey={record => record.id}
     />
   )
 }
 
 List.propTypes = {
-  location: PropTypes.object.isRequired,
   accountUser: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
   detailPower: PropTypes.bool.isRequired,
+  onPageChange: PropTypes.func.isRequired,
   // updatePower: PropTypes.bool.isRequired,
   onDetailItem: PropTypes.func.isRequired,
   onEditItem: PropTypes.func.isRequired,

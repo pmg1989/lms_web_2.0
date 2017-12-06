@@ -1,17 +1,18 @@
-import { getCurPowers } from 'utils'
+import { getCurPowers, renderQuery } from 'utils'
 import { query, queryItem, update } from 'services/account/admin'
 import { queryContractList, updateTeacher, queryHistoryList } from 'services/account/user'
 import { query as querySchools } from 'services/common/school'
 
 const page = {
   current: 1,
-  pageSize: 1,
+  pageSize: 3,
 }
 
 export default {
   namespace: 'accountUser',
   state: {
     isPostBack: true, // 判断是否是首次加载页面，作为前端分页判断标识符
+    searchQuery: {},
     list: [],
     schools: [],
     pagination: {
@@ -28,7 +29,7 @@ export default {
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             dispatch({ type: 'querySchools' })
-            dispatch({ type: 'query' })
+            dispatch({ type: 'query', payload: { school: 'bj01' } })
           }
         }
       })
@@ -36,23 +37,26 @@ export default {
   },
 
   effects: {
-    * query ({ }, { select, call, put }) {
-      const isPostBack = yield select(({ accountUser }) => accountUser.isPostBack)
-      const pathQuery = yield select(({ routing }) => routing.locationBeforeTransitions.query)
-
+    * query ({ payload }, { select, call, put }) {
+      const { isPostBack, searchQuery } = yield select(({ accountUser }) => accountUser)
+      console.log(searchQuery, payload)
+      const querys = renderQuery(searchQuery, payload)
+      console.log(querys)
       if (isPostBack) {
-        const { data, success } = yield call(query, { rolename: 'student', school: pathQuery.school })
+        // const { data, success } = yield call(query, { rolename: 'student', school: querys.school })
+        const { data, success } = yield call(query, { rolename: 'student' })
         if (success) {
           yield put({
             type: 'querySuccess',
             payload: {
               list: data,
               pagination: {
-                current: pathQuery.current ? +pathQuery.current : page.current,
-                pageSize: pathQuery.pageSize ? +pathQuery.pageSize : page.pageSize,
+                current: payload.current ? +payload.current : page.current,
+                pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
                 total: data.length,
               },
               isPostBack: false,
+              searchQuery: querys,
             },
           })
         }
@@ -61,9 +65,10 @@ export default {
           type: 'querySuccess',
           payload: {
             pagination: {
-              current: pathQuery.current ? +pathQuery.current : page.current,
-              pageSize: pathQuery.pageSize ? +pathQuery.pageSize : page.pageSize,
+              current: payload.current ? +payload.current : page.current,
+              pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
             },
+            searchQuery: querys,
           },
         })
       }

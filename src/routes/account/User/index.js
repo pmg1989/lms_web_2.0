@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { checkPower } from 'utils'
 import { DETAIL, UPDATE, SET_TEACHER, GET_HISTORY_LIST } from 'constants/options'
@@ -20,21 +19,27 @@ function User ({ location, curPowers, dispatch, accountUser, modal, loading }) {
     query: location.query,
     schools: accountUser.schools,
     onSearch (fieldsValue) {
-      dispatch(routerRedux.push({
-        pathname: location.pathname,
-        query: {
+      dispatch({
+        type: 'accountUser/query',
+        payload: {
+          current: 1,
           ...fieldsValue,
         },
-      }))
+      })
     },
   }
 
   const listProps = {
     accountUser,
-    location,
     loading,
     detailPower,
     updatePower,
+    onPageChange (fieldsValue) {
+      dispatch({
+        type: 'accountUser/query',
+        payload: { ...fieldsValue },
+      })
+    },
     onDetailItem (item) {
       dispatch({
         type: 'accountUser/showModal',
