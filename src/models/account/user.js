@@ -39,9 +39,7 @@ export default {
   effects: {
     * query ({ payload }, { select, call, put }) {
       const { isPostBack, searchQuery } = yield select(({ accountUser }) => accountUser)
-      console.log(searchQuery, payload)
       const querys = renderQuery(searchQuery, payload)
-      console.log(querys)
       if (isPostBack) {
         // const { data, success } = yield call(query, { rolename: 'student', school: querys.school })
         const { data, success } = yield call(query, { rolename: 'student' })

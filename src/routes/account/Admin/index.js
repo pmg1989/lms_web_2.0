@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { checkPower } from 'utils'
 import { ADD, UPDATE, DETAIL, RESIGN, LEAVE } from 'constants/options'
@@ -20,12 +19,13 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
     query: location.query,
     addPower,
     onSearch (fieldsValue) {
-      dispatch(routerRedux.push({
-        pathname: location.pathname,
-        query: {
+      dispatch({
+        type: 'accountAdmin/query',
+        payload: {
+          current: 1,
           ...fieldsValue,
         },
-      }))
+      })
     },
     onAdd () {
       dispatch({
@@ -40,11 +40,16 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
   const listProps = {
     accountAdmin,
     loading,
-    location,
     updatePower,
     detailPower,
     resignPower,
     leavePower,
+    onPageChange (fieldsValue) {
+      dispatch({
+        type: 'accountAdmin/query',
+        payload: { ...fieldsValue },
+      })
+    },
     onEditItem (item) {
       dispatch({
         type: 'accountAdmin/showModal',

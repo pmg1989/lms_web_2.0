@@ -11,11 +11,12 @@ const confirm = Modal.confirm
 
 function List ({
   accountAdmin: {
+    searchQuery,
     list,
     pagination,
   },
-  location,
   loading,
+  onPageChange,
   updatePower,
   detailPower,
   resignPower,
@@ -123,7 +124,7 @@ function List ({
   let total = pagination.total
 
   const getFilterList = () => {
-    const { field, keyword, rolename, category, subject, current, pageSize } = location.query
+    const { field, keyword, rolename, category, subject, current, pageSize } = searchQuery
     const currentPage = current || pagination.current
     const sizePage = pageSize || pagination.pageSize
 
@@ -148,6 +149,7 @@ function List ({
     loading: loading.effects['accountAdmin/query'],
     className: styles.table,
     pagination: { ...pagination, total },
+    onPageChange,
     rowKey: record => record.id,
   }
 
@@ -157,13 +159,13 @@ function List ({
 }
 
 List.propTypes = {
-  location: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
   accountAdmin: PropTypes.object.isRequired,
   updatePower: PropTypes.bool.isRequired,
   detailPower: PropTypes.bool.isRequired,
   resignPower: PropTypes.bool.isRequired,
   leavePower: PropTypes.bool.isRequired,
+  onPageChange: PropTypes.func.isRequired,
   onEditItem: PropTypes.func.isRequired,
   onDetailItem: PropTypes.func.isRequired,
   onResignItem: PropTypes.func.isRequired,

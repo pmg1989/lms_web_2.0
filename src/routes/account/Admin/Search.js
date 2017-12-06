@@ -44,21 +44,9 @@ const Search = ({
           return
         }
         searchValues = value
-        let data = {}
-        if (values.rolename) {
-          data.rolename = values.rolename
-        }
-        if (values.category) {
-          data.category = values.category
-        }
-        if (values.subject) {
-          data.subject = values.subject
-        }
-        if (value.keyword) {
-          data.keyword = value.keyword
-          data.field = value.field
-        }
-        onSearch(data)
+        values.keyword = value.keyword
+        values.field = value.field
+        onSearch(values)
       })
     },
   }
