@@ -70,9 +70,9 @@ const setLoginIn = (data, pathPowers) => {
 
 const setLoginOut = () => {
   Cookie.remove('user_session')
-  Cookie.remove('user_info')
   Cookie.remove('utoken')
   Cookie.remove('user_power')
+  localStorage.removeItem('user_info')
   localStorage.removeItem('allPathPowers')
   allPathPowers = null
 }

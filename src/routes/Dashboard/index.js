@@ -1,14 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-// import styles from './index.less'
+import Calendar from './Calendar'
 
 
 function Dashboard ({ dashboard }) {
   console.log(dashboard)
   return (
     <div>
-      dashboard
+      <Calendar />
     </div>
   )
 }
