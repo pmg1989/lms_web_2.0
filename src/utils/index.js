@@ -76,6 +76,8 @@ const setLoginOut = () => {
   localStorage.removeItem('user_info')
   localStorage.removeItem('allPathPowers')
   allPathPowers = null
+  userInfo.school = null
+  userInfo.school_id = null
 }
 
 const checkPower = (optionId, curPowers = []) => {
@@ -108,7 +110,7 @@ function queryString (value) {
 function renderQuery (query, payload) {
   const searchQuery = { ...query, ...payload }
   for (let key in searchQuery) {
-    if (!searchQuery[key]) {
+    if (!searchQuery[key] && key !== 'school') {
       delete searchQuery[key]
     }
   }
@@ -117,10 +119,12 @@ function renderQuery (query, payload) {
 
 const getSchool = () => {
   if (userInfo.school) {
-    return userInfo.school !== 'global' ? userInfo.school : 'bj01'
+    return userInfo.school
+    // return userInfo.school !== 'global' ? userInfo.school : 'bj01'
   }
   const user = JSON.parse(localStorage.getItem('user_info') || '{}')
-  return user.school !== 'global' ? user.school : 'bj01'
+  return user.school
+  // return user.school !== 'global' ? user.school : 'bj01'
 }
 
 export {

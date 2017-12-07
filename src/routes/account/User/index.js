@@ -9,14 +9,13 @@ import Modal from './ModalForm'
 import TeacherModal from './TeacherModal'
 import HistoryListModal from './HistoryListModal'
 
-function User ({ location, curPowers, dispatch, accountUser, modal, loading }) {
+function User ({ curPowers, dispatch, accountUser, modal, loading }) {
   const detailPower = checkPower(DETAIL, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
   const setTeacherPower = checkPower(SET_TEACHER, curPowers)
   const getHistoryPower = checkPower(GET_HISTORY_LIST, curPowers)
 
   const searchProps = {
-    query: location.query,
     schools: accountUser.schools,
     onSearch (fieldsValue) {
       dispatch({
@@ -126,7 +125,6 @@ function User ({ location, curPowers, dispatch, accountUser, modal, loading }) {
 }
 
 User.propTypes = {
-  location: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   accountUser: PropTypes.object.isRequired,
   curPowers: PropTypes.array.isRequired,

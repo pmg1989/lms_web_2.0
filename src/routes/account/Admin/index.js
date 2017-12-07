@@ -8,7 +8,7 @@ import Search from './Search'
 import ModalForm from './ModalForm'
 import LevelModal from './LevelModal'
 
-function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading }) {
+function Admin ({ dispatch, curPowers, accountAdmin, modal, loading }) {
   const addPower = checkPower(ADD, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
   const detailPower = checkPower(DETAIL, curPowers)
@@ -16,7 +16,6 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
   const leavePower = checkPower(LEAVE, curPowers)
 
   const searchProps = {
-    query: location.query,
     schools: accountAdmin.schools,
     addPower,
     onSearch (fieldsValue) {
@@ -142,7 +141,6 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
 }
 
 Admin.propTypes = {
-  location: PropTypes.object,
   dispatch: PropTypes.func,
   curPowers: PropTypes.array,
   accountAdmin: PropTypes.object,
