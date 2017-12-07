@@ -115,6 +115,10 @@ function renderQuery (query, payload) {
   return searchQuery
 }
 
+function getUserInfo () {
+  return userInfo
+}
+
 const getSchool = () => {
   if (userInfo.school) {
     return userInfo.school
@@ -140,4 +144,5 @@ export {
   queryString,
   renderQuery,
   getSchool,
+  getUserInfo,
 }
