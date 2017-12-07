@@ -8,6 +8,7 @@ import request from './request'
 export { color } from './theme'
 
 let allPathPowers // 缓存 localStorage.getItem('allPathPowers') 数据
+let userInfo = JSON.parse(localStorage.getItem('user_info') || '{}') // 缓存用户信息
 
 // 连字符转驼峰
 String.prototype.hyphenToHump = function () {
@@ -56,8 +57,6 @@ const isLogin = () => {
   return Cookie.get('user_session') && Cookie.get('user_session') > new Date().getTime()
 }
 
-const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}')
-
 const setLoginIn = (data, pathPowers) => {
   const now = new Date()
   now.setDate(now.getDate() + 1)
@@ -76,8 +75,7 @@ const setLoginOut = () => {
   localStorage.removeItem('user_info')
   localStorage.removeItem('allPathPowers')
   allPathPowers = null
-  userInfo.school = null
-  userInfo.school_id = null
+  userInfo = {}
 }
 
 const checkPower = (optionId, curPowers = []) => {
@@ -134,7 +132,6 @@ export {
   request,
   equalSet,
   isLogin,
-  userInfo,
   setLoginIn,
   setLoginOut,
   checkPower,
