@@ -17,11 +17,13 @@ const Search = ({
   query: {
     field,
     keyword,
+    school,
     rolename,
     category,
     subject,
   },
   addPower,
+  schools,
   onSearch,
   onAdd,
   form: {
@@ -55,6 +57,15 @@ const Search = ({
     <Row gutter={24}>
       <Col>
         <Form layout="inline">
+          <FormItem label="校区" style={{ marginBottom: 20, marginRight: 40 }}>
+            {getFieldDecorator('school', {
+              initialValue: school || '',
+            })(<Select style={{ width: 90 }}>
+              <Option value="">全部</Option>
+              {schools.map(item => <Option key={item.id} value={item.school}>{item.name}</Option>)}
+            </Select>)
+            }
+          </FormItem>
           <FormItem label="角色" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('rolename', {
               initialValue: rolename || '',
@@ -102,6 +113,7 @@ const Search = ({
 
 Search.propTypes = {
   form: PropTypes.object.isRequired,
+  schools: PropTypes.array.isRequired,
   onSearch: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
   query: PropTypes.object,

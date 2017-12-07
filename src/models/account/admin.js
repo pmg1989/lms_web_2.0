@@ -136,11 +136,6 @@ export default {
         }
       }
 
-      // const dataSchools = yield call(querySchools)
-      // if (dataSchools.success) {
-      //   newData.classRooms = dataSchools.data
-      // }
-
       const dataCR = yield call(queryClassRooms, { school_id: curItem.school_id })
       if (dataCR.success) {
         newData.classRooms = dataCR.data

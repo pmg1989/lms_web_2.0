@@ -17,6 +17,7 @@ function Admin ({ location, dispatch, curPowers, accountAdmin, modal, loading })
 
   const searchProps = {
     query: location.query,
+    schools: accountAdmin.schools,
     addPower,
     onSearch (fieldsValue) {
       dispatch({
