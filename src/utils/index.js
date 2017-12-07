@@ -4,6 +4,7 @@ import Cookie from './cookie'
 
 import config from './config'
 import request from './request'
+
 export { color } from './theme'
 
 let allPathPowers // 缓存 localStorage.getItem('allPathPowers') 数据
