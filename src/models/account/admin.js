@@ -44,7 +44,7 @@ export default {
       const { isPostBack, searchQuery } = yield select(({ accountAdmin }) => accountAdmin)
       const querys = renderQuery(searchQuery, payload)
 
-      if (isPostBack) {
+      if (isPostBack || payload.school !== searchQuery.school) {
         const { data, success } = yield call(query, { rolename: 'staff', school: querys.school })
         if (success) {
           yield put({

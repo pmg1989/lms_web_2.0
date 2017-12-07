@@ -40,7 +40,7 @@ export default {
     * query ({ payload }, { select, call, put }) {
       const { isPostBack, searchQuery } = yield select(({ accountUser }) => accountUser)
       const querys = renderQuery(searchQuery, payload)
-      if (isPostBack) {
+      if (isPostBack || payload.school !== searchQuery.school) {
         const { data, success } = yield call(query, { rolename: 'student', school: querys.school })
         if (success) {
           yield put({
