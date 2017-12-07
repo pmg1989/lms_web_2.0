@@ -1,11 +1,11 @@
-import { getCurPowers, renderQuery } from 'utils'
+import { getCurPowers, renderQuery, getSchool } from 'utils'
 import { query, queryItem, update } from 'services/account/admin'
 import { queryContractList, updateTeacher, queryHistoryList } from 'services/account/user'
 import { query as querySchools } from 'services/common/school'
 
 const page = {
   current: 1,
-  pageSize: 3,
+  pageSize: 10,
 }
 
 export default {
@@ -23,13 +23,13 @@ export default {
 
   subscriptions: {
     setup ({ dispatch, history }) {
-      history.listen(({ pathname, query: payload }) => {
+      history.listen(({ pathname }) => {
         if (pathname === '/account/user') {
           const curPowers = getCurPowers(pathname)
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             dispatch({ type: 'querySchools' })
-            dispatch({ type: 'query', payload })
+            dispatch({ type: 'query', payload: { school: getSchool() } })
           }
         }
       })

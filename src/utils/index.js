@@ -2,8 +2,8 @@ import { browserHistory } from 'react-router'
 import menu from './menu'
 import Cookie from './cookie'
 
-export config from './config'
-export request from './request'
+import config from './config'
+import request from './request'
 export { color } from './theme'
 
 let allPathPowers // 缓存 localStorage.getItem('allPathPowers') 数据
@@ -114,9 +114,19 @@ function renderQuery (query, payload) {
   return searchQuery
 }
 
+const getSchool = () => {
+  if (userInfo.school) {
+    return userInfo.school !== 'global' ? userInfo.school : 'bj01'
+  }
+  const user = JSON.parse(localStorage.getItem('user_info') || '{}')
+  return user.school !== 'global' ? user.school : 'bj01'
+}
+
 export {
   Cookie,
   menu,
+  config,
+  request,
   equalSet,
   isLogin,
   userInfo,
@@ -126,4 +136,5 @@ export {
   getCurPowers,
   queryString,
   renderQuery,
+  getSchool,
 }

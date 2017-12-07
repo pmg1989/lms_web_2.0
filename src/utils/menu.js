@@ -1,8 +1,3 @@
-const getSchool = () => {
-  const user = JSON.parse(localStorage.getItem('user_info') || '{}')
-  return user.school !== 'global' ? user.school : 'bj01'
-}
-
 // 权限的基本操作 详细可参见 ../constants/options.js
 // power = { 1: "查看菜单", 2: "查看详情", 3: "新增", 4: "修改", 5: "删除" }
 // options = { MENU: "查看菜单", DETAIL: "查看详情", ADD: "新增", UPDATE: "修改", DELETE: "删除" }
@@ -36,18 +31,12 @@ const menu = [
         key: 'admin',
         name: '工作人员',
         power: [1, 2, 3, 4, 5, 6, 8, 9],
-        query: {
-          school: getSchool(),
-        },
       },
       {
         id: 23,
         key: 'user',
         name: '学员',
         power: [1, 2, 6, 10, 11],
-        query: {
-          school: getSchool(),
-        },
       },
     ],
   },

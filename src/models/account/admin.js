@@ -1,5 +1,5 @@
 import { routerRedux } from 'dva/router'
-import { getCurPowers, renderQuery } from 'utils'
+import { getCurPowers, renderQuery, getSchool } from 'utils'
 import { create, update, query, queryItem, updateLevel, updateCancelLevel } from 'services/account/admin'
 import { query as queryRole } from 'services/account/role'
 import { query as querySchools } from 'services/common/school'
@@ -26,13 +26,13 @@ export default {
 
   subscriptions: {
     setup ({ dispatch, history }) {
-      history.listen(({ pathname, query: payload }) => {
+      history.listen(({ pathname }) => {
         if (pathname === '/account/admin') {
           const curPowers = getCurPowers(pathname)
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             dispatch({ type: 'querySchools' })
-            dispatch({ type: 'query', payload })
+            dispatch({ type: 'query', payload: { school: getSchool() } })
           }
         }
       })
