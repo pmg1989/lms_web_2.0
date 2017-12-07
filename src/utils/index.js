@@ -121,6 +121,7 @@ const getSchool = () => {
     // return userInfo.school !== 'global' ? userInfo.school : 'bj01'
   }
   const user = JSON.parse(localStorage.getItem('user_info') || '{}')
+  userInfo = user
   return user.school
   // return user.school !== 'global' ? user.school : 'bj01'
 }
