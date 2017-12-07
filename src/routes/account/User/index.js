@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { checkPower } from 'utils'
 import { DETAIL, UPDATE, SET_TEACHER, GET_HISTORY_LIST } from 'constants/options'
@@ -10,30 +9,36 @@ import Modal from './ModalForm'
 import TeacherModal from './TeacherModal'
 import HistoryListModal from './HistoryListModal'
 
-function User ({ location, curPowers, dispatch, accountUser, modal, loading }) {
+function User ({ curPowers, dispatch, accountUser, modal, loading }) {
   const detailPower = checkPower(DETAIL, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
   const setTeacherPower = checkPower(SET_TEACHER, curPowers)
   const getHistoryPower = checkPower(GET_HISTORY_LIST, curPowers)
 
   const searchProps = {
-    query: location.query,
+    schools: accountUser.schools,
     onSearch (fieldsValue) {
-      dispatch(routerRedux.push({
-        pathname: location.pathname,
-        query: {
+      dispatch({
+        type: 'accountUser/query',
+        payload: {
+          current: 1,
           ...fieldsValue,
         },
-      }))
+      })
     },
   }
 
   const listProps = {
     accountUser,
-    location,
     loading,
     detailPower,
     updatePower,
+    onPageChange (fieldsValue) {
+      dispatch({
+        type: 'accountUser/query',
+        payload: { ...fieldsValue },
+      })
+    },
     onDetailItem (item) {
       dispatch({
         type: 'accountUser/showModal',
@@ -120,7 +125,6 @@ function User ({ location, curPowers, dispatch, accountUser, modal, loading }) {
 }
 
 User.propTypes = {
-  location: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   accountUser: PropTypes.object.isRequired,
   curPowers: PropTypes.array.isRequired,

@@ -1,6 +1,7 @@
-import { getCurPowers } from 'utils'
+import { getCurPowers, renderQuery, getSchool } from 'utils'
 import { query, queryItem, update } from 'services/account/admin'
 import { queryContractList, updateTeacher, queryHistoryList } from 'services/account/user'
+import { query as querySchools } from 'services/common/school'
 
 const page = {
   current: 1,
@@ -11,7 +12,9 @@ export default {
   namespace: 'accountUser',
   state: {
     isPostBack: true, // 判断是否是首次加载页面，作为前端分页判断标识符
+    searchQuery: {},
     list: [],
+    schools: [],
     pagination: {
       ...page,
       total: null,
@@ -25,7 +28,8 @@ export default {
           const curPowers = getCurPowers(pathname)
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
-            dispatch({ type: 'query' })
+            dispatch({ type: 'querySchools' })
+            dispatch({ type: 'query', payload: { school: getSchool() } })
           }
         }
       })
@@ -33,23 +37,23 @@ export default {
   },
 
   effects: {
-    * query ({ }, { select, call, put }) {
-      const isPostBack = yield select(({ accountUser }) => accountUser.isPostBack)
-      const pathQuery = yield select(({ routing }) => routing.locationBeforeTransitions.query)
-
-      if (isPostBack) {
-        const { data, success } = yield call(query, { rolename: 'student' })
+    * query ({ payload }, { select, call, put }) {
+      const { isPostBack, searchQuery } = yield select(({ accountUser }) => accountUser)
+      const querys = renderQuery(searchQuery, payload)
+      if (isPostBack || payload.school !== searchQuery.school) {
+        const { data, success } = yield call(query, { rolename: 'student', school: querys.school })
         if (success) {
           yield put({
             type: 'querySuccess',
             payload: {
               list: data,
               pagination: {
-                current: pathQuery.current ? +pathQuery.current : page.current,
-                pageSize: pathQuery.pageSize ? +pathQuery.pageSize : page.pageSize,
+                current: payload.current ? +payload.current : page.current,
+                pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
                 total: data.length,
               },
               isPostBack: false,
+              searchQuery: querys,
             },
           })
         }
@@ -58,9 +62,21 @@ export default {
           type: 'querySuccess',
           payload: {
             pagination: {
-              current: pathQuery.current ? +pathQuery.current : page.current,
-              pageSize: pathQuery.pageSize ? +pathQuery.pageSize : page.pageSize,
+              current: payload.current ? +payload.current : page.current,
+              pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
             },
+            searchQuery: querys,
+          },
+        })
+      }
+    },
+    * querySchools ({ }, { call, put }) {
+      const { data, success } = yield call(querySchools)
+      if (success) {
+        yield put({
+          type: 'querySchoolsSuccess',
+          payload: {
+            schools: data,
           },
         })
       }
@@ -95,12 +111,12 @@ export default {
 
       yield put({ type: 'modal/setItem', payload: { curItem: newData } })
     },
-    * showTeacherModal ({ payload }, { call, put }) {
+    * showTeacherModal ({ payload }, { call, put, select }) {
       const { type, id, contract } = payload
 
       yield put({ type: 'modal/showModal', payload: { type, id } })
-
-      const { data, success } = yield call(query, { rolename: 'teacher' })
+      const { school } = yield select(({ modal }) => modal.curItem)
+      const { data, success } = yield call(query, { rolename: 'teacher', school })
       if (success) {
         yield put({ type: 'modal/setSubItem', payload: { teacherList: data, contract } })
       }
@@ -126,6 +142,9 @@ export default {
 
   reducers: {
     querySuccess (state, action) {
+      return { ...state, ...action.payload }
+    },
+    querySchoolsSuccess (state, action) {
       return { ...state, ...action.payload }
     },
     setOldId (state, action) {

@@ -2,11 +2,13 @@ import { browserHistory } from 'react-router'
 import menu from './menu'
 import Cookie from './cookie'
 
-export config from './config'
-export request from './request'
+import config from './config'
+import request from './request'
+
 export { color } from './theme'
 
 let allPathPowers // 缓存 localStorage.getItem('allPathPowers') 数据
+let userInfo = JSON.parse(localStorage.getItem('user_info') || '{}') // 缓存用户信息
 
 // 连字符转驼峰
 String.prototype.hyphenToHump = function () {
@@ -55,8 +57,6 @@ const isLogin = () => {
   return Cookie.get('user_session') && Cookie.get('user_session') > new Date().getTime()
 }
 
-const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}')
-
 const setLoginIn = (data, pathPowers) => {
   const now = new Date()
   now.setDate(now.getDate() + 1)
@@ -70,11 +70,12 @@ const setLoginIn = (data, pathPowers) => {
 
 const setLoginOut = () => {
   Cookie.remove('user_session')
-  Cookie.remove('user_info')
   Cookie.remove('utoken')
   Cookie.remove('user_power')
+  localStorage.removeItem('user_info')
   localStorage.removeItem('allPathPowers')
   allPathPowers = null
+  userInfo = {}
 }
 
 const checkPower = (optionId, curPowers = []) => {
@@ -104,15 +105,44 @@ function queryString (value) {
   return null
 }
 
+function renderQuery (query, payload) {
+  const searchQuery = { ...query, ...payload }
+  for (let key in searchQuery) {
+    if (!searchQuery[key] && key !== 'school') {
+      delete searchQuery[key]
+    }
+  }
+  return searchQuery
+}
+
+function getUserInfo () {
+  return userInfo
+}
+
+const getSchool = () => {
+  if (userInfo.school) {
+    return userInfo.school
+    // return userInfo.school !== 'global' ? userInfo.school : 'bj01'
+  }
+  const user = JSON.parse(localStorage.getItem('user_info') || '{}')
+  userInfo = user
+  return user.school
+  // return user.school !== 'global' ? user.school : 'bj01'
+}
+
 export {
   Cookie,
   menu,
+  config,
+  request,
   equalSet,
   isLogin,
-  userInfo,
   setLoginIn,
   setLoginOut,
   checkPower,
   getCurPowers,
   queryString,
+  renderQuery,
+  getSchool,
+  getUserInfo,
 }

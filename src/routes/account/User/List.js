@@ -1,19 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu } from 'antd'
+import moment from 'moment'
 import { DataTable, DropMenu } from 'components'
 import { DETAIL, UPDATE } from 'constants/options'
 import styles from './List.less'
 
 function List ({
   accountUser: {
+    searchQuery,
     list,
     pagination,
   },
-  location,
   loading,
+  onPageChange,
   detailPower,
-  updatePower,
+  // updatePower,
   onDetailItem,
   onEditItem,
 }) {
@@ -26,16 +28,9 @@ function List ({
 
   const columns = [
     {
-      title: '头像',
-      dataIndex: 'image',
-      key: 'image',
-      width: 64,
-      className: styles.avatar,
-      render: text => <img width={24} src={text} alt={text} />,
-    }, {
       title: '用户名',
-      dataIndex: 'uname',
-      key: 'uname',
+      dataIndex: 'username',
+      key: 'username',
     }, {
       title: '真实姓名',
       dataIndex: 'firstname',
@@ -53,13 +48,10 @@ function List ({
       dataIndex: 'school',
       key: 'school',
     }, {
-      title: '报名课程',
-      dataIndex: 'created_at',
-      key: 'created_at',
-    }, {
-      title: '下节课',
-      dataIndex: 'status',
-      key: 'status',
+      title: '加入时间',
+      dataIndex: 'timecreated',
+      key: 'timecreated',
+      render: timecreated => (<span>{moment.unix(timecreated).format('YYYY-MM-DD HH:mm')}</span>),
     }, {
       title: '操作',
       key: 'operation',
@@ -68,7 +60,7 @@ function List ({
         <DropMenu>
           <Menu onClick={({ key }) => handleMenuClick(key, record)}>
             {detailPower && <Menu.Item key={DETAIL}>查看</Menu.Item>}
-            {updatePower && <Menu.Item key={UPDATE}>编辑</Menu.Item>}
+            {/* {updatePower && <Menu.Item key={UPDATE}>编辑</Menu.Item>} */}
           </Menu>
         </DropMenu>
       ),
@@ -79,7 +71,7 @@ function List ({
   let total = pagination.total
 
   const getFilterList = () => {
-    const { field, keyword, hasTeacher, current, pageSize } = location.query
+    const { field, keyword, hasTeacher, current, pageSize } = searchQuery
     const currentPage = current || pagination.current
     const sizePage = pageSize || pagination.pageSize
 
@@ -103,17 +95,18 @@ function List ({
       dataSource={getFilterList()}
       loading={loading.effects['accountUser/query']}
       pagination={{ ...pagination, total }}
+      onPageChange={onPageChange}
       rowKey={record => record.id}
     />
   )
 }
 
 List.propTypes = {
-  location: PropTypes.object.isRequired,
   accountUser: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
   detailPower: PropTypes.bool.isRequired,
-  updatePower: PropTypes.bool.isRequired,
+  onPageChange: PropTypes.func.isRequired,
+  // updatePower: PropTypes.bool.isRequired,
   onDetailItem: PropTypes.func.isRequired,
   onEditItem: PropTypes.func.isRequired,
 }

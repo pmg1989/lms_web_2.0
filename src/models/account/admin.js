@@ -1,8 +1,8 @@
 import { routerRedux } from 'dva/router'
-import { getCurPowers } from 'utils'
+import { getCurPowers, renderQuery, getSchool } from 'utils'
 import { create, update, query, queryItem, updateLevel, updateCancelLevel } from 'services/account/admin'
 import { query as queryRole } from 'services/account/role'
-// import { query as querySchools } from 'services/common/school'
+import { query as querySchools } from 'services/common/school'
 import { query as queryClassRooms } from 'services/common/classroom'
 
 const page = {
@@ -15,7 +15,9 @@ export default {
   state: {
     isPostBack: true, // 判断是否是首次加载页面，作为前端分页判断标识符
     curId: '', // 存储获取列表时的id, 因为在修改信息获取详细数据时id会变
+    searchQuery: {},
     list: [],
+    schools: [],
     pagination: {
       ...page,
       total: null,
@@ -29,7 +31,8 @@ export default {
           const curPowers = getCurPowers(pathname)
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
-            dispatch({ type: 'query' })
+            dispatch({ type: 'querySchools' })
+            dispatch({ type: 'query', payload: { school: getSchool() } })
           }
         }
       })
@@ -37,23 +40,24 @@ export default {
   },
 
   effects: {
-    * query ({}, { select, call, put }) {
-      const isPostBack = yield select(({ accountAdmin }) => accountAdmin.isPostBack)
-      const pathQuery = yield select(({ routing }) => routing.locationBeforeTransitions.query)
+    * query ({ payload }, { select, call, put }) {
+      const { isPostBack, searchQuery } = yield select(({ accountAdmin }) => accountAdmin)
+      const querys = renderQuery(searchQuery, payload)
 
-      if (isPostBack) {
-        const { data, success } = yield call(query, { rolename: 'teacher' })
+      if (isPostBack || payload.school !== searchQuery.school) {
+        const { data, success } = yield call(query, { rolename: 'staff', school: querys.school })
         if (success) {
           yield put({
             type: 'querySuccess',
             payload: {
               list: data,
               pagination: {
-                current: pathQuery.current ? +pathQuery.current : page.current,
-                pageSize: pathQuery.pageSize ? +pathQuery.pageSize : page.pageSize,
+                current: payload.current ? +payload.current : page.current,
+                pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
                 total: data.length,
               },
               isPostBack: false,
+              searchQuery: querys,
             },
           })
         }
@@ -62,9 +66,21 @@ export default {
           type: 'querySuccess',
           payload: {
             pagination: {
-              current: pathQuery.current ? +pathQuery.current : page.current,
-              pageSize: pathQuery.pageSize ? +pathQuery.pageSize : page.pageSize,
+              current: payload.current ? +payload.current : page.current,
+              pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
             },
+            searchQuery: querys,
+          },
+        })
+      }
+    },
+    * querySchools ({ }, { call, put }) {
+      const { data, success } = yield call(querySchools)
+      if (success) {
+        yield put({
+          type: 'querySchoolsSuccess',
+          payload: {
+            schools: data,
           },
         })
       }
@@ -120,12 +136,7 @@ export default {
         }
       }
 
-      // const dataSchools = yield call(querySchools)
-      // if (dataSchools.success) {
-      //   newData.classRooms = dataSchools.data
-      // }
-
-      const dataCR = yield call(queryClassRooms)
+      const dataCR = yield call(queryClassRooms, { school_id: curItem.school_id })
       if (dataCR.success) {
         newData.classRooms = dataCR.data
       }
@@ -168,6 +179,9 @@ export default {
 
   reducers: {
     querySuccess (state, action) {
+      return { ...state, ...action.payload }
+    },
+    querySchoolsSuccess (state, action) {
       return { ...state, ...action.payload }
     },
     toggleResignSuccess (state, action) {

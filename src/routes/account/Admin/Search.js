@@ -2,26 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Button, Row, Col, Icon, Select } from 'antd'
 import { SearchGroup } from 'components'
-import { queryString } from 'utils'
+import { getSchool } from 'utils'
 import { roleNames, categorys, subjects } from 'utils/dictionary'
 
 const FormItem = Form.Item
 const Option = Select.Option
 let searchGroupProps = {}
-let searchValues = {
-  keyword: queryString('keyword'),
-  field: queryString('field'),
-}
+let searchValues = {}
 
 const Search = ({
-  query: {
-    field,
-    keyword,
-    rolename,
-    category,
-    subject,
-  },
   addPower,
+  schools,
   onSearch,
   onAdd,
   form: {
@@ -30,13 +21,11 @@ const Search = ({
   },
 }) => {
   searchGroupProps = {
-    field,
-    keyword,
     size: 'large',
     select: true,
     selectOptions: [{ value: 'username', name: '用户名' }, { value: 'firstname', name: '真实姓名' }, { value: 'phone2', name: '手机号' }],
     selectProps: {
-      defaultValue: field || 'username',
+      defaultValue: 'username',
     },
     onSearch: (value) => {
       validateFields((errors, values) => {
@@ -44,21 +33,9 @@ const Search = ({
           return
         }
         searchValues = value
-        let data = {}
-        if (values.rolename) {
-          data.rolename = values.rolename
-        }
-        if (values.category) {
-          data.category = values.category
-        }
-        if (values.subject) {
-          data.subject = values.subject
-        }
-        if (value.keyword) {
-          data.keyword = value.keyword
-          data.field = value.field
-        }
-        onSearch(data)
+        values.keyword = value.keyword
+        values.field = value.field
+        onSearch(values)
       })
     },
   }
@@ -67,9 +44,18 @@ const Search = ({
     <Row gutter={24}>
       <Col>
         <Form layout="inline">
+          <FormItem label="校区" style={{ marginBottom: 20, marginRight: 40 }}>
+            {getFieldDecorator('school', {
+              initialValue: getSchool(),
+            })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
+              <Option value="">全部</Option>
+              {schools.map(item => <Option key={item.id} value={item.school}>{item.name}</Option>)}
+            </Select>)
+            }
+          </FormItem>
           <FormItem label="角色" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('rolename', {
-              initialValue: rolename || '',
+              initialValue: '',
             })(<Select style={{ width: 90 }}>
               <Option value="">全部</Option>
               {Object.entries(roleNames).map(([key, value]) => {
@@ -80,7 +66,7 @@ const Search = ({
           </FormItem>
           <FormItem label="类别" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('category', {
-              initialValue: category || '',
+              initialValue: '',
             })(<Select style={{ width: 90 }}>
               <Option value="">全部</Option>
               {Object.entries(categorys).map(([key, value]) => {
@@ -91,7 +77,7 @@ const Search = ({
           </FormItem>
           <FormItem label="科目" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('subject', {
-              initialValue: subject || '',
+              initialValue: '',
             })(<Select style={{ width: 90 }}>
               <Option value="">全部</Option>
               {Object.entries(subjects).map(([key, value]) => {
@@ -114,9 +100,9 @@ const Search = ({
 
 Search.propTypes = {
   form: PropTypes.object.isRequired,
+  schools: PropTypes.array.isRequired,
   onSearch: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
-  query: PropTypes.object,
   addPower: PropTypes.bool.isRequired,
 }
 

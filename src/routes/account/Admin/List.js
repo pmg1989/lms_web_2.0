@@ -11,11 +11,12 @@ const confirm = Modal.confirm
 
 function List ({
   accountAdmin: {
+    searchQuery,
     list,
     pagination,
   },
-  location,
   loading,
+  onPageChange,
   updatePower,
   detailPower,
   resignPower,
@@ -85,10 +86,6 @@ function List ({
       key: 'rolename',
       render: roleName => <span>{getRoleName(roleName)}</span>,
     }, {
-      title: '加入时间',
-      dataIndex: 'create_time',
-      key: 'create_time',
-    }, {
       title: '请假状态',
       dataIndex: 'teacher_status',
       key: 'teacher_status',
@@ -102,6 +99,11 @@ function List ({
       dataIndex: 'suspended',
       key: 'suspended',
       render: suspended => <span>{suspended === 1 ? <Tag color="red">已离职</Tag> : '在职'}</span>,
+    }, {
+      title: '加入时间',
+      dataIndex: 'timecreated',
+      key: 'timecreated',
+      render: timecreated => (<span>{moment.unix(timecreated).format('YYYY-MM-DD HH:mm')}</span>),
     }, {
       title: '操作',
       key: 'operation',
@@ -123,7 +125,7 @@ function List ({
   let total = pagination.total
 
   const getFilterList = () => {
-    const { field, keyword, rolename, category, subject, current, pageSize } = location.query
+    const { field, keyword, rolename, category, subject, current, pageSize } = searchQuery
     const currentPage = current || pagination.current
     const sizePage = pageSize || pagination.pageSize
 
@@ -148,6 +150,7 @@ function List ({
     loading: loading.effects['accountAdmin/query'],
     className: styles.table,
     pagination: { ...pagination, total },
+    onPageChange,
     rowKey: record => record.id,
   }
 
@@ -157,13 +160,13 @@ function List ({
 }
 
 List.propTypes = {
-  location: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
   accountAdmin: PropTypes.object.isRequired,
   updatePower: PropTypes.bool.isRequired,
   detailPower: PropTypes.bool.isRequired,
   resignPower: PropTypes.bool.isRequired,
   leavePower: PropTypes.bool.isRequired,
+  onPageChange: PropTypes.func.isRequired,
   onEditItem: PropTypes.func.isRequired,
   onDetailItem: PropTypes.func.isRequired,
   onResignItem: PropTypes.func.isRequired,
