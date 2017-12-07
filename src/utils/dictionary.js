@@ -27,13 +27,13 @@ export function getSubject (subject = '') {
 export const roleNames = {
   admin: '管理员',
   teacher: '老师',
-  courseCreator: '校长',
+  coursecreator: '校长',
   hr: 'HR专员',
   specialist: '课程专家',
 }
 
-export function getRoleName (role = '') {
-  return subjects[role.toLowerCase()] || '未知'
+export function getRoleName (rolename = '') {
+  return roleNames[rolename.toLowerCase()] || '未知'
 }
 
 export function getModalType (type) {
