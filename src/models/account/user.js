@@ -23,13 +23,13 @@ export default {
 
   subscriptions: {
     setup ({ dispatch, history }) {
-      history.listen(({ pathname }) => {
+      history.listen(({ pathname, query: payload }) => {
         if (pathname === '/account/user') {
           const curPowers = getCurPowers(pathname)
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             dispatch({ type: 'querySchools' })
-            dispatch({ type: 'query', payload: { school: 'bj01' } })
+            dispatch({ type: 'query', payload })
           }
         }
       })
@@ -41,8 +41,7 @@ export default {
       const { isPostBack, searchQuery } = yield select(({ accountUser }) => accountUser)
       const querys = renderQuery(searchQuery, payload)
       if (isPostBack) {
-        // const { data, success } = yield call(query, { rolename: 'student', school: querys.school })
-        const { data, success } = yield call(query, { rolename: 'student' })
+        const { data, success } = yield call(query, { rolename: 'student', school: querys.school })
         if (success) {
           yield put({
             type: 'querySuccess',
@@ -112,12 +111,12 @@ export default {
 
       yield put({ type: 'modal/setItem', payload: { curItem: newData } })
     },
-    * showTeacherModal ({ payload }, { call, put }) {
+    * showTeacherModal ({ payload }, { call, put, select }) {
       const { type, id, contract } = payload
 
       yield put({ type: 'modal/showModal', payload: { type, id } })
-
-      const { data, success } = yield call(query, { rolename: 'teacher' })
+      const { school } = yield select(({ modal }) => modal.curItem)
+      const { data, success } = yield call(query, { rolename: 'teacher', school })
       if (success) {
         yield put({ type: 'modal/setSubItem', payload: { teacherList: data, contract } })
       }

@@ -26,13 +26,13 @@ export default {
 
   subscriptions: {
     setup ({ dispatch, history }) {
-      history.listen(({ pathname }) => {
+      history.listen(({ pathname, query: payload }) => {
         if (pathname === '/account/admin') {
           const curPowers = getCurPowers(pathname)
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             dispatch({ type: 'querySchools' })
-            dispatch({ type: 'query', payload: { school: 'bj01' } })
+            dispatch({ type: 'query', payload })
           }
         }
       })
@@ -45,8 +45,7 @@ export default {
       const querys = renderQuery(searchQuery, payload)
 
       if (isPostBack) {
-        // const { data, success } = yield call(query, { rolename: 'teacher', school: querys.school })
-        const { data, success } = yield call(query, { rolename: 'teacher' })
+        const { data, success } = yield call(query, { rolename: 'teacher', school: querys.school })
         if (success) {
           yield put({
             type: 'querySuccess',
@@ -142,7 +141,7 @@ export default {
       //   newData.classRooms = dataSchools.data
       // }
 
-      const dataCR = yield call(queryClassRooms)
+      const dataCR = yield call(queryClassRooms, { school_id: curItem.school_id })
       if (dataCR.success) {
         newData.classRooms = dataCR.data
       }

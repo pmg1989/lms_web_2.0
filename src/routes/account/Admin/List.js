@@ -86,10 +86,6 @@ function List ({
       key: 'rolename',
       render: roleName => <span>{getRoleName(roleName)}</span>,
     }, {
-      title: '加入时间',
-      dataIndex: 'create_time',
-      key: 'create_time',
-    }, {
       title: '请假状态',
       dataIndex: 'teacher_status',
       key: 'teacher_status',
@@ -103,6 +99,11 @@ function List ({
       dataIndex: 'suspended',
       key: 'suspended',
       render: suspended => <span>{suspended === 1 ? <Tag color="red">已离职</Tag> : '在职'}</span>,
+    }, {
+      title: '加入时间',
+      dataIndex: 'timecreated',
+      key: 'timecreated',
+      render: timecreated => (<span>{moment.unix(timecreated).format('YYYY-MM-DD HH:mm')}</span>),
     }, {
       title: '操作',
       key: 'operation',

@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu } from 'antd'
+import moment from 'moment'
 import { DataTable, DropMenu } from 'components'
 import { DETAIL, UPDATE } from 'constants/options'
 import styles from './List.less'
@@ -27,16 +28,9 @@ function List ({
 
   const columns = [
     {
-      title: '头像',
-      dataIndex: 'image',
-      key: 'image',
-      width: 64,
-      className: styles.avatar,
-      render: text => <img width={24} src={text} alt={text} />,
-    }, {
       title: '用户名',
-      dataIndex: 'uname',
-      key: 'uname',
+      dataIndex: 'username',
+      key: 'username',
     }, {
       title: '真实姓名',
       dataIndex: 'firstname',
@@ -54,13 +48,10 @@ function List ({
       dataIndex: 'school',
       key: 'school',
     }, {
-      title: '报名课程',
-      dataIndex: 'created_at',
-      key: 'created_at',
-    }, {
-      title: '下节课',
-      dataIndex: 'status',
-      key: 'status',
+      title: '加入时间',
+      dataIndex: 'timecreated',
+      key: 'timecreated',
+      render: timecreated => (<span>{moment.unix(timecreated).format('YYYY-MM-DD HH:mm')}</span>),
     }, {
       title: '操作',
       key: 'operation',
