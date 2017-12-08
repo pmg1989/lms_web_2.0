@@ -52,20 +52,14 @@ class ModalForm extends Component {
       const data = values
       data.teacher_workday = values.teacher_workday.sort().join(',')
       if (curItem.id) {
-        data.userid = curItem.id // 温馨提示： 记得到时候修改onOk里面 userid => id
+        data.id = curItem.id
         delete data.email
         delete data.school
-        data.teacher_classroom = data.teacher_classroom_name
-        delete data.teacher_classroom_name
         delete data.rolename
       } else {
         data.password = data.phone2.substr(data.phone2.length - 6)
-
-        data.phone = data.phone2
-        delete data.phone2
-        data.teacher_classroom = data.teacher_classroom_name
-        delete data.teacher_classroom_name
       }
+      console.log(data)
       onOk(data)
     })
   }
@@ -195,7 +189,7 @@ class ModalForm extends Component {
                   message: '邮箱格式不正确',
                 },
               ],
-            })(<Input disabled={disabled} type="email" placeholder="请输入邮箱" />)}
+            })(<Input disabled={disabled || type === 'update'} type="email" placeholder="请输入邮箱" />)}
           </FormItem>
           <FormItem label="校区" hasFeedback {...formItemLayout}>
             {getFieldDecorator('school', {
@@ -289,8 +283,8 @@ class ModalForm extends Component {
             })(<InputNumber disabled={disabled} min={0} placeholder="请输入保底课时" />)}
           </FormItem>}
           {isTeacher && <FormItem label="教室" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('teacher_classroom_name', {
-              initialValue: curItem.teacher_classroom_name,
+            {getFieldDecorator('teacher_classroom_id', {
+              initialValue: curItem.teacher_classroom_id,
               rules: [
                 {
                   required: true,

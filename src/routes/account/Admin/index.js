@@ -86,7 +86,7 @@ function Admin ({ dispatch, curPowers, accountAdmin, modal, loading }) {
     loading,
     onOk (data) {
       dispatch({
-        type: data.userid
+        type: data.id
           ? `${namespace}/update`
           : `${namespace}/create`,
         payload: { curItem: data },
