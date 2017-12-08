@@ -135,17 +135,19 @@ export default {
           newData = data
         }
       }
-
-      const dataCR = yield call(queryClassRooms, { school_id: curItem.school_id })
-      if (dataCR.success) {
-        newData.classRooms = dataCR.data.reduce((dic, item) => {
-          if (!dic[item.school_id]) {
-            dic[item.school_id] = [item]
-          } else {
-            dic[item.school_id].push(item)
-          }
-          return dic
-        }, {})
+      // 新增或者 角色为老师时需要获取教室列表（新增时为获取所有）
+      if (type === 'create' || newData.rolename === 'teacher') {
+        const dataCR = yield call(queryClassRooms, { school_id: curItem.school_id })
+        if (dataCR.success) {
+          newData.classRooms = dataCR.data.reduce((dic, item) => {
+            if (!dic[item.school_id]) {
+              dic[item.school_id] = [item]
+            } else {
+              dic[item.school_id].push(item)
+            }
+            return dic
+          }, {})
+        }
       }
 
       // const dataRole = yield call(queryRole)

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Modal, Icon, Select, Checkbox, Row, Col } from 'antd'
+import { getSchool, getUserInfo } from 'utils'
 import { validPhone } from 'utils/utilsValid'
 import { roleNames, categorys, subjects, getModalType } from 'utils/dictionary'
 
@@ -32,7 +33,7 @@ class ModalForm extends Component {
       mySubjects: Object.entries(subjects),
       myLevelList: Array.from(Array(21).keys()),
       isTeacher: true,
-      schoolId: '',
+      schoolId: getUserInfo().school_id,
     }
   }
 
@@ -40,8 +41,8 @@ class ModalForm extends Component {
     if (!this.props.modal.curItem.teacher_category && nextProps.modal.curItem.teacher_category) {
       this.handleCategoryChange(nextProps.modal.curItem.teacher_category, false)
       this.handleSubjectChange(nextProps.modal.curItem.teacher_subject, false)
+      this.handleSchoolChange(nextProps.modal.curItem.school, false)
       this.handleRoleChange(nextProps.modal.curItem.rolename)
-      this.setState({ schoolId: nextProps.modal.curItem.school_id })
     }
   }
 
@@ -67,10 +68,10 @@ class ModalForm extends Component {
     })
   }
 
-  handleSchoolChange = (school) => {
+  handleSchoolChange = (school, needSetValue = true) => {
     const schoolId = this.props.schools.find(item => item.school === school).id
     this.setState({ schoolId })
-    this.props.form.setFieldsValue({ teacher_classroom_id: undefined })
+    needSetValue && this.props.form.setFieldsValue({ teacher_classroom_id: undefined })
   }
 
   handleRoleChange = (rolename) => {
@@ -124,9 +125,9 @@ class ModalForm extends Component {
     } = this.props
     const { mySubjects, myLevelList, isTeacher, schoolId } = this.state
 
-    if (!curItem.roleList) {
-      curItem.roleList = []
-    }
+    // if (!curItem.roleList) {
+    //   curItem.roleList = []
+    // }
     if (!curItem.classRooms) {
       curItem.classRooms = []
     }
@@ -202,7 +203,7 @@ class ModalForm extends Component {
           </FormItem>
           <FormItem label="校区" hasFeedback {...formItemLayout}>
             {getFieldDecorator('school', {
-              initialValue: curItem.school,
+              initialValue: curItem.school || getSchool(),
               rules: [
                 {
                   required: true,
@@ -210,7 +211,7 @@ class ModalForm extends Component {
                 },
               ],
               onChange: this.handleSchoolChange,
-            })(<Select disabled={disabled || type === 'update'} placeholder="--请选择校区--">
+            })(<Select disabled={disabled || type === 'update' || getSchool() !== 'global'} placeholder="--请选择校区--">
               {schools.map((item, key) => {
                 return <Option key={key} value={item.school}>{item.name}</Option>
               })}
