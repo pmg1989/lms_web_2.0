@@ -32,6 +32,7 @@ class ModalForm extends Component {
       mySubjects: Object.entries(subjects),
       myLevelList: Array.from(Array(21).keys()),
       isTeacher: true,
+      schoolId: '',
     }
   }
 
@@ -39,7 +40,8 @@ class ModalForm extends Component {
     if (!this.props.modal.curItem.teacher_category && nextProps.modal.curItem.teacher_category) {
       this.handleCategoryChange(nextProps.modal.curItem.teacher_category, false)
       this.handleSubjectChange(nextProps.modal.curItem.teacher_subject, false)
-      // this.handleRoleChange(nextProps.modal.curItem.roleId)
+      this.handleRoleChange(nextProps.modal.curItem.rolename)
+      this.setState({ schoolId: nextProps.modal.curItem.school_id })
     }
   }
 
@@ -59,13 +61,18 @@ class ModalForm extends Component {
       } else {
         data.password = data.phone2.substr(data.phone2.length - 6)
       }
-      console.log(data)
       onOk(data)
     })
   }
 
-  handleRoleChange = (role) => {
-    this.setState({ isTeacher: role === 'teacher' })
+  handleSchoolChange = (school) => {
+    const schoolId = this.props.schools.find(item => item.school === school).id
+    this.setState({ schoolId })
+    this.props.form.setFieldsValue({ teacher_classroom_id: undefined })
+  }
+
+  handleRoleChange = (rolename) => {
+    this.setState({ isTeacher: rolename === 'teacher' })
   }
 
   handleCategoryChange = (category, needSetValue = true) => {
@@ -83,8 +90,8 @@ class ModalForm extends Component {
       })
     }
     needSetValue && this.props.form.setFieldsValue({
-      teacher_subject: '',
-      teacher_level: '',
+      teacher_subject: undefined,
+      teacher_level: undefined,
     })
   }
 
@@ -99,7 +106,7 @@ class ModalForm extends Component {
       })
     }
     needSetValue && this.props.form.setFieldsValue({
-      teacher_level: '',
+      teacher_level: undefined,
     })
   }
 
@@ -113,7 +120,7 @@ class ModalForm extends Component {
       },
       onCancel,
     } = this.props
-    const { mySubjects, myLevelList, isTeacher } = this.state
+    const { mySubjects, myLevelList, isTeacher, schoolId } = this.state
 
     if (!curItem.roleList) {
       curItem.roleList = []
@@ -136,7 +143,7 @@ class ModalForm extends Component {
     if (disabled) {
       modalFormOpts.footer = null
     }
-
+    console.log(schoolId)
     return (
       <Modal {...modalFormOpts}>
         <Form>
@@ -200,7 +207,7 @@ class ModalForm extends Component {
                   message: '请选择角色',
                 },
               ],
-              // onChange: this.handleRoleChange,
+              onChange: this.handleSchoolChange,
             })(<Select disabled={disabled || type === 'update'} placeholder="--请选择校区--">
               {schools.map((item, key) => {
                 return <Option key={key} value={item.school}>{item.name}</Option>
@@ -292,7 +299,7 @@ class ModalForm extends Component {
                 },
               ],
             })(<Select disabled={disabled} placeholder="--请选择教室--">
-              {curItem.classRooms.map(item => <Option key={item.id} value={item.id}>{item.name}</Option>)}
+              {curItem.classRooms.filter(item => item.school_id === schoolId).map(item => <Option key={item.id} value={item.id}>{item.name}</Option>)}
             </Select>)}
           </FormItem>}
           {isTeacher && <FormItem label="工作日" hasFeedback {...formItemLayout}>
