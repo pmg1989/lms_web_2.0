@@ -12,6 +12,7 @@ const confirm = Modal.confirm
 function List ({
   accountAdmin: {
     searchQuery,
+    schools,
     list,
     pagination,
   },
@@ -56,7 +57,7 @@ function List ({
       [LEAVE]: handleLeaveItem,
     }[key](record)
   }
-
+  console.log(schools)
   const columns = [
     {
       title: '用户名',
@@ -70,6 +71,11 @@ function List ({
       title: '手机号',
       dataIndex: 'phone2',
       key: 'phone2',
+    }, {
+      title: '校区',
+      dataIndex: 'school',
+      key: 'school',
+      render: school => <span>{schools.find(item => item.school === school).name}</span>,
     }, {
       title: '类别',
       dataIndex: 'teacher_category',
