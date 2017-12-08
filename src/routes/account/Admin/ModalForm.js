@@ -143,7 +143,7 @@ class ModalForm extends Component {
     if (disabled) {
       modalFormOpts.footer = null
     }
-    console.log(schoolId)
+
     return (
       <Modal {...modalFormOpts}>
         <Form>
@@ -299,7 +299,7 @@ class ModalForm extends Component {
                 },
               ],
             })(<Select disabled={disabled} placeholder="--请选择教室--">
-              {curItem.classRooms.filter(item => item.school_id === schoolId).map(item => <Option key={item.id} value={item.id}>{item.name}</Option>)}
+              {curItem.classRooms[schoolId] && curItem.classRooms[schoolId].map(item => <Option key={item.id} value={item.id}>{item.name}</Option>)}
             </Select>)}
           </FormItem>}
           {isTeacher && <FormItem label="工作日" hasFeedback {...formItemLayout}>

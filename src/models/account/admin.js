@@ -138,7 +138,14 @@ export default {
 
       const dataCR = yield call(queryClassRooms, { school_id: curItem.school_id })
       if (dataCR.success) {
-        newData.classRooms = dataCR.data
+        newData.classRooms = dataCR.data.reduce((dic, item) => {
+          if (!dic[item.school_id]) {
+            dic[item.school_id] = [item]
+          } else {
+            dic[item.school_id].push(item)
+          }
+          return dic
+        }, {})
       }
 
       // const dataRole = yield call(queryRole)
