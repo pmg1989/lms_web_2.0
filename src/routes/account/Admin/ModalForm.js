@@ -18,6 +18,7 @@ const formItemLayout = {
 
 class ModalForm extends Component {
   static propTypes = {
+    schools: PropTypes.array.isRequired,
     modal: PropTypes.object.isRequired,
     loading: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
@@ -53,6 +54,7 @@ class ModalForm extends Component {
       if (curItem.id) {
         data.userid = curItem.id // 温馨提示： 记得到时候修改onOk里面 userid => id
         delete data.email
+        delete data.school
         data.teacher_classroom = data.teacher_classroom_name
         delete data.teacher_classroom_name
         delete data.rolename
@@ -109,6 +111,7 @@ class ModalForm extends Component {
 
   render () {
     const {
+      schools,
       modal: { curItem, type, visible },
       loading,
       form: {
@@ -193,6 +196,22 @@ class ModalForm extends Component {
                 },
               ],
             })(<Input disabled={disabled} type="email" placeholder="请输入邮箱" />)}
+          </FormItem>
+          <FormItem label="校区" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('school', {
+              initialValue: curItem.school,
+              rules: [
+                {
+                  required: true,
+                  message: '请选择角色',
+                },
+              ],
+              // onChange: this.handleRoleChange,
+            })(<Select disabled={disabled || type === 'update'} placeholder="--请选择校区--">
+              {schools.map((item, key) => {
+                return <Option key={key} value={item.school}>{item.name}</Option>
+              })}
+            </Select>)}
           </FormItem>
           <FormItem label="角色" hasFeedback {...formItemLayout}>
             {getFieldDecorator('rolename', {

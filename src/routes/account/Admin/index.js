@@ -81,6 +81,7 @@ function Admin ({ dispatch, curPowers, accountAdmin, modal, loading }) {
   }
 
   const modalProps = {
+    schools: accountAdmin.schools,
     modal,
     loading,
     onOk (data) {
