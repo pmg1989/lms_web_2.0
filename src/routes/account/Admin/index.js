@@ -8,6 +8,8 @@ import Search from './Search'
 import ModalForm from './ModalForm'
 import LevelModal from './LevelModal'
 
+const namespace = 'accountAdmin'
+
 function Admin ({ dispatch, curPowers, accountAdmin, modal, loading }) {
   const addPower = checkPower(ADD, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
@@ -20,19 +22,14 @@ function Admin ({ dispatch, curPowers, accountAdmin, modal, loading }) {
     addPower,
     onSearch (fieldsValue) {
       dispatch({
-        type: 'accountAdmin/query',
-        payload: {
-          current: 1,
-          ...fieldsValue,
-        },
+        type: `${namespace}/query`,
+        payload: { current: 1, ...fieldsValue },
       })
     },
     onAdd () {
       dispatch({
-        type: 'accountAdmin/showModal',
-        payload: {
-          type: 'create',
-        },
+        type: `${namespace}/showModal`,
+        payload: { type: 'create' },
       })
     },
   }
@@ -46,51 +43,38 @@ function Admin ({ dispatch, curPowers, accountAdmin, modal, loading }) {
     leavePower,
     onPageChange (fieldsValue) {
       dispatch({
-        type: 'accountAdmin/query',
+        type: `${namespace}/query`,
         payload: { ...fieldsValue },
       })
     },
     onEditItem (item) {
       dispatch({
-        type: 'accountAdmin/showModal',
-        payload: {
-          type: 'update',
-          curItem: item,
-        },
+        type: `${namespace}/showModal`,
+        payload: { type: 'update', curItem: item },
       })
     },
     onDetailItem (item) {
       dispatch({
-        type: 'accountAdmin/showModal',
-        payload: {
-          type: 'detail',
-          curItem: item,
-        },
+        type: `${namespace}/showModal`,
+        payload: { type: 'detail', curItem: item },
       })
     },
     onResignItem (item) {
       dispatch({
-        type: 'accountAdmin/toggleResign',
-        payload: {
-          curItem: item,
-        },
+        type: `${namespace}/toggleResign`,
+        payload: { curItem: item },
       })
     },
     onLeaveItem (item) {
       if (item.teacher_status === 'normal') {
         dispatch({
-          type: 'accountAdmin/showLeaveModal',
-          payload: {
-            type: 'update',
-            curItem: item,
-          },
+          type: `${namespace}/showLeaveModal`,
+          payload: { type: 'update', curItem: item },
         })
       } else {
         dispatch({
-          type: 'accountAdmin/cancelLevelTeacher',
-          payload: {
-            curItem: item,
-          },
+          type: `${namespace}/cancelLevelTeacher`,
+          payload: { curItem: item },
         })
       }
     },
@@ -102,11 +86,9 @@ function Admin ({ dispatch, curPowers, accountAdmin, modal, loading }) {
     onOk (data) {
       dispatch({
         type: data.userid
-          ? 'accountAdmin/update'
-          : 'accountAdmin/create',
-        payload: {
-          curItem: data,
-        },
+          ? `${namespace}/update`
+          : `${namespace}/create`,
+        payload: { curItem: data },
       })
     },
     onCancel () {
@@ -119,7 +101,7 @@ function Admin ({ dispatch, curPowers, accountAdmin, modal, loading }) {
     loading,
     onOk (data) {
       dispatch({
-        type: 'accountAdmin/levelTeacher',
+        type: `${namespace}/levelTeacher`,
         payload: {
           curItem: data,
         },

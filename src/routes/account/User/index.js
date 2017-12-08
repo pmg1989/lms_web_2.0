@@ -9,6 +9,8 @@ import Modal from './ModalForm'
 import TeacherModal from './TeacherModal'
 import HistoryListModal from './HistoryListModal'
 
+const namespace = 'accountUser'
+
 function User ({ curPowers, dispatch, accountUser, modal, loading }) {
   const detailPower = checkPower(DETAIL, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
@@ -19,11 +21,8 @@ function User ({ curPowers, dispatch, accountUser, modal, loading }) {
     schools: accountUser.schools,
     onSearch (fieldsValue) {
       dispatch({
-        type: 'accountUser/query',
-        payload: {
-          current: 1,
-          ...fieldsValue,
-        },
+        type: `${namespace}/query`,
+        payload: { current: 1, ...fieldsValue },
       })
     },
   }
@@ -35,26 +34,20 @@ function User ({ curPowers, dispatch, accountUser, modal, loading }) {
     updatePower,
     onPageChange (fieldsValue) {
       dispatch({
-        type: 'accountUser/query',
+        type: `${namespace}/query`,
         payload: { ...fieldsValue },
       })
     },
     onDetailItem (item) {
       dispatch({
-        type: 'accountUser/showModal',
-        payload: {
-          type: 'detail',
-          curItem: item,
-        },
+        type: `${namespace}/showModal`,
+        payload: { type: 'detail', curItem: item },
       })
     },
     onEditItem (item) {
       dispatch({
-        type: 'accountUser/showModal',
-        payload: {
-          type: 'update',
-          curItem: item,
-        },
+        type: `${namespace}/showModal`,
+        payload: { type: 'update', curItem: item },
       })
     },
   }
@@ -69,7 +62,7 @@ function User ({ curPowers, dispatch, accountUser, modal, loading }) {
     },
     onShowTeacherModal (item) {
       dispatch({
-        type: 'accountUser/showTeacherModal',
+        type: `${namespace}/showTeacherModal`,
         payload: {
           type: 'update',
           id: 2,
@@ -79,7 +72,7 @@ function User ({ curPowers, dispatch, accountUser, modal, loading }) {
     },
     onShowHistoryListModal (item) {
       dispatch({
-        type: 'accountUser/showHistoryListModal',
+        type: `${namespace}/showHistoryListModal`,
         payload: {
           type: 'detail',
           id: 3,
@@ -94,10 +87,8 @@ function User ({ curPowers, dispatch, accountUser, modal, loading }) {
     loading,
     onOk (curItem) {
       dispatch({
-        type: 'accountUser/setTeacher',
-        payload: {
-          curItem,
-        },
+        type: `${namespace}/setTeacher`,
+        payload: { curItem },
       })
     },
     onCancel () {
