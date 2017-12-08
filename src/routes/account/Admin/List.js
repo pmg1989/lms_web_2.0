@@ -57,7 +57,7 @@ function List ({
       [LEAVE]: handleLeaveItem,
     }[key](record)
   }
-  console.log(schools)
+
   const columns = [
     {
       title: '用户名',
