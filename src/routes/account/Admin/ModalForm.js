@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Modal, Icon, Select, Checkbox, Row, Col } from 'antd'
 import { validPhone } from 'utils/utilsValid'
-import { categorys, subjects, getModalType } from 'utils/dictionary'
+import { roleNames, categorys, subjects, getModalType } from 'utils/dictionary'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -204,8 +204,10 @@ class ModalForm extends Component {
                 },
               ],
               onChange: this.handleRoleChange,
-            })(<Select disabled={disabled} placeholder="--请选择角色--">
-              {curItem.roleList.map(item => <Option key={item.id} value={item.enname}>{item.name}</Option>)}
+            })(<Select disabled={disabled || type === 'update'} placeholder="--请选择角色--">
+              {Object.entries(roleNames).map(([key, value]) => {
+                return <Option key={key} value={key}>{value}</Option>
+              })}
             </Select>)}
           </FormItem>
           {isTeacher && <FormItem label="类别" hasFeedback {...formItemLayout}>
