@@ -7,7 +7,7 @@ import Calendar from './Calendar'
 function Dashboard ({ dashboard }) {
   console.log(dashboard)
   return (
-    <div>
+    <div className="content-inner">
       <Calendar />
     </div>
   )
