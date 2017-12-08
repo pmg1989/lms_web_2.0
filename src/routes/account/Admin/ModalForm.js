@@ -52,7 +52,9 @@ class ModalForm extends Component {
         return
       }
       const data = values
-      data.teacher_workday = values.teacher_workday.sort().join(',')
+      if (values.rolename === 'teacher') {
+        data.teacher_workday = values.teacher_workday.sort().join(',')
+      }
       if (curItem.id) {
         data.id = curItem.id
         delete data.email
@@ -204,7 +206,7 @@ class ModalForm extends Component {
               rules: [
                 {
                   required: true,
-                  message: '请选择角色',
+                  message: '请选择校区',
                 },
               ],
               onChange: this.handleSchoolChange,
