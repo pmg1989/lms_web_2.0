@@ -29,7 +29,8 @@ function Admin ({ dispatch, curPowers, accountAdmin, modal, loading }) {
     onAdd () {
       dispatch({
         type: `${namespace}/showModal`,
-        payload: { type: 'create' },
+        // school_id = 0 表示获取所有的classrooms，以作为校区下拉框筛选用
+        payload: { type: 'create', curItem: { school_id: 0 } },
       })
     },
   }

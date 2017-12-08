@@ -128,7 +128,7 @@ export default {
 
       yield put({ type: 'modal/showModal', payload: { type } })
 
-      if (curItem) {
+      if (curItem.id) {
         yield put({ type: 'setOldId', payload: { oldId: curItem.id } })
         const { data, success } = yield call(queryItem, { userid: curItem.id })
         if (success) {
