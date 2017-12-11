@@ -9,7 +9,34 @@ import styles from './Calendar.less'
 moment.locale('zh_CN')
 BigCalendar.momentLocalizer(moment) // or globalizeLocalizer
 
-const allViews = Object.keys(BigCalendar.Views).map(k => BigCalendar.Views[k])
+const MonthEvent = ({ event }) => {
+  return (
+    <div className={styles.title_box}>
+      <span className={`icon ${event.category}-${event.iconType}`} />
+      <span className={styles.title}>{event.title}</span>
+    </div>
+  )
+}
+
+MonthEvent.propTypes = {
+  event: PropTypes.object.isRequired,
+}
+
+const AgendaEvent = ({ event }) => {
+  return (
+    <div className={styles.title_box}>
+      <span className={`icon ${event.category}-${event.iconType}`} />
+      <span className={styles.title}>{`${event.teacher} - ${event.category_summary} - ${event.classroom}教室`}</span>
+    </div>
+  )
+}
+
+AgendaEvent.propTypes = {
+  event: PropTypes.object.isRequired,
+}
+
+// const allViews = Object.keys(BigCalendar.Views).map(k => BigCalendar.Views[k])
+const allViews = ['month', 'week', 'day', 'agenda']
 
 const Calendar = ({ lessons, loading }) => {
   return (
@@ -19,8 +46,14 @@ const Calendar = ({ lessons, loading }) => {
           className={styles.calendar_box}
           events={lessons}
           views={allViews}
-          step={60}
+          step={30}
           defaultDate={new Date()}
+          components={{
+            event: MonthEvent,
+            agenda: {
+              event: AgendaEvent,
+            },
+          }}
         />
       }
     </Spin>
