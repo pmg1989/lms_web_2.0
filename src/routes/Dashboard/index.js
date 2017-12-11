@@ -4,17 +4,26 @@ import { connect } from 'dva'
 import Calendar from './Calendar'
 
 
-function Dashboard ({ dashboard }) {
-  console.log(dashboard)
+function Dashboard ({ dashboard, loading }) {
+  const calendarProps = {
+    loading: loading.effects['dashboard/getLessons'],
+    lessons: dashboard.lessons,
+  }
+
   return (
     <div className="content-inner">
-      <Calendar />
+      <Calendar {...calendarProps} />
     </div>
   )
 }
 
 Dashboard.propTypes = {
   dashboard: PropTypes.object.isRequired,
+  loading: PropTypes.object.isRequired,
 }
 
-export default connect(({ dashboard }) => ({ dashboard }))(Dashboard)
+function mapStateToProps ({ dashboard, loading }) {
+  return { dashboard, loading }
+}
+
+export default connect(mapStateToProps)(Dashboard)
