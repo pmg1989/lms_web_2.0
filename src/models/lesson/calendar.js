@@ -23,7 +23,14 @@ export default {
           const curPowers = getCurPowers('/lesson/calendar')
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
-            dispatch({ type: 'getLessons', payload: { school: getSchool() } })
+            dispatch({
+              type: 'getLessons',
+              payload: {
+                school: getSchool(),
+                available: moment().startOf('month').format('X'),
+                deadline: moment().endOf('month').format('X'),
+              },
+            })
           }
         }
       })
@@ -33,8 +40,6 @@ export default {
     * getLessons ({ payload }, { select, call, put }) {
       const { searchQuery } = yield select(({ lessonCalendar }) => lessonCalendar)
       const querys = renderQuery(searchQuery, payload)
-      querys.available = 1509465600
-      querys.deadline = 1517414400
       const { data, success } = yield call(queryLessons, querys)
       let lessons = []
       if (data[0] && data[0].list) {
