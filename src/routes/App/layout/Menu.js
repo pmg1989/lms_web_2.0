@@ -53,7 +53,6 @@ function Menus ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKey
   }
 
   const menuPower = getMenusByPower(immutableMenu.toJS())
-  console.log(menuPower, userPower)
 
   const menuItems = getMenus(menuPower, siderFold)
 
