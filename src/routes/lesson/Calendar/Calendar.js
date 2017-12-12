@@ -56,7 +56,7 @@ const Calendar = ({
         deadline: moment(date).endOf('month').format('X'),
       })
     } else if (curView === 'day') {
-      if (moment(date).date() === 1 && curNavigate === 'NEXT') {
+      if (moment(date).date() === 1 && curNavigate === 'PREV') {
         // 预加载前一个月的数据
         onNavigate({
           available: moment(date).subtract(1, 'month').startOf('month').format('X'),
