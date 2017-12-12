@@ -45,6 +45,10 @@ const Calendar = ({ lessons, loading }) => {
     console.log(event, e)
   }
 
+  const handleNavigate = (date) => {
+    console.log(date)
+  }
+
   return (
     <Spin spinning={loading} size="large">
       {!loading &&
@@ -55,6 +59,7 @@ const Calendar = ({ lessons, loading }) => {
           step={30}
           defaultDate={new Date()}
           onSelectEvent={handleSelectEvent}
+          onNavigate={handleNavigate}
           components={{
             event: MonthEvent,
             agenda: {
