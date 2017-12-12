@@ -20,7 +20,7 @@ export default {
     setup ({ dispatch, history }) {
       history.listen(({ pathname }) => {
         if (pathname === '/' || pathname === '/lesson/calendar') {
-          const curPowers = getCurPowers(pathname)
+          const curPowers = getCurPowers('/lesson/calendar')
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             dispatch({ type: 'getLessons', payload: { school: getSchool() } })
