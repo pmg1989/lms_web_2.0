@@ -1,4 +1,5 @@
 import { routerRedux } from 'dva/router'
+import { navOpenKeys } from 'config'
 import { Cookie, isLogin, getUserInfo, setLoginOut } from 'utils'
 import { logout } from 'services/app'
 
@@ -13,7 +14,7 @@ export default {
     siderFold: localStorage.getItem('antdAdminSiderFold') === 'true',
     darkTheme: localStorage.getItem('antdAdminDarkTheme') !== 'false',
     isNavbar: document.body.clientWidth < 769,
-    navOpenKeys: JSON.parse(localStorage.getItem('navOpenKeys') || '[]'), // 侧边栏菜单打开的keys,
+    navOpenKeys: JSON.parse(localStorage.getItem('navOpenKeys') || navOpenKeys), // 侧边栏菜单打开的keys,
     userPower: initPower,
     curPowers: [],
   },
@@ -26,7 +27,7 @@ export default {
       if (!isLogin()) {
         dispatch(routerRedux.push({
           pathname: '/login',
-          state: { nextPathname: location.pathname !== '/login' ? location.pathname : '/', nextSearch: location.search },
+          state: { nextPathname: location.pathname !== '/login' ? location.pathname : '/lesson/calendar', nextSearch: location.search },
         }))
       }
     },
