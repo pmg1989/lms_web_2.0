@@ -14,6 +14,7 @@ function getCateIcon (lesson) {
 export default {
   namespace: 'lessonCalendar',
   state: {
+    searchQuery: {},
     lessons: [],
   },
   subscriptions: {
@@ -40,6 +41,8 @@ export default {
     * getLessons ({ payload }, { select, call, put }) {
       const { searchQuery } = yield select(({ lessonCalendar }) => lessonCalendar)
       const querys = renderQuery(searchQuery, payload)
+      console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
+      console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
       const { data, success } = yield call(queryLessons, querys)
       let lessons = []
       if (data[0] && data[0].list) {
@@ -70,6 +73,10 @@ export default {
   reducers: {
     getLessonsSuccess (state, action) {
       return { ...state, ...action.payload }
+    },
+    changeView (state, action) {
+      const { view } = action.payload
+      return { ...state, view }
     },
   },
 }

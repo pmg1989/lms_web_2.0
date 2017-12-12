@@ -40,41 +40,62 @@ AgendaEvent.propTypes = {
 // const allViews = Object.keys(BigCalendar.Views).map(k => BigCalendar.Views[k])
 const allViews = ['month', 'week', 'day', 'agenda']
 
-const Calendar = ({ lessons, loading }) => {
-  const handleSelectEvent = (event, e) => {
-    console.log(event, e)
-  }
-
-  const handleNavigate = (date) => {
-    console.log(date)
+const Calendar = ({
+  lessonCalendar: {
+    lessons,
+  },
+  loading,
+  onNavigate,
+}) => {
+  const handleNavigate = (date, curView, curNavigate) => {
+    // console.log(date, curView, curNavigate)
+    if (curView === 'month') {
+      // 加载当前月的数据
+      onNavigate({
+        available: moment(date).startOf('month').format('X'),
+        deadline: moment(date).endOf('month').format('X'),
+      })
+    } else if (curView === 'day') {
+      if (moment(date).date() === 1 && curNavigate === 'NEXT') {
+        // 预加载前一个月的数据
+        onNavigate({
+          available: moment(date).subtract(1, 'month').startOf('month').format('X'),
+          deadline: moment(date).subtract(1, 'month').endOf('month').format('X'),
+        })
+      } else if (moment(date).date() === moment(date).daysInMonth() && curNavigate === 'NEXT') {
+        // 预加载后一个月的数据
+        onNavigate({
+          available: moment(date).add(1, 'month').startOf('month').format('X'),
+          deadline: moment(date).add(1, 'month').endOf('month').format('X'),
+        })
+      }
+    }
   }
 
   return (
     <Spin spinning={loading} size="large">
-      {!loading &&
-        <BigCalendar
-          className={styles.calendar_box}
-          events={lessons}
-          views={allViews}
-          step={30}
-          defaultDate={new Date()}
-          onSelectEvent={handleSelectEvent}
-          onNavigate={handleNavigate}
-          components={{
-            event: MonthEvent,
-            agenda: {
-              event: AgendaEvent,
-            },
-          }}
-        />
-      }
+      <BigCalendar
+        className={styles.calendar_box}
+        events={lessons}
+        views={allViews}
+        step={30}
+        defaultDate={new Date()}
+        onNavigate={handleNavigate}
+        components={{
+          event: MonthEvent,
+          agenda: {
+            event: AgendaEvent,
+          },
+        }}
+      />
     </Spin>
   )
 }
 
 Calendar.propTypes = {
-  lessons: PropTypes.array.isRequired,
+  lessonCalendar: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
+  onNavigate: PropTypes.func.isRequired,
 }
 
 export default Calendar

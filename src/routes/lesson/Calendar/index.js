@@ -3,11 +3,24 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import Calendar from './Calendar'
 
+const namespace = 'lessonCalendar'
 
-function CalendarHome ({ lessonCalendar, loading }) {
+function CalendarHome ({ dispatch, lessonCalendar, loading }) {
   const calendarProps = {
-    loading: loading.effects['lessonCalendar/getLessons'],
-    lessons: lessonCalendar.lessons,
+    loading: loading.effects[`${namespace}/getLessons`],
+    lessonCalendar,
+    onChangeView (view) {
+      dispatch({
+        type: `${namespace}/changeView`,
+        payload: { view },
+      })
+    },
+    onNavigate (query) {
+      dispatch({
+        type: `${namespace}/getLessons`,
+        payload: query,
+      })
+    },
   }
 
   return (
@@ -18,6 +31,7 @@ function CalendarHome ({ lessonCalendar, loading }) {
 }
 
 CalendarHome.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   lessonCalendar: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
 }
