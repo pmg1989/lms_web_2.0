@@ -87,6 +87,23 @@ const Routers = function ({ history, app }) {
             },
           ],
         },
+        // lesson
+        {
+          path: 'lesson',
+          name: 'lesson',
+          childRoutes: [
+            {
+              path: 'list',
+              name: 'list',
+              getComponent (nextState, cb) {
+                require.ensure([], (require) => {
+                  registerModel(app, require('./models/lesson/list'))
+                  cb(null, require('./routes/lesson/List'))
+                }, 'lesson-list')
+              },
+            },
+          ],
+        },
         // system
         {
           path: 'system',

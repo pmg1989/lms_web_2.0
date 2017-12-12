@@ -2,7 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import BigCalendar from 'react-big-calendar'
 import { Spin } from 'antd'
+import { Link } from 'dva/router'
 import moment from 'moment'
+import classnames from 'classnames'
 import 'react-big-calendar/lib/less/styles.less'
 import styles from './Calendar.less'
 
@@ -11,10 +13,10 @@ BigCalendar.momentLocalizer(moment) // or globalizeLocalizer
 
 const MonthEvent = ({ event }) => {
   return (
-    <div className={styles.title_box}>
+    <Link to={`/lesson/detail/${event.id}`} className={styles.title_box}>
       <span className={`icon ${event.category}-${event.iconType}`} />
       <span className={styles.title}>{event.title}</span>
-    </div>
+    </Link>
   )
 }
 
@@ -24,10 +26,10 @@ MonthEvent.propTypes = {
 
 const AgendaEvent = ({ event }) => {
   return (
-    <div className={styles.title_box}>
+    <Link to={`/lesson/detail/${event.id}`} className={classnames(styles.title_box, styles.dark)}>
       <span className={`icon ${event.category}-${event.iconType}`} />
       <span className={styles.title}>{`${event.teacher} - ${event.category_summary} - ${event.classroom}教室`}</span>
-    </div>
+    </Link>
   )
 }
 
@@ -39,8 +41,8 @@ AgendaEvent.propTypes = {
 const allViews = ['month', 'week', 'day', 'agenda']
 
 const Calendar = ({ lessons, loading }) => {
-  const handleSelectEvent = (event) => {
-    console.log(event)
+  const handleSelectEvent = (event, e) => {
+    console.log(event, e)
   }
 
   return (

@@ -8,7 +8,6 @@
 @hd-color: #F2D600;
 @jl-color: #FF80CE;
 @light-color: #878e96;
-
 .calendar_box {
     // min-height: e('calc(100vh - 184px)');
     height: 800px;
@@ -17,9 +16,17 @@
         flex-direction: row;
         align-items: center;
         padding: 2px;
+        color: #fff;
+        &.dark {
+            color: #000;
+        }
     }
      :global {
+        .rbc-selected {
+            z-index: 999;
+        }
         .icon {
+            display: block;
             height: 16px;
             width: 16px;
             margin-right: 6px;
