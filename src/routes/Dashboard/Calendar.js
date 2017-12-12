@@ -39,6 +39,10 @@ AgendaEvent.propTypes = {
 const allViews = ['month', 'week', 'day', 'agenda']
 
 const Calendar = ({ lessons, loading }) => {
+  const handleSelectEvent = (event) => {
+    console.log(event)
+  }
+
   return (
     <Spin spinning={loading} size="large">
       {!loading &&
@@ -48,6 +52,7 @@ const Calendar = ({ lessons, loading }) => {
           views={allViews}
           step={30}
           defaultDate={new Date()}
+          onSelectEvent={handleSelectEvent}
           components={{
             event: MonthEvent,
             agenda: {
