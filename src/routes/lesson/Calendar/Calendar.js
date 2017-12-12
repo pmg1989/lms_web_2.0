@@ -56,17 +56,17 @@ const Calendar = ({
         deadline: moment(date).endOf('month').format('X'),
       })
     } else if (curView === 'day') {
-      if (moment(date).date() === 1 && curNavigate === 'PREV') {
-        // 预加载前一个月的数据
+      if (moment(date).date() === 1 && curNavigate === 'NEXT') {
+        // 加载后一个月的数据
         onNavigate({
-          available: moment(date).subtract(1, 'month').startOf('month').format('X'),
-          deadline: moment(date).subtract(1, 'month').endOf('month').format('X'),
+          available: moment(date).startOf('month').format('X'),
+          deadline: moment(date).endOf('month').format('X'),
         })
-      } else if (moment(date).date() === moment(date).daysInMonth() && curNavigate === 'NEXT') {
-        // 预加载后一个月的数据
+      } else if (moment(date).date() === moment(date).daysInMonth() && curNavigate === 'PREV') {
+        // 加载前一个月的数据
         onNavigate({
-          available: moment(date).add(1, 'month').startOf('month').format('X'),
-          deadline: moment(date).add(1, 'month').endOf('month').format('X'),
+          available: moment(date).startOf('month').format('X'),
+          deadline: moment(date).endOf('month').format('X'),
         })
       }
     }
