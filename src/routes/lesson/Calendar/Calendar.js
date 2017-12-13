@@ -43,7 +43,7 @@ const allViews = ['month', 'week', 'day', 'agenda']
 class Calendar extends Component {
   static propTypes = {
     lessonCalendar: PropTypes.object.isRequired,
-    loading: PropTypes.bool.isRequired,
+    loading: PropTypes.bool,
     onNavigate: PropTypes.func.isRequired,
   }
 
