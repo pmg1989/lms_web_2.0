@@ -17,6 +17,7 @@ const Search = ({
   form: {
     getFieldDecorator,
     validateFields,
+    setFieldsValue,
   },
 }) => {
   searchGroupProps = {
@@ -29,7 +30,11 @@ const Search = ({
       })
     },
   }
-  console.log(searchQuery.school, searchQuery.school || getSchool(), teachersDic)
+
+  const handleSchoolChange = () => {
+    setFieldsValue({ userid: '' })
+  }
+
   return (
     <Row gutter={24}>
       <Col>
@@ -37,6 +42,7 @@ const Search = ({
           <FormItem label="校区" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('school', {
               initialValue: getSchool(),
+              onChange: handleSchoolChange,
             })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
               <Option value="">全部</Option>
               {schools.map(item => <Option key={item.id} value={item.school}>{item.name}</Option>)}
@@ -87,7 +93,7 @@ Search.propTypes = {
 }
 
 export default Form.create({
-  onValuesChange () {
+  onFieldsChange () {
     setTimeout(() => {
       searchGroupProps.onSearch()
     }, 0)

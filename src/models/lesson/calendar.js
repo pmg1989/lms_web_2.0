@@ -73,6 +73,7 @@ export default {
       const querys = renderQuery(searchQuery, payload)
       console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
       console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
+      console.log(querys)
       let lessons = []
       const { data, success } = yield call(queryLessons, querys)
 
