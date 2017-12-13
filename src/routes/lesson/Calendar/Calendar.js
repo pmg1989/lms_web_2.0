@@ -47,6 +47,10 @@ class Calendar extends Component {
     onNavigate: PropTypes.func.isRequired,
   }
 
+  state = {
+    loaded: false,
+  }
+
   handleViews = (view) => {
     console.log(view)
   }
@@ -87,25 +91,27 @@ class Calendar extends Component {
   }
 
   render () {
-    const { lessonCalendar: { lessons }, loading } = this.props
+    const { lessonCalendar: { lessons, isPostBack }, loading } = this.props
 
     return (
       <Spin spinning={loading} size="large">
-        <BigCalendar
-          className={styles.calendar_box}
-          events={lessons}
-          views={allViews}
-          step={30}
-          defaultDate={new Date()}
-          onView={this.handleViews}
-          onNavigate={this.handleNavigate}
-          components={{
-            event: MonthEvent,
-            agenda: {
-              event: AgendaEvent,
-            },
-          }}
-        />
+        {!isPostBack &&
+          <BigCalendar
+            className={styles.calendar_box}
+            events={lessons}
+            views={allViews}
+            step={30}
+            defaultDate={new Date()}
+            onView={this.handleViews}
+            onNavigate={this.handleNavigate}
+            components={{
+              event: MonthEvent,
+              agenda: {
+                event: AgendaEvent,
+              },
+            }}
+          />
+        }
       </Spin>
     )
   }

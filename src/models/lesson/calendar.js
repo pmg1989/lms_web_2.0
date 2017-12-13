@@ -14,6 +14,7 @@ function getCateIcon (lesson) {
 export default {
   namespace: 'lessonCalendar',
   state: {
+    isPostBack: true, // 判断是否是首次加载页面，修复 + more bug
     searchQuery: {},
     lessons: [],
   },
@@ -65,6 +66,7 @@ export default {
           payload: {
             searchQuery: querys,
             lessons,
+            isPostBack: false,
           },
         })
       }
