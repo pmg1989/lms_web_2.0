@@ -6,8 +6,6 @@ import { getSchool } from 'utils'
 const FormItem = Form.Item
 const Option = Select.Option
 
-let searchGroupProps = {}
-
 const Search = ({
   searchQuery,
   schools,
@@ -16,23 +14,21 @@ const Search = ({
   onSearch,
   form: {
     getFieldDecorator,
-    validateFields,
     setFieldsValue,
+    getFieldsValue,
   },
 }) => {
-  searchGroupProps = {
-    onSearch () {
-      validateFields((errors, values) => {
-        if (errors) {
-          return
-        }
-        onSearch(values)
-      })
-    },
+  const handleChange = () => {
+    setTimeout(() => {
+      onSearch(getFieldsValue())
+    }, 0)
   }
 
   const handleSchoolChange = () => {
     setFieldsValue({ userid: '' })
+    setTimeout(() => {
+      onSearch(getFieldsValue())
+    }, 0)
   }
 
   return (
@@ -52,6 +48,7 @@ const Search = ({
           <FormItem label="老师" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('userid', {
               initialValue: '',
+              onChange: handleChange,
             })(<Select style={{ width: 150 }}>
               <Option value="">全部</Option>
               {(teachersDic[searchQuery.school || getSchool()] || []).map(item => <Option key={item.id} value={item.id.toString()}>{item.firstname}</Option>)}
@@ -61,6 +58,7 @@ const Search = ({
           <FormItem label="科目" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('categoryid', {
               initialValue: '',
+              onChange: handleChange,
             })(<Select style={{ width: 150 }}>
               <Option value="">全部</Option>
               {categorys.map(item => <Option key={item.id} value={item.id.toString()}>{item.name}</Option>)}
@@ -70,6 +68,7 @@ const Search = ({
           <FormItem label="精品课/VIP课" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('category_ext', {
               initialValue: '',
+              onChange: handleChange,
             })(<Select style={{ width: 90 }}>
               <Option value="">全部</Option>
               <Option value="jp">精品课</Option>
@@ -92,10 +91,4 @@ Search.propTypes = {
   onSearch: PropTypes.func.isRequired,
 }
 
-export default Form.create({
-  onFieldsChange () {
-    setTimeout(() => {
-      searchGroupProps.onSearch()
-    }, 0)
-  },
-})(Search)
+export default Form.create()(Search)
