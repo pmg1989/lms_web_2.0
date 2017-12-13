@@ -51,62 +51,35 @@ const Calendar = ({
     console.log(view)
   }
 
-  const getDates = (date) => {
-    const start = (moment(date).date(1).isoWeekday()) % 7 // 当前月份的第一天是周几
-    const end = moment(date).daysInMonth() // 当前月份共有多少天
-    let dates = []
-    for (let i = 1; i < start; i += 1) {
-      dates.push(0)
-    }
-    for (let i = 0; i < end; i += 1) {
-      dates.push((i + 1))
-    }
-    if (dates.length % 7 > 0) {
-      const padRight = 7 - (dates.length % 7)
-      for (let i = 0; i < padRight; i += 1) {
-        dates.push(0)
-      }
-    }
-    return dates
-  }
-
-  const getDicWeek = (dates) => {
-    return dates.reduce((dic, date, index) => {
-      const key = Math.floor(index / 7)
-      if (!dic[key]) {
-        dic[key] = []
-      }
-      dic[key].push(date)
-      return dic
-    }, {})
-  }
-
   const handleNavigate = (date, curView, curNavigate) => {
     // console.log(date, curView, curNavigate)
+    const momentDate = moment(date)
     if (curView === 'month') {
       // 加载当前月的数据
       onNavigate({
-        available: moment(date).startOf('month').format('X'),
-        deadline: moment(date).endOf('month').format('X'),
+        available: momentDate.startOf('month').format('X'),
+        deadline: momentDate.endOf('month').format('X'),
       })
     } else if (curView === 'day') {
-      if ((moment(date).date() === 1 && curNavigate === 'NEXT') // 加载后一个月的数据
-       || (moment(date).date() === moment(date).daysInMonth() && curNavigate === 'PREV')) { // 加载前一个月的数据
+      if ((momentDate.date() === 1 && curNavigate === 'NEXT') // 加载后一个月的数据
+        || (momentDate.date() === momentDate.daysInMonth() && curNavigate === 'PREV')) { // 加载前一个月的数据
         onNavigate({
-          available: moment(date).startOf('month').format('X'),
-          deadline: moment(date).endOf('month').format('X'),
+          available: momentDate.startOf('month').format('X'),
+          deadline: momentDate.endOf('month').format('X'),
         })
       }
     } else if (curView === 'week') {
-      const dates = getDates(date)
-      const dicWeek = getDicWeek(dates)
-      const curDate = moment(date).date()
-      const curWeek = dicWeek[Object.keys(dicWeek).find(cur => dicWeek[cur].includes(curDate))]
-      console.log(curWeek, curDate)
-      if (curWeek[0] > curWeek[6] || curWeek[0] <= 0 || curWeek[6] === moment(date).daysInMonth()) {
+      const daysInMonth = momentDate.daysInMonth()
+      const curDate = momentDate.date()
+      if (curNavigate === 'PREV' && curDate < 7) {
         onNavigate({
-          available: moment(date).startOf('month').format('X'),
-          deadline: moment(date).endOf('month').format('X'),
+          available: momentDate.subtract(1, 'month').startOf('month').format('X'),
+          deadline: momentDate.subtract(1, 'month').endOf('month').format('X'),
+        })
+      } else if (curNavigate === 'NEXT' && daysInMonth - curDate < 7) {
+        onNavigate({
+          available: momentDate.add(1, 'month').startOf('month').format('X'),
+          deadline: momentDate.add(1, 'month').endOf('month').format('X'),
         })
       }
     }
