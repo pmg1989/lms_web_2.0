@@ -52,9 +52,8 @@ const Calendar = ({
   }
 
   const handleNavigate = (date, curView, curNavigate) => {
-    // console.log(date, curView, curNavigate)
     const momentDate = moment(date)
-    if (curView === 'month') {
+    if (curView === 'month' || curView === 'agenda') {
       // 加载当前月的数据
       onNavigate({
         available: momentDate.startOf('month').format('X'),
