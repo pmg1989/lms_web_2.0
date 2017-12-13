@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import BigCalendar from 'react-big-calendar'
 import { Spin } from 'antd'
@@ -40,19 +40,21 @@ AgendaEvent.propTypes = {
 // const allViews = Object.keys(BigCalendar.Views).map(k => BigCalendar.Views[k])
 const allViews = ['month', 'week', 'day', 'agenda']
 
-const Calendar = ({
-  lessonCalendar: {
-    lessons,
-  },
-  loading,
-  onNavigate,
-}) => {
-  const handleViews = (view) => {
+class Calendar extends Component {
+  static propTypes = {
+    lessonCalendar: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
+    onNavigate: PropTypes.func.isRequired,
+  }
+
+  handleViews = (view) => {
     console.log(view)
   }
 
-  const handleNavigate = (date, curView, curNavigate) => {
+  handleNavigate = (date, curView, curNavigate) => {
+    const { onNavigate } = this.props
     const momentDate = moment(date)
+
     if (curView === 'month' || curView === 'agenda') {
       // 加载当前月的数据
       onNavigate({
@@ -84,31 +86,29 @@ const Calendar = ({
     }
   }
 
-  return (
-    <Spin spinning={loading} size="large">
-      <BigCalendar
-        className={styles.calendar_box}
-        events={lessons}
-        views={allViews}
-        step={30}
-        defaultDate={new Date()}
-        onView={handleViews}
-        onNavigate={handleNavigate}
-        components={{
-          event: MonthEvent,
-          agenda: {
-            event: AgendaEvent,
-          },
-        }}
-      />
-    </Spin>
-  )
-}
+  render () {
+    const { lessonCalendar: { lessons }, loading } = this.props
 
-Calendar.propTypes = {
-  lessonCalendar: PropTypes.object.isRequired,
-  loading: PropTypes.bool.isRequired,
-  onNavigate: PropTypes.func.isRequired,
+    return (
+      <Spin spinning={loading} size="large">
+        <BigCalendar
+          className={styles.calendar_box}
+          events={lessons}
+          views={allViews}
+          step={30}
+          defaultDate={new Date()}
+          onView={this.handleViews}
+          onNavigate={this.handleNavigate}
+          components={{
+            event: MonthEvent,
+            agenda: {
+              event: AgendaEvent,
+            },
+          }}
+        />
+      </Spin>
+    )
+  }
 }
 
 export default Calendar
