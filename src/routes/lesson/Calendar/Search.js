@@ -29,7 +29,7 @@ const Search = ({
       })
     },
   }
-  console.log(searchQuery, teachersDic)
+  console.log(searchQuery.school, searchQuery.school || getSchool(), teachersDic)
   return (
     <Row gutter={24}>
       <Col>
@@ -46,16 +46,16 @@ const Search = ({
           <FormItem label="老师" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('userid', {
               initialValue: '',
-            })(<Select style={{ width: 90 }}>
+            })(<Select style={{ width: 150 }}>
               <Option value="">全部</Option>
-              {categorys.map(item => <Option key={item.id} value={item.id.toString()}>{item.name}</Option>)}
+              {(teachersDic[searchQuery.school || getSchool()] || []).map(item => <Option key={item.id} value={item.id.toString()}>{item.firstname}</Option>)}
             </Select>)
             }
           </FormItem>
           <FormItem label="科目" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('categoryid', {
-              initialValue: searchQuery.categoryid || '',
-            })(<Select style={{ width: 90 }}>
+              initialValue: '',
+            })(<Select style={{ width: 150 }}>
               <Option value="">全部</Option>
               {categorys.map(item => <Option key={item.id} value={item.id.toString()}>{item.name}</Option>)}
             </Select>)

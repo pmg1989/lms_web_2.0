@@ -51,11 +51,11 @@ export default {
       const { data: categorys } = yield call(queryCategorys)
       const { data: teachers } = yield call(queryTeachers, { rolename: 'teacher', school: '' })
       const teachersDic = teachers.reduce((dic, teacher) => {
-        if (teacher.school_id) {
-          if (!dic[teacher.school_id]) {
-            dic[teacher.school_id] = []
+        if (teacher.school) {
+          if (!dic[teacher.school]) {
+            dic[teacher.school] = []
           }
-          dic[teacher.school_id].push(teacher)
+          dic[teacher.school].push(teacher)
         }
         return dic
       }, {})
