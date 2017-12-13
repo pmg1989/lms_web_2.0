@@ -1,7 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Row, Col, Select } from 'antd'
-import { getSchool } from 'utils'
+import classnames from 'classnames'
+import { getSchool, getUserInfo } from 'utils'
+import styles from './Search.less'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -31,6 +33,12 @@ const Search = ({
     }, 0)
   }
 
+  const teachers = teachersDic[searchQuery.school || getSchool()] || []
+
+  const renderUserId = () => {
+    return (teachers.find(item => item.username === getUserInfo().uname) || {}).id
+  }
+
   return (
     <Row gutter={24}>
       <Col>
@@ -40,18 +48,18 @@ const Search = ({
               initialValue: getSchool(),
               onChange: handleSchoolChange,
             })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
-              <Option value="">全部</Option>
+              {/* <Option value="">全部</Option> */}
               {schools.map(item => <Option key={item.id} value={item.school}>{item.name}</Option>)}
             </Select>)
             }
           </FormItem>
           <FormItem label="老师" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('userid', {
-              initialValue: '',
+              initialValue: renderUserId() || '',
               onChange: handleChange,
-            })(<Select style={{ width: 150 }}>
+            })(<Select style={{ width: 150 }} disabled={getUserInfo().rolename === 'teacher'}>
               <Option value="">全部</Option>
-              {(teachersDic[searchQuery.school || getSchool()] || []).map(item => <Option key={item.id} value={item.id.toString()}>{item.firstname}</Option>)}
+              {teachers.map(item => <Option key={item.id} value={item.id.toString()}>{item.firstname}</Option>)}
             </Select>)
             }
           </FormItem>
@@ -59,9 +67,9 @@ const Search = ({
             {getFieldDecorator('categoryid', {
               initialValue: '',
               onChange: handleChange,
-            })(<Select style={{ width: 150 }}>
-              <Option value="">全部</Option>
-              {categorys.map(item => <Option key={item.id} value={item.id.toString()}>{item.name}</Option>)}
+            })(<Select className={styles.subject_box} style={{ width: 150 }}>
+              <Option value=""><div className={classnames(styles.item, styles.all)}>全部</div></Option>
+              {categorys.map(item => <Option key={item.id} value={item.id.toString()}><div className={classnames(styles.item, styles[item.idnumber])}>{item.name}</div></Option>)}
             </Select>)
             }
           </FormItem>
