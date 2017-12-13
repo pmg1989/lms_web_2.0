@@ -47,6 +47,40 @@ const Calendar = ({
   loading,
   onNavigate,
 }) => {
+  const handleViews = (view) => {
+    console.log(view)
+  }
+
+  const getDates = (date) => {
+    const start = (moment(date).date(1).isoWeekday()) % 7 // 当前月份的第一天是周几
+    const end = moment(date).daysInMonth() // 当前月份共有多少天
+    let dates = []
+    for (let i = 1; i < start; i += 1) {
+      dates.push(0)
+    }
+    for (let i = 0; i < end; i += 1) {
+      dates.push((i + 1))
+    }
+    if (dates.length % 7 > 0) {
+      const padRight = 7 - (dates.length % 7)
+      for (let i = 0; i < padRight; i += 1) {
+        dates.push(0)
+      }
+    }
+    return dates
+  }
+
+  const getDicWeek = (dates) => {
+    return dates.reduce((dic, date, index) => {
+      const key = Math.floor(index / 7)
+      if (!dic[key]) {
+        dic[key] = []
+      }
+      dic[key].push(date)
+      return dic
+    }, {})
+  }
+
   const handleNavigate = (date, curView, curNavigate) => {
     // console.log(date, curView, curNavigate)
     if (curView === 'month') {
@@ -63,6 +97,18 @@ const Calendar = ({
           deadline: moment(date).endOf('month').format('X'),
         })
       }
+    } else if (curView === 'week') {
+      const dates = getDates(date)
+      const dicWeek = getDicWeek(dates)
+      const curDate = moment(date).date()
+      const curWeek = dicWeek[Object.keys(dicWeek).find(cur => dicWeek[cur].includes(curDate))]
+      console.log(curWeek, curDate)
+      if (curWeek[0] > curWeek[6] || curWeek[0] <= 0 || curWeek[6] === moment(date).daysInMonth()) {
+        onNavigate({
+          available: moment(date).startOf('month').format('X'),
+          deadline: moment(date).endOf('month').format('X'),
+        })
+      }
     }
   }
 
@@ -74,6 +120,7 @@ const Calendar = ({
         views={allViews}
         step={30}
         defaultDate={new Date()}
+        onView={handleViews}
         onNavigate={handleNavigate}
         components={{
           event: MonthEvent,
