@@ -1,6 +1,9 @@
 import moment from 'moment'
 import { getCurPowers, renderQuery, getSchool } from 'utils'
 import { query as queryLessons } from 'services/lesson/list'
+import { query as querySchools } from 'services/common/school'
+import { query as queryCategorys } from 'services/common/category'
+import { query as queryTeachers } from 'services/account/admin'
 
 function getCateIcon (lesson) {
   if (lesson.num_student === 0) {
@@ -16,6 +19,9 @@ export default {
   state: {
     isPostBack: true, // 判断是否是首次加载页面，修复 + more bug
     searchQuery: {},
+    schools: [],
+    categorys: [],
+    teachersDic: {},
     lessons: [],
   },
   subscriptions: {
@@ -25,6 +31,7 @@ export default {
           const curPowers = getCurPowers('/lesson/calendar')
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
+            dispatch({ type: 'querySearch' })
             dispatch({
               type: 'getLessons',
               payload: {
@@ -39,13 +46,36 @@ export default {
     },
   },
   effects: {
+    * querySearch ({ }, { call, put }) {
+      const { data: schools } = yield call(querySchools)
+      const { data: categorys } = yield call(queryCategorys)
+      const { data: teachers } = yield call(queryTeachers, { rolename: 'teacher', school: '' })
+      const teachersDic = teachers.reduce((dic, teacher) => {
+        if (teacher.school_id) {
+          if (!dic[teacher.school_id]) {
+            dic[teacher.school_id] = []
+          }
+          dic[teacher.school_id].push(teacher)
+        }
+        return dic
+      }, {})
+      yield put({
+        type: 'querySearchSuccess',
+        payload: {
+          schools,
+          categorys,
+          teachersDic,
+        },
+      })
+    },
     * getLessons ({ payload }, { select, call, put }) {
       const { searchQuery } = yield select(({ lessonCalendar }) => lessonCalendar)
       const querys = renderQuery(searchQuery, payload)
       console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
       console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
-      const { data, success } = yield call(queryLessons, querys)
       let lessons = []
+      const { data, success } = yield call(queryLessons, querys)
+
       if (data[0] && data[0].list) {
         lessons = data[0].list.map((lesson, index) => {
           const start = moment.unix(lesson.available)
@@ -60,6 +90,7 @@ export default {
           return lesson
         })
       }
+
       if (success) {
         yield put({
           type: 'getLessonsSuccess',
@@ -73,6 +104,9 @@ export default {
     },
   },
   reducers: {
+    querySearchSuccess (state, action) {
+      return { ...state, ...action.payload }
+    },
     getLessonsSuccess (state, action) {
       return { ...state, ...action.payload }
     },

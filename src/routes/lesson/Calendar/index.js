@@ -1,11 +1,25 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import Search from './Search'
 import Calendar from './Calendar'
 
 const namespace = 'lessonCalendar'
 
 function CalendarHome ({ dispatch, lessonCalendar, loading }) {
+  const searchProps = {
+    searchQuery: lessonCalendar.searchQuery,
+    schools: lessonCalendar.schools,
+    categorys: lessonCalendar.categorys,
+    teachersDic: lessonCalendar.teachersDic,
+    onSearch (fieldsValue) {
+      dispatch({
+        type: `${namespace}/getLessons`,
+        payload: fieldsValue,
+      })
+    },
+  }
+
   const calendarProps = {
     loading: loading.effects[`${namespace}/getLessons`],
     lessonCalendar,
@@ -25,6 +39,7 @@ function CalendarHome ({ dispatch, lessonCalendar, loading }) {
 
   return (
     <div className="content-inner">
+      <Search {...searchProps} />
       <Calendar {...calendarProps} />
     </div>
   )
