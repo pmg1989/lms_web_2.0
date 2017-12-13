@@ -48,11 +48,30 @@ class Calendar extends Component {
   }
 
   state = {
-    loaded: false,
+    weekClicked: false, // 首次查看week信息时需要验证当前时间是否需要上个月/下个月的获取
+    dicMonth: {
+      [moment().format('YYYY-MM')]: true,
+    }, // 缓存获取过的月份数据
   }
 
   handleViews = (view) => {
-    console.log(view)
+    if (view === 'week' && !this.state.weekClicked) {
+      this.setState({ weekClicked: true })
+      const momentDate = moment()
+      const daysInMonth = momentDate.daysInMonth()
+      const curDate = momentDate.date()
+      if (curDate < 7) {
+        this.props.onNavigate({
+          available: momentDate.subtract(1, 'month').startOf('month').format('X'),
+          deadline: momentDate.subtract(1, 'month').endOf('month').format('X'),
+        })
+      } else if (daysInMonth - curDate < 7) {
+        this.props.onNavigate({
+          available: momentDate.add(1, 'month').startOf('month').format('X'),
+          deadline: momentDate.add(1, 'month').endOf('month').format('X'),
+        })
+      }
+    }
   }
 
   handleNavigate = (date, curView, curNavigate) => {
