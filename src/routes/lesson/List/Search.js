@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'dva/router'
-import { Form, Row, Col, Button, Select, Icon } from 'antd'
+import moment from 'moment'
+import { Form, Row, Col, Button, Select, Icon, DatePicker } from 'antd'
 import { getSchool, getUserInfo } from 'utils'
 
 const FormItem = Form.Item
 const Option = Select.Option
+const RangePicker = DatePicker.RangePicker
 
 const Search = ({
   addPower,
@@ -31,10 +33,30 @@ const Search = ({
     handleChange()
   }
 
+  const handleDateChange = (momentArray) => {
+    setTimeout(() => {
+      onSearch({
+        ...getFieldsValue(),
+        available: momentArray[0].format('X'),
+        deadline: momentArray[1].format('X'),
+      })
+    }, 0)
+  }
+
   const teachers = teachersDic[searchQuery.school || getSchool()] || []
 
   const renderUserId = () => {
     return (teachers.find(item => item.username === getUserInfo().uname) || {}).id
+  }
+
+  const rangePickerProps = {
+    ranges: {
+      昨天: [moment().subtract(1, 'day').startOf('day'), moment().subtract(1, 'day').endOf('day')],
+      今天: [moment().startOf('day'), moment().endOf('day')],
+      明天: [moment().add(1, 'day').startOf('day'), moment().add(1, 'day').endOf('day')],
+      上个月: [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+      当前月: [moment().startOf('month'), moment().endOf('month')],
+      下个月: [moment().add(1, 'month').startOf('month'), moment().add(1, 'month').endOf('month')] },
   }
 
   return (
@@ -60,6 +82,12 @@ const Search = ({
               {teachers.map(item => <Option key={item.id} value={item.id.toString()}>{item.firstname}</Option>)}
             </Select>)
             }
+          </FormItem>
+          <FormItem label="开课时间" style={{ marginBottom: 20, marginRight: 50 }}>
+            {getFieldDecorator('available', {
+              initialValue: [moment().startOf('month'), moment().endOf('month')],
+              onChange: handleDateChange,
+            })(<RangePicker style={{ width: 200 }} {...rangePickerProps} />)}
           </FormItem>
           <FormItem label="科目" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('categoryid', {
