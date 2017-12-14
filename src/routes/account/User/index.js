@@ -35,7 +35,7 @@ function User ({ curPowers, dispatch, accountUser, modal, loading }) {
     onPageChange (fieldsValue) {
       dispatch({
         type: `${namespace}/query`,
-        payload: { ...fieldsValue },
+        payload: { ...fieldsValue, isPostBack: false },
       })
     },
     onDetailItem (item) {

@@ -55,7 +55,6 @@ export default {
                 pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
                 total: data.length,
               },
-              isPostBack: false,
               searchQuery: querys,
             },
           })
