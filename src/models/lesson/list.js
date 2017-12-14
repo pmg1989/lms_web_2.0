@@ -1,13 +1,19 @@
-import { message } from 'antd'
-import { getCurPowers } from 'utils'
-import { create, remove, update, query } from 'services/account/role'
+import moment from 'moment'
+import { getCurPowers, renderQuery, getSchool } from 'utils'
+import { query as queryLessons } from 'services/lesson/list'
+import { query as querySchools } from 'services/common/school'
+import { query as queryCategorys } from 'services/common/category'
+import { query as queryTeachers } from 'services/account/admin'
 
 export default {
   namespace: 'lessonList',
   state: {
-    list: [],
+    searchQuery: {},
+    schools: [],
+    categorys: [],
+    teachersDic: {},
+    lessons: [],
   },
-
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen(({ pathname }) => {
@@ -15,56 +21,68 @@ export default {
           const curPowers = getCurPowers(pathname)
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
-            // dispatch({ type: 'query' })
+            dispatch({ type: 'querySearch' })
+            dispatch({
+              type: 'getLessons',
+              payload: {
+                school: getSchool(),
+                available: moment().startOf('month').format('X'),
+                deadline: moment().endOf('month').format('X'),
+              },
+            })
           }
         }
       })
     },
   },
-
   effects: {
-    * query ({ }, { call, put }) {
-      const data = yield call(query)
-      if (data.success) {
+    * querySearch ({ }, { call, put }) {
+      const { data: schools } = yield call(querySchools)
+      const { data: categorys } = yield call(queryCategorys)
+      const { data: teachers } = yield call(queryTeachers, { rolename: 'teacher', school: '' })
+      const teachersDic = teachers.reduce((dic, teacher) => {
+        if (teacher.school) {
+          if (!dic[teacher.school]) {
+            dic[teacher.school] = []
+          }
+          dic[teacher.school].push(teacher)
+        }
+        return dic
+      }, {})
+      yield put({
+        type: 'querySearchSuccess',
+        payload: {
+          schools,
+          categorys,
+          teachersDic,
+        },
+      })
+    },
+    * getLessons ({ payload }, { select, call, put }) {
+      const { searchQuery } = yield select(({ lessonList }) => lessonList)
+      const querys = renderQuery(searchQuery, payload)
+      console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
+      console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
+      console.log(querys)
+      const { data, success } = yield call(queryLessons, querys)
+
+      if (success) {
         yield put({
-          type: 'querySuccess',
+          type: 'getLessonsSuccess',
           payload: {
-            list: data.list,
+            searchQuery: querys,
+            lessons: data[0].list,
           },
         })
       }
     },
-    * delete ({ payload }, { call, put }) {
-      const data = yield call(remove, { id: payload.id })
-      if (data && data.success) {
-        yield put({ type: 'query' })
-      }
-    },
-    * create ({ payload }, { call, put }) {
-      const { curItem } = payload
-      const params = { ...curItem, power: JSON.stringify(curItem.power) }
-      const data = yield call(create, params)
-      if (data && data.success) {
-        yield put({ type: 'modal/hideModal' })
-        yield put({ type: 'query' })
-      }
-    },
-    * update ({ payload }, { call, put }) {
-      const { curItem } = payload
-      const params = { ...curItem, power: JSON.stringify(curItem.power) }
-      const data = yield call(update, params)
-      if (data && data.success) {
-        yield put({ type: 'modal/hideModal' })
-        yield put({ type: 'query' })
-        message.success('角色修改成功, 注销登录后重新登录即可生效！')
-      }
-    },
   },
-
   reducers: {
-    querySuccess (state, action) {
+    querySearchSuccess (state, action) {
+      return { ...state, ...action.payload }
+    },
+    getLessonsSuccess (state, action) {
       return { ...state, ...action.payload }
     },
   },
-
 }

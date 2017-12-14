@@ -23,12 +23,6 @@ function CalendarHome ({ dispatch, lessonCalendar, loading }) {
   const calendarProps = {
     loading: loading.effects[`${namespace}/getLessons`],
     lessonCalendar,
-    onChangeView (view) {
-      dispatch({
-        type: `${namespace}/changeView`,
-        payload: { view },
-      })
-    },
     onNavigate (query) {
       dispatch({
         type: `${namespace}/getLessons`,
