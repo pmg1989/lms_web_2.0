@@ -1,12 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Row, Col, Select } from 'antd'
+import { Link } from 'dva/router'
+import { Form, Row, Col, Button, Select, Icon } from 'antd'
 import { getSchool, getUserInfo } from 'utils'
 
 const FormItem = Form.Item
 const Option = Select.Option
 
 const Search = ({
+  addPower,
   searchQuery,
   schools,
   categorys,
@@ -82,6 +84,9 @@ const Search = ({
             </Select>)
             }
           </FormItem>
+          <FormItem style={{ marginBottom: 20, float: 'right', marginRight: 0 }}>
+            {addPower && <Link to={'/lesson/create'}><Button size="large" type="ghost"><Icon type="plus-circle-o" />排课</Button></Link>}
+          </FormItem>
         </Form>
       </Col>
     </Row>
@@ -90,6 +95,7 @@ const Search = ({
 
 Search.propTypes = {
   form: PropTypes.object.isRequired,
+  addPower: PropTypes.bool.isRequired,
   searchQuery: PropTypes.object.isRequired,
   schools: PropTypes.array.isRequired,
   categorys: PropTypes.array.isRequired,

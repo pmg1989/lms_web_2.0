@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { checkPower } from 'utils'
-import { DETAIL, UPDATE } from 'constants/options'
+import { DETAIL, ADD, UPDATE } from 'constants/options'
 import Search from './Search'
 import List from './List'
 
@@ -10,9 +10,11 @@ const namespace = 'lessonList'
 
 function ListHome ({ curPowers, dispatch, lessonList, loading }) {
   const detailPower = checkPower(DETAIL, curPowers)
+  const addPower = checkPower(ADD, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
 
   const searchProps = {
+    addPower,
     searchQuery: lessonList.searchQuery,
     schools: lessonList.schools,
     categorys: lessonList.categorys,
