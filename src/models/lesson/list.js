@@ -1,18 +1,28 @@
 import moment from 'moment'
 import { getCurPowers, renderQuery, getSchool } from 'utils'
-import { query as queryLessons } from 'services/lesson/list'
+import { query } from 'services/lesson/list'
 import { query as querySchools } from 'services/common/school'
 import { query as queryCategorys } from 'services/common/category'
 import { query as queryTeachers } from 'services/account/admin'
 
+const page = {
+  current: 1,
+  pageSize: 10,
+}
+
 export default {
   namespace: 'lessonList',
   state: {
+    isPostBack: true, // 判断是否是首次加载页面，作为前端分页判断标识符
     searchQuery: {},
     schools: [],
     categorys: [],
     teachersDic: {},
-    lessons: [],
+    list: [],
+    pagination: {
+      ...page,
+      total: null,
+    },
   },
   subscriptions: {
     setup ({ dispatch, history }) {
@@ -23,7 +33,7 @@ export default {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             dispatch({ type: 'querySearch' })
             dispatch({
-              type: 'getLessons',
+              type: 'query',
               payload: {
                 school: getSchool(),
                 available: moment().startOf('month').format('X'),
@@ -58,20 +68,40 @@ export default {
         },
       })
     },
-    * getLessons ({ payload }, { select, call, put }) {
-      const { searchQuery } = yield select(({ lessonList }) => lessonList)
-      const querys = renderQuery(searchQuery, payload)
+    * query ({ payload }, { select, call, put }) {
+      const { isPostBack, searchQuery } = yield select(({ lessonList }) => lessonList)
+      const { needQuery, current, pageSize, ...queryParams } = payload
+      const querys = renderQuery(searchQuery, queryParams)
       console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
       console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
       console.log(querys)
-      const { data, success } = yield call(queryLessons, querys)
-
-      if (success) {
+      if (isPostBack || needQuery) {
+        const { data, success } = yield call(query, querys)
+        const list = (data[0] && data[0].list) || []
+        if (success) {
+          yield put({
+            type: 'querySuccess',
+            payload: {
+              list,
+              pagination: {
+                current: payload.current ? +payload.current : page.current,
+                pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
+                total: list.length,
+              },
+              isPostBack: false,
+              searchQuery: querys,
+            },
+          })
+        }
+      } else {
         yield put({
-          type: 'getLessonsSuccess',
+          type: 'querySuccess',
           payload: {
+            pagination: {
+              current: payload.current ? +payload.current : page.current,
+              pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
+            },
             searchQuery: querys,
-            lessons: data[0].list,
           },
         })
       }
@@ -81,7 +111,7 @@ export default {
     querySearchSuccess (state, action) {
       return { ...state, ...action.payload }
     },
-    getLessonsSuccess (state, action) {
+    querySuccess (state, action) {
       return { ...state, ...action.payload }
     },
   },
