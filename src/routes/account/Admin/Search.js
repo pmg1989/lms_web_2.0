@@ -7,8 +7,6 @@ import { roleNames, categorys, subjects } from 'utils/dictionary'
 
 const FormItem = Form.Item
 const Option = Select.Option
-let searchGroupProps = {}
-let searchValues = {}
 
 const Search = ({
   addPower,
@@ -17,10 +15,10 @@ const Search = ({
   onAdd,
   form: {
     getFieldDecorator,
-    validateFields,
+    getFieldsValue,
   },
 }) => {
-  searchGroupProps = {
+  const searchGroupProps = {
     size: 'large',
     select: true,
     selectOptions: [{ value: 'username', name: '用户名' }, { value: 'firstname', name: '真实姓名' }, { value: 'phone2', name: '手机号' }],
@@ -28,16 +26,23 @@ const Search = ({
       defaultValue: 'username',
     },
     onSearch: (value) => {
-      validateFields((errors, values) => {
-        if (errors) {
-          return
-        }
-        searchValues = value
-        values.keyword = value.keyword
-        values.field = value.field
-        onSearch(values)
-      })
+      const fieldsValue = getFieldsValue()
+      fieldsValue.keyword = value.keyword
+      fieldsValue.field = value.field
+      onSearch(fieldsValue)
     },
+  }
+
+  const handleChange = () => {
+    setTimeout(() => {
+      onSearch({ ...getFieldsValue(), isPostBack: false })
+    }, 0)
+  }
+
+  const handleSchoolChange = () => {
+    setTimeout(() => {
+      onSearch({ ...getFieldsValue(), isPostBack: true })
+    }, 0)
   }
 
   return (
@@ -47,6 +52,7 @@ const Search = ({
           <FormItem label="校区" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('school', {
               initialValue: getSchool(),
+              onChange: handleSchoolChange,
             })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
               <Option value="">全部</Option>
               {schools.map(item => <Option key={item.id} value={item.school}>{item.name}</Option>)}
@@ -56,6 +62,7 @@ const Search = ({
           <FormItem label="角色" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('rolename', {
               initialValue: '',
+              onChange: handleChange,
             })(<Select style={{ width: 90 }}>
               <Option value="">全部</Option>
               {Object.entries(roleNames).map(([key, value]) => {
@@ -67,6 +74,7 @@ const Search = ({
           <FormItem label="类别" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('category', {
               initialValue: '',
+              onChange: handleChange,
             })(<Select style={{ width: 90 }}>
               <Option value="">全部</Option>
               {Object.entries(categorys).map(([key, value]) => {
@@ -78,6 +86,7 @@ const Search = ({
           <FormItem label="科目" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('subject', {
               initialValue: '',
+              onChange: handleChange,
             })(<Select style={{ width: 90 }}>
               <Option value="">全部</Option>
               {Object.entries(subjects).map(([key, value]) => {
@@ -106,10 +115,4 @@ Search.propTypes = {
   addPower: PropTypes.bool.isRequired,
 }
 
-export default Form.create({
-  onValuesChange () {
-    setTimeout(() => {
-      searchGroupProps.onSearch(searchValues)
-    }, 0)
-  },
-})(Search)
+export default Form.create()(Search)

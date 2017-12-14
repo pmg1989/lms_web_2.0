@@ -11,7 +11,6 @@ const page = {
 export default {
   namespace: 'accountUser',
   state: {
-    isPostBack: true, // 判断是否是首次加载页面，作为前端分页判断标识符
     searchQuery: {},
     list: [],
     schools: [],
@@ -29,7 +28,7 @@ export default {
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             dispatch({ type: 'querySchools' })
-            dispatch({ type: 'query', payload: { school: getSchool() } })
+            dispatch({ type: 'query', payload: { isPostBack: true, school: getSchool() } })
           }
         }
       })
@@ -38,9 +37,10 @@ export default {
 
   effects: {
     * query ({ payload }, { select, call, put }) {
-      const { isPostBack, searchQuery } = yield select(({ accountUser }) => accountUser)
-      const querys = renderQuery(searchQuery, payload)
-      if (isPostBack || payload.school !== searchQuery.school) {
+      const { searchQuery } = yield select(({ accountUser }) => accountUser)
+      const { isPostBack, ...queryParams } = payload
+      const querys = renderQuery(searchQuery, queryParams)
+      if (isPostBack) {
         const { data, success } = yield call(query, { rolename: 'student', school: querys.school })
         if (success) {
           yield put({
@@ -52,7 +52,6 @@ export default {
                 pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
                 total: data.length,
               },
-              isPostBack: false,
               searchQuery: querys,
             },
           })

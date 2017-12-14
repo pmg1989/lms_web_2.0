@@ -7,18 +7,15 @@ import { getSchool } from 'utils'
 const FormItem = Form.Item
 const Option = Select.Option
 
-let searchGroupProps = {}
-let searchValues = {}
-
 const Search = ({
   schools,
   onSearch,
   form: {
     getFieldDecorator,
-    validateFields,
+    getFieldsValue,
   },
 }) => {
-  searchGroupProps = {
+  const searchGroupProps = {
     size: 'large',
     select: true,
     selectOptions: [{ value: 'firstname', name: '真实姓名' }, { value: 'phone2', name: '手机号' }, { value: 'uname', name: '用户名' }],
@@ -26,16 +23,23 @@ const Search = ({
       defaultValue: 'firstname',
     },
     onSearch: (value) => {
-      validateFields((errors, values) => {
-        if (errors) {
-          return
-        }
-        searchValues = value
-        values.keyword = value.keyword
-        values.field = value.field
-        onSearch(values)
-      })
+      const fieldsValue = getFieldsValue()
+      fieldsValue.keyword = value.keyword
+      fieldsValue.field = value.field
+      onSearch(fieldsValue)
     },
+  }
+
+  const handleChange = () => {
+    setTimeout(() => {
+      onSearch({ ...getFieldsValue(), isPostBack: false })
+    }, 0)
+  }
+
+  const handleSchoolChange = () => {
+    setTimeout(() => {
+      onSearch({ ...getFieldsValue(), isPostBack: true })
+    }, 0)
   }
 
   return (
@@ -45,6 +49,7 @@ const Search = ({
           <FormItem label="校区" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('school', {
               initialValue: getSchool(),
+              onChange: handleSchoolChange,
             })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
               <Option value="">全部</Option>
               {schools.map(item => <Option key={item.id} value={item.school}>{item.name}</Option>)}
@@ -54,6 +59,7 @@ const Search = ({
           <FormItem label="是否已分配老师" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('hasTeacher', {
               initialValue: '',
+              onChange: handleChange,
             })(<Select style={{ width: 90 }}>
               <Option value="">全部</Option>
               <Option value="0">未分配</Option>
@@ -77,10 +83,4 @@ Search.propTypes = {
   schools: PropTypes.array.isRequired,
 }
 
-export default Form.create({
-  onValuesChange () {
-    setTimeout(() => {
-      searchGroupProps.onSearch(searchValues)
-    }, 0)
-  },
-})(Search)
+export default Form.create()(Search)

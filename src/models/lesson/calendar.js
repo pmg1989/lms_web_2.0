@@ -111,9 +111,5 @@ export default {
     getLessonsSuccess (state, action) {
       return { ...state, ...action.payload }
     },
-    changeView (state, action) {
-      const { view } = action.payload
-      return { ...state, view }
-    },
   },
 }

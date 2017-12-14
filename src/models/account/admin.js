@@ -13,7 +13,6 @@ const page = {
 export default {
   namespace: 'accountAdmin',
   state: {
-    isPostBack: true, // 判断是否是首次加载页面，作为前端分页判断标识符
     curId: '', // 存储获取列表时的id, 因为在修改信息获取详细数据时id会变
     searchQuery: {},
     list: [],
@@ -32,7 +31,7 @@ export default {
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             dispatch({ type: 'querySchools' })
-            dispatch({ type: 'query', payload: { school: getSchool() } })
+            dispatch({ type: 'query', payload: { isPostBack: true, school: getSchool() } })
           }
         }
       })
@@ -41,10 +40,10 @@ export default {
 
   effects: {
     * query ({ payload }, { select, call, put }) {
-      const { isPostBack, searchQuery } = yield select(({ accountAdmin }) => accountAdmin)
-      const querys = renderQuery(searchQuery, payload)
-
-      if (isPostBack || payload.school !== searchQuery.school) {
+      const { searchQuery } = yield select(({ accountAdmin }) => accountAdmin)
+      const { isPostBack, ...queryParams } = payload
+      const querys = renderQuery(searchQuery, queryParams)
+      if (isPostBack) {
         const { data, success } = yield call(query, { rolename: 'staff', school: querys.school })
         if (success) {
           yield put({
@@ -56,7 +55,6 @@ export default {
                 pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
                 total: data.length,
               },
-              isPostBack: false,
               searchQuery: querys,
             },
           })

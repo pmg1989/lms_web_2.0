@@ -4,12 +4,25 @@
     overflow: scroll;
 }
 
+.title_image_box {
+    height: 60px;
+    line-height: 60px;
+
+    span {
+        font-size: 18px;
+        padding-left: 20px;
+        color: #fff;
+    }
+}
+
 .list {
-    padding: 0 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
 
     .flex_box {
         display: flex;
-        border-bottom: 1px solid #ddd;
+        padding-top: 10px;
     }
 
     .item {
@@ -21,8 +34,7 @@
 
         &.flex_item {
             width: 50%;
-            padding-left: 30px;
-            padding-right: 30px;
+            padding: 0 30px;
             border-bottom: none;
 
             &:first-child {

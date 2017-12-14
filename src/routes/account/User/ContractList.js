@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Tag, Button } from 'antd'
+import { Button } from 'antd'
 import moment from 'moment'
 import classnames from 'classnames'
 import { getCategory } from 'utils/dictionary'
@@ -16,6 +16,23 @@ Empty.propTypes = {
   children: PropTypes.element.isRequired,
 }
 
+const TitleBanner = ({ title, image }) => {
+  return (
+    <div className={styles.title_image_box}
+      style={{
+        background: `url('${image}') no-repeat center center`,
+        backgroundSize: 'cover',
+      }}
+    >
+      <span>{title}</span>
+    </div>
+  )
+}
+TitleBanner.propTypes = {
+  title: PropTypes.string,
+  image: PropTypes.string.isRequired,
+}
+
 const Contract = ({ type, status, item, onShowTeacherModal, onShowHistoryListModal, setTeacherPower, getHistoryPower }) => {
   const isProfession = type === 'profession'
   const currentAvailable = item.current_lesson_available
@@ -25,7 +42,7 @@ const Contract = ({ type, status, item, onShowTeacherModal, onShowHistoryListMod
   return (
     <div className={classnames(styles.item, !isProfession && styles.flex_item)}>
       <div className={styles.left}>
-        <span className={styles.title}>{getCategory(type)} - {isProfession && <Tag color="orange">{item.category_summary}</Tag>}</span>
+        <span className={styles.title}>{getCategory(type)}</span>
         <span className={styles.content}>
           {status === 0 && '待开课'}
           {status === 1 && !hasNext && '下节课 未预约'}
@@ -42,8 +59,8 @@ const Contract = ({ type, status, item, onShowTeacherModal, onShowHistoryListMod
         <span>已完成 · {item.attended_lesson_cnt} / {item.constract_lesson_cnt}</span>
         {isProfession && status === 1 &&
         <span>
-          {setTeacherPower && <Button type="primary" size="small" onClick={() => onShowTeacherModal(item)}>设置老师</Button>}
-          {getHistoryPower && <Button className={styles.margin_left} type="primary" size="small" onClick={() => onShowHistoryListModal(item)}>查看历史</Button>}
+          {setTeacherPower && <Button ghost type="primary" onClick={() => onShowTeacherModal(item)}>设置老师</Button>}
+          {getHistoryPower && <Button className={styles.margin_left} onClick={() => onShowHistoryListModal(item)}>查看历史</Button>}
         </span>}
       </div>
     </div>
@@ -64,8 +81,14 @@ const ContractList = ({ list, status, ...contractProps }) => {
   return (
     <div className={styles.list_box}>
       {list.map((item, key) => {
+        const categoryId = (item.profession.category_idnumber || '').split('-')[0]
         return (
           <div key={key} className={styles.list}>
+            <TitleBanner title={item.profession.category_summary} image={`/images/course-type/${categoryId}.png`} />
+            <div className={styles.item}>
+              <div className={styles.left}><span className={styles.title}>老师：{item.profession.teacher_name || '未分配'}</span></div>
+              <div className={styles.right}>{moment.unix(item.profession.available).format('YYYY-MM-DD')} - {moment.unix(item.profession.deadline).format('YYYY-MM-DD')}</div>
+            </div>
             <Contract type="profession" status={status} item={item.profession} {...contractProps} />
             <div className={styles.flex_box}>
               {item.hd.hdid && <Contract type="hd" title="互动课" status={status} item={item.hd} {...contractProps} />}
