@@ -1,9 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Row, Col, Select } from 'antd'
-import classnames from 'classnames'
 import { getSchool, getUserInfo } from 'utils'
-import styles from './Search.less'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -48,7 +46,7 @@ const Search = ({
               initialValue: getSchool(),
               onChange: handleSchoolChange,
             })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
-              {/* <Option value="">全部</Option> */}
+              <Option value="">全部</Option>
               {schools.map(item => <Option key={item.id} value={item.school}>{item.name}</Option>)}
             </Select>)
             }
@@ -67,9 +65,9 @@ const Search = ({
             {getFieldDecorator('categoryid', {
               initialValue: '',
               onChange: handleChange,
-            })(<Select className={styles.subject_box} style={{ width: 150 }}>
-              <Option value=""><div className={classnames(styles.item, styles.all)}>全部</div></Option>
-              {categorys.map(item => <Option key={item.id} value={item.id.toString()}><div className={classnames(styles.item, styles[item.idnumber])}>{item.name}</div></Option>)}
+            })(<Select style={{ width: 150 }}>
+              <Option value="">全部</Option>
+              {categorys.map(item => <Option key={item.id} value={item.id.toString()}>{item.name}</Option>)}
             </Select>)
             }
           </FormItem>

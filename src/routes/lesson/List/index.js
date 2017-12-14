@@ -20,7 +20,7 @@ function ListHome ({ curPowers, dispatch, lessonList, loading }) {
     onSearch (fieldsValue) {
       dispatch({
         type: `${namespace}/query`,
-        payload: { ...fieldsValue, needQuery: true },
+        payload: { ...fieldsValue, isPostBack: true },
       })
     },
   }
@@ -33,7 +33,7 @@ function ListHome ({ curPowers, dispatch, lessonList, loading }) {
     onPageChange (fieldsValue) {
       dispatch({
         type: `${namespace}/query`,
-        payload: { ...fieldsValue, needQuery: false },
+        payload: { ...fieldsValue, isPostBack: false },
       })
     },
     onDetailItem (item) {

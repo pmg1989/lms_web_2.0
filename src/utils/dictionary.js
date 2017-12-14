@@ -12,7 +12,7 @@ export const subjects = {
   vocal: '声乐',
   piano: '键盘',
   guitar: '吉他',
-  // eguitar: '电吉他',
+  eguitar: '电吉他',
   yoga: '瑜伽',
   rhythm: '节奏',
   record: '录音',

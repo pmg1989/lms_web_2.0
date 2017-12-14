@@ -106,9 +106,10 @@ function queryString (value) {
   return null
 }
 
-function renderQuery (query, payload) {
-  const searchQuery = { ...query, ...payload }
+function renderQuery (storeQuery, payload) {
+  const searchQuery = { ...storeQuery, ...payload }
   for (let key in searchQuery) {
+    // 过滤掉为空的查询 && school 为空时不过滤（school=''表示查询所有校区数据）
     if (!searchQuery[key] && key !== 'school') {
       delete searchQuery[key]
     }

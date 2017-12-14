@@ -13,7 +13,6 @@ const page = {
 export default {
   namespace: 'lessonList',
   state: {
-    isPostBack: true, // 判断是否是首次加载页面，作为前端分页判断标识符
     searchQuery: {},
     schools: [],
     categorys: [],
@@ -35,6 +34,7 @@ export default {
             dispatch({
               type: 'query',
               payload: {
+                isPostBack: true,
                 school: getSchool(),
                 available: moment().startOf('month').format('X'),
                 deadline: moment().endOf('month').format('X'),
@@ -69,13 +69,14 @@ export default {
       })
     },
     * query ({ payload }, { select, call, put }) {
-      const { isPostBack, searchQuery } = yield select(({ lessonList }) => lessonList)
-      const { needQuery, current, pageSize, ...queryParams } = payload
+      const { searchQuery } = yield select(({ lessonList }) => lessonList)
+      const { isPostBack, current, pageSize, ...queryParams } = payload
       const querys = renderQuery(searchQuery, queryParams)
       console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
       console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
       console.log(querys)
-      if (isPostBack || needQuery) {
+      // 判断是否是首次加载页面，作为前端分页判断标识符
+      if (isPostBack) {
         const { data, success } = yield call(query, querys)
         const list = (data[0] && data[0].list) || []
         if (success) {
@@ -88,7 +89,6 @@ export default {
                 pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
                 total: list.length,
               },
-              isPostBack: false,
               searchQuery: querys,
             },
           })

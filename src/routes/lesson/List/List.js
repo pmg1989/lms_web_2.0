@@ -4,6 +4,7 @@ import { Menu } from 'antd'
 import moment from 'moment'
 import { DataTable, DropMenu } from 'components'
 import { DETAIL, UPDATE } from 'constants/options'
+import { getSubject } from 'utils/dictionary'
 import styles from './List.less'
 
 function List ({
@@ -31,7 +32,7 @@ function List ({
       dataIndex: 'category_summary',
       key: 'category_summary',
     }, {
-      title: '上课时间',
+      title: '开课时间',
       dataIndex: 'available',
       key: 'available',
       render: (available, record) => (<span>{moment.unix(available).format('YYYY-MM-DD')}<br />{moment.unix(available).format('HH:mm')} - {moment.unix(record.deadline).format('HH:mm')}</span>),
@@ -39,6 +40,7 @@ function List ({
       title: '科目',
       dataIndex: 'category_idnumber',
       key: 'category_idnumber',
+      render: subject => <span>{getSubject(subject.split('-')[0])}</span>,
     }, {
       title: '教室',
       dataIndex: 'classroom',
@@ -57,16 +59,6 @@ function List ({
       dataIndex: 'school',
       key: 'school',
       // render: school => <span>{schools.find(item => item.school === school).name}</span>,
-    }, {
-      title: '创建人',
-      dataIndex: 'creater',
-      key: 'creater',
-      // render: timecreated => (<span>{moment.unix(timecreated).format('YYYY-MM-DD HH:mm')}</span>),
-    }, {
-      title: '创建时间',
-      dataIndex: 'timecreated',
-      key: 'timecreated',
-      // render: timecreated => (<span>{moment.unix(timecreated).format('YYYY-MM-DD HH:mm')}</span>),
     }, {
       title: '操作',
       key: 'operation',
