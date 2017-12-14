@@ -77,6 +77,10 @@ class Calendar extends Component {
   handleNavigate = (date, curView, curNavigate) => {
     const { onNavigate } = this.props
     const momentDate = moment(date)
+    if (curNavigate === 'DATE') {
+      // 点击 + more 按钮时，不做任何请求 
+      return
+    }
 
     if (curView === 'month' || curView === 'agenda') {
       // 加载当前月的数据
