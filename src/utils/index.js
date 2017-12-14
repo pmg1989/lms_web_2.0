@@ -66,6 +66,7 @@ const setLoginIn = (data, pathPowers) => {
   localStorage.setItem('user_info', JSON.stringify(data))
   localStorage.setItem('allPathPowers', JSON.stringify(pathPowers))
   allPathPowers = pathPowers
+  userInfo = data
 }
 
 const setLoginOut = () => {

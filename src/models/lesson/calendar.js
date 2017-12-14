@@ -18,11 +18,7 @@ export default {
   namespace: 'lessonCalendar',
   state: {
     isPostBack: true, // 判断是否是首次加载页面，修复 + more bug
-    searchQuery: {
-      school: getSchool(),
-      available: moment().startOf('month').format('X'),
-      deadline: moment().endOf('month').format('X'),
-    },
+    searchQuery: {},
     schools: [],
     categorys: [],
     teachersDic: {},
@@ -38,7 +34,11 @@ export default {
             dispatch({ type: 'querySearch' })
             dispatch({
               type: 'getLessons',
-              payload: {},
+              payload: {
+                school: getSchool(),
+                available: moment().startOf('month').format('X'),
+                deadline: moment().endOf('month').format('X'),
+              },
             })
           }
         }
