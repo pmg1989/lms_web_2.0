@@ -24,7 +24,7 @@ const Search = ({
 }) => {
   const handleChange = () => {
     setTimeout(() => {
-      const { available, fieldsValue } = getFieldsValue()
+      const { available, ...fieldsValue } = getFieldsValue()
       onSearch({
         ...fieldsValue,
         available: available[0].format('X'),

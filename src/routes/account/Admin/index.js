@@ -45,7 +45,7 @@ function Admin ({ dispatch, curPowers, accountAdmin, modal, loading }) {
     onPageChange (fieldsValue) {
       dispatch({
         type: `${namespace}/query`,
-        payload: { ...fieldsValue },
+        payload: { ...fieldsValue, isPostBack: false },
       })
     },
     onEditItem (item) {
