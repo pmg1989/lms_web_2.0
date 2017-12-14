@@ -17,7 +17,6 @@ Empty.propTypes = {
 }
 
 const TitleBanner = ({ title, image }) => {
-
   return (
     <div className={styles.title_image_box}
       style={{
