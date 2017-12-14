@@ -24,23 +24,18 @@ const Search = ({
 }) => {
   const handleChange = () => {
     setTimeout(() => {
-      onSearch(getFieldsValue())
+      const { available, fieldsValue } = getFieldsValue()
+      onSearch({
+        ...fieldsValue,
+        available: available[0].format('X'),
+        deadline: available[1].format('X'),
+      })
     }, 0)
   }
 
   const handleSchoolChange = () => {
     setFieldsValue({ userid: '' })
     handleChange()
-  }
-
-  const handleDateChange = (momentArray) => {
-    setTimeout(() => {
-      onSearch({
-        ...getFieldsValue(),
-        available: momentArray[0].format('X'),
-        deadline: momentArray[1].format('X'),
-      })
-    }, 0)
   }
 
   const teachers = teachersDic[searchQuery.school || getSchool()] || []
@@ -51,11 +46,11 @@ const Search = ({
 
   const rangePickerProps = {
     ranges: {
-      昨天: [moment().subtract(1, 'day').startOf('day'), moment().subtract(1, 'day').endOf('day')],
       今天: [moment().startOf('day'), moment().endOf('day')],
+      当前月: [moment().startOf('month'), moment().endOf('month')],
+      昨天: [moment().subtract(1, 'day').startOf('day'), moment().subtract(1, 'day').endOf('day')],
       明天: [moment().add(1, 'day').startOf('day'), moment().add(1, 'day').endOf('day')],
       上个月: [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-      当前月: [moment().startOf('month'), moment().endOf('month')],
       下个月: [moment().add(1, 'month').startOf('month'), moment().add(1, 'month').endOf('month')] },
   }
 
@@ -86,7 +81,7 @@ const Search = ({
           <FormItem label="开课时间" style={{ marginBottom: 20, marginRight: 50 }}>
             {getFieldDecorator('available', {
               initialValue: [moment().startOf('month'), moment().endOf('month')],
-              onChange: handleDateChange,
+              onChange: handleChange,
             })(<RangePicker style={{ width: 200 }} {...rangePickerProps} />)}
           </FormItem>
           <FormItem label="科目" style={{ marginBottom: 20, marginRight: 40 }}>

@@ -7,7 +7,7 @@ import { query as queryClassRooms } from 'services/common/classroom'
 
 const page = {
   current: 1,
-  pageSize: 10,
+  pageSize: 2,
 }
 
 export default {
