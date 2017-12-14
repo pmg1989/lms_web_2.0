@@ -6,4 +6,6 @@ export default {
   logoSrc: 'https://o9u2lnvze.qnssl.com/web/global/brand.png',
   logoText: 'NEWBAND LMS',
   wstoken: '65b6372750516f21e18d27037edad0e0',
+  dashboard: '/lesson/calendar', // default '/'
+  navOpenKeys: '["/lesson"]', // default '[]'
 }

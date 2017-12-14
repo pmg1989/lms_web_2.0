@@ -11,9 +11,32 @@ const menu = [
     icon: 'laptop',
     power: [1, 2],
   },
-  // account
+  // lesson
   {
     id: 2,
+    key: 'lesson',
+    name: '课程管理',
+    icon: 'desktop',
+    clickable: false,
+    power: [1],
+    children: [
+      {
+        id: 21,
+        key: 'calendar',
+        name: '日历管理',
+        power: [1, 2, 3, 4, 5],
+      },
+      {
+        id: 22,
+        key: 'list',
+        name: '课程列表',
+        power: [1, 2, 3, 4, 5],
+      },
+    ],
+  },
+  // account
+  {
+    id: 3,
     key: 'account',
     name: '用户管理',
     icon: 'user',
@@ -21,19 +44,19 @@ const menu = [
     power: [1],
     children: [
       {
-        id: 21,
+        id: 31,
         key: 'role',
         name: '角色管理',
         power: [1, 2, 3, 4, 5],
       },
       {
-        id: 22,
+        id: 32,
         key: 'admin',
         name: '工作人员',
         power: [1, 2, 3, 4, 5, 6, 8, 9],
       },
       {
-        id: 23,
+        id: 33,
         key: 'user',
         name: '学员',
         power: [1, 2, 6, 10, 11],
@@ -42,7 +65,7 @@ const menu = [
   },
   // system
   {
-    id: 3,
+    id: 4,
     key: 'system',
     name: '系统管理',
     icon: 'appstore',
@@ -50,7 +73,7 @@ const menu = [
     power: [1],
     children: [
       {
-        id: 31,
+        id: 41,
         key: 'modify-password',
         name: '修改密码',
         power: [1, 2, 4],

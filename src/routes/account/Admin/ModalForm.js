@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Modal, Icon, Select, Checkbox, Row, Col } from 'antd'
+import { getSchool, getUserInfo } from 'utils'
 import { validPhone } from 'utils/utilsValid'
-import { categorys, subjects, getModalType } from 'utils/dictionary'
+import { roleNames, categorys, subjects, getModalType } from 'utils/dictionary'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -18,6 +19,7 @@ const formItemLayout = {
 
 class ModalForm extends Component {
   static propTypes = {
+    schools: PropTypes.array.isRequired,
     modal: PropTypes.object.isRequired,
     loading: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
@@ -31,6 +33,7 @@ class ModalForm extends Component {
       mySubjects: Object.entries(subjects),
       myLevelList: Array.from(Array(21).keys()),
       isTeacher: true,
+      schoolId: getUserInfo().school_id,
     }
   }
 
@@ -38,7 +41,8 @@ class ModalForm extends Component {
     if (!this.props.modal.curItem.teacher_category && nextProps.modal.curItem.teacher_category) {
       this.handleCategoryChange(nextProps.modal.curItem.teacher_category, false)
       this.handleSubjectChange(nextProps.modal.curItem.teacher_subject, false)
-      // this.handleRoleChange(nextProps.modal.curItem.roleId)
+      this.handleSchoolChange(nextProps.modal.curItem.school, false)
+      this.handleRoleChange(nextProps.modal.curItem.rolename)
     }
   }
 
@@ -49,27 +53,29 @@ class ModalForm extends Component {
         return
       }
       const data = values
-      data.teacher_workday = values.teacher_workday.sort().join(',')
+      if (values.rolename === 'teacher') {
+        data.teacher_workday = values.teacher_workday.sort().join(',')
+      }
       if (curItem.id) {
-        data.userid = curItem.id // 温馨提示： 记得到时候修改onOk里面 userid => id
+        data.id = curItem.id
         delete data.email
-        data.teacher_classroom = data.teacher_classroom_name
-        delete data.teacher_classroom_name
+        delete data.school
         delete data.rolename
       } else {
         data.password = data.phone2.substr(data.phone2.length - 6)
-
-        data.phone = data.phone2
-        delete data.phone2
-        data.teacher_classroom = data.teacher_classroom_name
-        delete data.teacher_classroom_name
       }
       onOk(data)
     })
   }
 
-  handleRoleChange = (role) => {
-    this.setState({ isTeacher: role === 'teacher' })
+  handleSchoolChange = (school, needSetValue = true) => {
+    const schoolId = this.props.schools.find(item => item.school === school).id
+    this.setState({ schoolId })
+    needSetValue && this.props.form.setFieldsValue({ teacher_classroom_id: undefined })
+  }
+
+  handleRoleChange = (rolename) => {
+    this.setState({ isTeacher: rolename === 'teacher' })
   }
 
   handleCategoryChange = (category, needSetValue = true) => {
@@ -87,8 +93,8 @@ class ModalForm extends Component {
       })
     }
     needSetValue && this.props.form.setFieldsValue({
-      teacher_subject: '',
-      teacher_level: '',
+      teacher_subject: undefined,
+      teacher_level: undefined,
     })
   }
 
@@ -103,12 +109,13 @@ class ModalForm extends Component {
       })
     }
     needSetValue && this.props.form.setFieldsValue({
-      teacher_level: '',
+      teacher_level: undefined,
     })
   }
 
   render () {
     const {
+      schools,
       modal: { curItem, type, visible },
       loading,
       form: {
@@ -116,11 +123,11 @@ class ModalForm extends Component {
       },
       onCancel,
     } = this.props
-    const { mySubjects, myLevelList, isTeacher } = this.state
+    const { mySubjects, myLevelList, isTeacher, schoolId } = this.state
 
-    if (!curItem.roleList) {
-      curItem.roleList = []
-    }
+    // if (!curItem.roleList) {
+    //   curItem.roleList = []
+    // }
     if (!curItem.classRooms) {
       curItem.classRooms = []
     }
@@ -192,7 +199,23 @@ class ModalForm extends Component {
                   message: '邮箱格式不正确',
                 },
               ],
-            })(<Input disabled={disabled} type="email" placeholder="请输入邮箱" />)}
+            })(<Input disabled={disabled || type === 'update'} type="email" placeholder="请输入邮箱" />)}
+          </FormItem>
+          <FormItem label="校区" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('school', {
+              initialValue: curItem.school || getSchool(),
+              rules: [
+                {
+                  required: true,
+                  message: '请选择校区',
+                },
+              ],
+              onChange: this.handleSchoolChange,
+            })(<Select disabled={disabled || type === 'update' || getSchool() !== 'global'} placeholder="--请选择校区--">
+              {schools.map((item, key) => {
+                return <Option key={key} value={item.school}>{item.name}</Option>
+              })}
+            </Select>)}
           </FormItem>
           <FormItem label="角色" hasFeedback {...formItemLayout}>
             {getFieldDecorator('rolename', {
@@ -204,8 +227,10 @@ class ModalForm extends Component {
                 },
               ],
               onChange: this.handleRoleChange,
-            })(<Select disabled={disabled} placeholder="--请选择角色--">
-              {curItem.roleList.map(item => <Option key={item.id} value={item.enname}>{item.name}</Option>)}
+            })(<Select disabled={disabled || type === 'update'} placeholder="--请选择角色--">
+              {Object.entries(roleNames).map(([key, value]) => {
+                return <Option key={key} value={key}>{value}</Option>
+              })}
             </Select>)}
           </FormItem>
           {isTeacher && <FormItem label="类别" hasFeedback {...formItemLayout}>
@@ -268,8 +293,8 @@ class ModalForm extends Component {
             })(<InputNumber disabled={disabled} min={0} placeholder="请输入保底课时" />)}
           </FormItem>}
           {isTeacher && <FormItem label="教室" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('teacher_classroom_name', {
-              initialValue: curItem.teacher_classroom_name,
+            {getFieldDecorator('teacher_classroom_id', {
+              initialValue: curItem.teacher_classroom_id,
               rules: [
                 {
                   required: true,
@@ -277,7 +302,7 @@ class ModalForm extends Component {
                 },
               ],
             })(<Select disabled={disabled} placeholder="--请选择教室--">
-              {curItem.classRooms.map(item => <Option key={item.id} value={item.id}>{item.name}</Option>)}
+              {curItem.classRooms[schoolId] && curItem.classRooms[schoolId].map(item => <Option key={item.id} value={item.id}>{item.name}</Option>)}
             </Select>)}
           </FormItem>}
           {isTeacher && <FormItem label="工作日" hasFeedback {...formItemLayout}>

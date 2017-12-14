@@ -9,6 +9,7 @@ import styles from './List.less'
 function List ({
   accountUser: {
     searchQuery,
+    schools,
     list,
     pagination,
   },
@@ -47,6 +48,7 @@ function List ({
       title: '校区',
       dataIndex: 'school',
       key: 'school',
+      render: school => <span>{schools.find(item => item.school === school).name}</span>,
     }, {
       title: '加入时间',
       dataIndex: 'timecreated',

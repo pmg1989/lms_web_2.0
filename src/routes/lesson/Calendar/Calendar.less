@@ -1,0 +1,133 @@
+@color: #4e5052;
+@border-color: #e3e7e8;
+@vocal-color: #9ccc65;
+@piano-color: #26c6da;
+@guitar-color: #ffa726;
+@bass-color: #ff7043;
+@theory-color: #26a69a;
+@hd-color: #F2D600;
+@jl-color: #FF80CE;
+@light-color: #878e96;
+.calendar_box {
+    // min-height: e('calc(100vh - 184px)');
+    height: 800px;
+    .title_box {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        color: #fff;
+        &.dark {
+            color: #000;
+        }
+    }
+     :global {
+        .rbc-selected {
+            z-index: 999;
+        }
+        .icon {
+            display: block;
+            height: 16px;
+            width: 16px;
+            margin-right: 6px;
+        }
+        .vocal-e {
+            border: solid 2px @vocal-color;
+        }
+        .composition-e {
+            border: solid 2px @theory-color;
+        }
+        .piano-e {
+            border: solid 2px @piano-color;
+        }
+        .guitar-e,
+        .eguitar-e {
+            border: solid 2px @guitar-color;
+        }
+        .bass-e {
+            border: solid 2px @bass-color;
+        }
+        .theory-e {
+            border: solid 2px @theory-color;
+        }
+        .hd-e {
+            border: solid 2px @hd-color;
+        }
+        .jl-e {
+            border: solid 2px @jl-color;
+        }
+        .vocal-h {
+            border: solid 2px @vocal-color;
+            border-left-width: .5rem;
+        }
+        .piano-h {
+            border: solid 2px @piano-color;
+            border-left-width: .5rem;
+        }
+        .guitar-h,
+        .eguitar-h {
+            border: solid 2px @guitar-color;
+            border-left-width: .5rem;
+        }
+        .bass-h {
+            border: solid 2px @bass-color;
+            border-left-width: .5rem;
+        }
+        .theory-h {
+            border: solid 2px @theory-color;
+            border-left-width: .5rem;
+        }
+        .composition-h {
+            border: solid 2px @theory-color;
+            border-left-width: .5rem;
+        }
+        .hd-h {
+            border: solid 2px @hd-color;
+            border-left-width: .5rem;
+        }
+        .jl-h {
+            border: solid 2px @jl-color;
+            border-left-width: .5rem;
+        }
+        .vocal-o {
+            border: solid 2px @vocal-color;
+            background: @vocal-color;
+            color: white;
+        }
+        .piano-o {
+            border: solid 2px @piano-color;
+            background: @piano-color;
+            color: white;
+        }
+        .guitar-o,
+        .eguitar-o {
+            border: solid 2px @guitar-color;
+            background: @guitar-color;
+            color: white;
+        }
+        .bass-o {
+            border: solid 2px @bass-color;
+            background: @bass-color;
+            color: white;
+        }
+        .theory-o {
+            border: solid 2px @theory-color;
+            background: @theory-color;
+            color: white;
+        }
+        .composition-o {
+            border: solid 2px @theory-color;
+            background: @theory-color;
+            color: white;
+        }
+        .hd-o {
+            border: solid 2px @hd-color;
+            background: @hd-color;
+            color: white;
+        }
+        .jl-o {
+            border: solid 2px @jl-color;
+            background: @jl-color;
+            color: white;
+        }
+    }
+}

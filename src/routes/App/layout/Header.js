@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu, Icon, Popover } from 'antd'
+import { roleNames } from 'utils/dictionary'
 import BadgeBox from './BadgeBox'
 import styles from './Header.less'
 import Menus from './Menu'
@@ -33,7 +34,7 @@ function Header ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVi
       <div className={styles.right}>
         <BadgeBox />
         <Menu className="header-menu" mode="horizontal" onClick={handleClickMenu} style={{ textAlign: 'center' }}>
-          <SubMenu title={<span><Icon type="user" />{user.uname}</span>}>
+          <SubMenu title={<span><Icon type="user" />{user.uname}({roleNames[user.rolename]})</span>}>
             <Menu.Item key="logout">
               <a>注销</a>
             </Menu.Item>

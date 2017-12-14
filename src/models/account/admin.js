@@ -1,7 +1,7 @@
 import { routerRedux } from 'dva/router'
 import { getCurPowers, renderQuery, getSchool } from 'utils'
 import { create, update, query, queryItem, updateLevel, updateCancelLevel } from 'services/account/admin'
-import { query as queryRole } from 'services/account/role'
+// import { query as queryRole } from 'services/account/role'
 import { query as querySchools } from 'services/common/school'
 import { query as queryClassRooms } from 'services/common/classroom'
 
@@ -128,23 +128,32 @@ export default {
 
       yield put({ type: 'modal/showModal', payload: { type } })
 
-      if (curItem) {
+      if (curItem.id) {
         yield put({ type: 'setOldId', payload: { oldId: curItem.id } })
         const { data, success } = yield call(queryItem, { userid: curItem.id })
         if (success) {
           newData = data
         }
       }
-
-      const dataCR = yield call(queryClassRooms, { school_id: curItem.school_id })
-      if (dataCR.success) {
-        newData.classRooms = dataCR.data
+      // 新增或者 角色为老师时需要获取教室列表（新增时为获取所有）
+      if (type === 'create' || newData.rolename === 'teacher') {
+        const dataCR = yield call(queryClassRooms, { school_id: curItem.school_id })
+        if (dataCR.success) {
+          newData.classRooms = dataCR.data.reduce((dic, item) => {
+            if (!dic[item.school_id]) {
+              dic[item.school_id] = [item]
+            } else {
+              dic[item.school_id].push(item)
+            }
+            return dic
+          }, {})
+        }
       }
 
-      const dataRole = yield call(queryRole)
-      if (dataRole.success) {
-        newData.roleList = dataRole.list
-      }
+      // const dataRole = yield call(queryRole)
+      // if (dataRole.success) {
+      //   newData.roleList = dataRole.list
+      // }
       yield put({ type: 'modal/setItem', payload: { curItem: newData } })
     },
     * showLeaveModal ({ payload }, { put }) {

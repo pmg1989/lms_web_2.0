@@ -1,4 +1,5 @@
 import { routerRedux } from 'dva/router'
+import { dashboard } from 'config'
 import { setLoginIn, menu } from 'utils'
 import { login } from 'services/login'
 
@@ -31,11 +32,14 @@ export default {
       data.role_power = {
         1: [1, 2],
         2: [1],
-        21: [1, 2, 3, 4, 5, 6],
-        22: [1, 2, 3, 4, 5, 6, 8, 9],
-        23: [1, 2, 4, 6, 10, 11],
+        21: [1, 2, 3, 4, 5],
+        22: [1, 2, 3, 4, 5, 6],
         3: [1],
-        31: [1, 2, 4],
+        31: [1, 2, 3, 4, 5, 6],
+        32: [1, 2, 3, 4, 5, 6, 8, 9],
+        33: [1, 2, 4, 6, 10, 11],
+        4: [1],
+        41: [1, 2, 4],
       }
       const allPathPowers = getAllPathPowers(menu, data.role_power)
       setLoginIn(data, allPathPowers)
@@ -50,7 +54,7 @@ export default {
         })
 
         const nextLocation = yield select(state => state.routing.locationBeforeTransitions)
-        const nextPathname = nextLocation.state && nextLocation.state.nextPathname && nextLocation.state.nextPathname !== '/no-power' ? nextLocation.state.nextPathname : '/dashboard'
+        const nextPathname = nextLocation.state && nextLocation.state.nextPathname && nextLocation.state.nextPathname !== '/no-power' ? nextLocation.state.nextPathname : dashboard
         yield put(routerRedux.push({
           pathname: nextPathname,
           search: nextLocation.state && nextLocation.state.nextSearch,

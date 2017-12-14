@@ -12,6 +12,7 @@ const confirm = Modal.confirm
 function List ({
   accountAdmin: {
     searchQuery,
+    schools,
     list,
     pagination,
   },
@@ -71,6 +72,11 @@ function List ({
       dataIndex: 'phone2',
       key: 'phone2',
     }, {
+      title: '校区',
+      dataIndex: 'school',
+      key: 'school',
+      render: school => <span>{schools.find(item => item.school === school).name}</span>,
+    }, {
       title: '类别',
       dataIndex: 'teacher_category',
       key: 'teacher_category',
@@ -91,7 +97,7 @@ function List ({
       key: 'teacher_status',
       render: (status, record) => (
         <span>{
-          status === 'normal' ? '正常' : <span><Tag color="#87d068">请假</Tag><br />{moment.unix(record.teacher_leave_available).format('YYYY-MM-DD')}<br />~{moment.unix(record.teacher_leave_deadline).format('YYYY-MM-DD')}</span>
+          status !== 'leave' ? '正常' : <span><Tag color="#87d068">请假</Tag><br />{moment.unix(record.teacher_leave_available).format('YYYY-MM-DD')}<br />~{moment.unix(record.teacher_leave_deadline).format('YYYY-MM-DD')}</span>
         }</span>
       ),
     }, {

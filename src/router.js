@@ -52,6 +52,33 @@ const Routers = function ({ history, app }) {
             }, 'dashboard')
           },
         },
+        // lesson
+        {
+          path: 'lesson',
+          name: 'lesson',
+          childRoutes: [
+            {
+              path: 'calendar',
+              name: 'calendar',
+              getComponent (nextState, cb) {
+                require.ensure([], (require) => {
+                  registerModel(app, require('./models/lesson/calendar'))
+                  cb(null, require('./routes/lesson/Calendar'))
+                }, 'lesson-calendar')
+              },
+            },
+            {
+              path: 'list',
+              name: 'list',
+              getComponent (nextState, cb) {
+                require.ensure([], (require) => {
+                  registerModel(app, require('./models/lesson/list'))
+                  cb(null, require('./routes/lesson/List'))
+                }, 'lesson-list')
+              },
+            },
+          ],
+        },
         // account
         {
           path: 'account',
@@ -126,6 +153,16 @@ const Routers = function ({ history, app }) {
           registerModel(app, require('./models/login'))
           cb(null, require('./routes/Login'))
         }, 'login')
+      },
+    },
+    // demo
+    {
+      path: 'demo',
+      name: 'demo',
+      getComponent (nextState, cb) {
+        require.ensure([], (require) => {
+          cb(null, require('./routes/Demo'))
+        }, 'demo')
       },
     },
     // *
