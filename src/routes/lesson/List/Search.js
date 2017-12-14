@@ -28,9 +28,7 @@ const Search = ({
 
   const handleSchoolChange = () => {
     setFieldsValue({ userid: '' })
-    setTimeout(() => {
-      onSearch(getFieldsValue())
-    }, 0)
+    handleChange()
   }
 
   const teachers = teachersDic[searchQuery.school || getSchool()] || []
