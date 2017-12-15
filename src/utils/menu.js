@@ -1,6 +1,6 @@
 // 权限的基本操作 详细可参见 ../constants/options.js
-// power = { 1: "查看菜单", 2: "查看详情", 3: "新增", 4: "修改", 5: "删除" }
-// options = { MENU: "查看菜单", DETAIL: "查看详情", ADD: "新增", UPDATE: "修改", DELETE: "删除" }
+// power = { 1: "查看菜单", 2: "查看页面", 3: "新增", 4: "修改", 5: "删除", 6: "详情" }
+// options = { MENU: "查看菜单", CONTENT: "查看页面", ADD: "新增", UPDATE: "修改", DELETE: "删除", DETAIL: "详情" }
 
 const menu = [
   // dashboard
@@ -30,7 +30,25 @@ const menu = [
         id: 22,
         key: 'list',
         name: '课程列表',
-        power: [1, 2, 3, 4, 5],
+        power: [1, 2, 3, 4, 5, 6],
+      },
+      {
+        id: 23,
+        key: 'create',
+        name: '排课',
+        power: [2],
+      },
+      {
+        id: 24,
+        key: 'update',
+        name: '修改课程',
+        power: [2],
+      },
+      {
+        id: 25,
+        key: 'detail',
+        name: '查看课程',
+        power: [2],
       },
     ],
   },
