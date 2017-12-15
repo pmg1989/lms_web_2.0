@@ -40,7 +40,7 @@ const ModalForm = ({
 
   return (
     <Modal {...modalFormOpts}>
-      <Spin size="large" spinning={loading.effects['accountUser/showModal']}>
+      <Spin size="large" spinning={loading}>
         <Form>
           <FormItem label="用户名" {...formItemLayout}>
             {getFieldDecorator('username', {
@@ -90,7 +90,7 @@ const ModalForm = ({
 ModalForm.propTypes = {
   modal: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
-  loading: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
   onCancel: PropTypes.func.isRequired,
 }
 

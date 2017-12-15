@@ -80,7 +80,7 @@ function List ({
       className={styles.table}
       columns={columns}
       dataSource={list}
-      loading={loading.effects['accountUser/query']}
+      loading={loading}
       pagination={pagination}
       onPageChange={onPageChange}
       rowKey={record => record.id}
@@ -90,7 +90,7 @@ function List ({
 
 List.propTypes = {
   lessonList: PropTypes.object.isRequired,
-  loading: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
   detailPower: PropTypes.bool.isRequired,
   onPageChange: PropTypes.func.isRequired,
   // updatePower: PropTypes.bool.isRequired,

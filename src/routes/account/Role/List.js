@@ -63,7 +63,7 @@ function List ({
       className={styles.table}
       columns={columns}
       dataSource={list}
-      loading={loading.effects['accountRole/query']}
+      loading={loading}
       pagination={false}
       rowKey={record => record.id}
     />
@@ -74,7 +74,7 @@ List.propTypes = {
   accountRole: PropTypes.object.isRequired,
   onDeleteItem: PropTypes.func.isRequired,
   onEditItem: PropTypes.func.isRequired,
-  loading: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
   updatePower: PropTypes.bool.isRequired,
   deletePower: PropTypes.bool.isRequired,
 }

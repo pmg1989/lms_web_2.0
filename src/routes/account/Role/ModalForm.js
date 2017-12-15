@@ -48,7 +48,7 @@ const ModalForm = ({
     visible,
     wrapClassName: 'vertical-center-modal',
     className: styles.modalWidth,
-    confirmLoading: loading.models.accountRole,
+    confirmLoading: loading,
     onOk: handleOk,
     onCancel,
     afterClose () {
@@ -81,7 +81,7 @@ const ModalForm = ({
 }
 
 ModalForm.propTypes = {
-  loading: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
   modal: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
   onOk: PropTypes.func.isRequired,

@@ -52,7 +52,7 @@ const ModalForm = ({
     title: <div><Icon type={icon} />申请请假</div>,
     visible,
     wrapClassName: 'vertical-center-modal',
-    confirmLoading: loading.models.accountAdmin,
+    confirmLoading: loading,
     onOk: handleOk,
     onCancel,
   }
@@ -84,7 +84,7 @@ const ModalForm = ({
 ModalForm.propTypes = {
   modal: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
-  loading: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
   onOk: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
 }

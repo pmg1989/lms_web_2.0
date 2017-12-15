@@ -21,7 +21,7 @@ class ModalForm extends Component {
   static propTypes = {
     schools: PropTypes.array.isRequired,
     modal: PropTypes.object.isRequired,
-    loading: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
     form: PropTypes.object.isRequired,
     onOk: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
@@ -139,7 +139,7 @@ class ModalForm extends Component {
       visible,
       maskClosable: false,
       wrapClassName: 'vertical-center-modal',
-      confirmLoading: loading.models.accountAdmin,
+      confirmLoading: loading,
       onOk: this.handleOk,
       onCancel,
     }

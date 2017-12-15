@@ -7,6 +7,8 @@ import RoleList from './List'
 import RoleSearch from './Search'
 import RoleModal from './ModalForm'
 
+const namespace = 'accountRole'
+
 function Role ({ curPowers, dispatch, accountRole, modal, loading }) {
   const addPower = checkPower(ADD, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
@@ -26,11 +28,11 @@ function Role ({ curPowers, dispatch, accountRole, modal, loading }) {
 
   const listProps = {
     accountRole,
-    loading,
+    loading: loading.effects[`${namespace}/query`],
     updatePower,
     deletePower,
     onDeleteItem (id) {
-      dispatch({ type: 'accountRole/delete', payload: { id } })
+      dispatch({ type: `${namespace}/delete`, payload: { id } })
     },
     onEditItem (item) {
       dispatch({
@@ -45,12 +47,12 @@ function Role ({ curPowers, dispatch, accountRole, modal, loading }) {
 
   const modalProps = {
     modal,
-    loading,
+    loading: loading.models.accountRole,
     onOk (data) {
       dispatch({
         type: data.id
-          ? 'accountRole/update'
-          : 'accountRole/create',
+          ? `${namespace}/update`
+          : `${namespace}/create`,
         payload: {
           curItem: data,
         },

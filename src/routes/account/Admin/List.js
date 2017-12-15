@@ -153,7 +153,7 @@ function List ({
   const tableProps = {
     dataSource: getFilterList(),
     columns,
-    loading: loading.effects['accountAdmin/query'],
+    loading,
     className: styles.table,
     pagination: { ...pagination, total },
     onPageChange,
@@ -166,7 +166,7 @@ function List ({
 }
 
 List.propTypes = {
-  loading: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
   accountAdmin: PropTypes.object.isRequired,
   updatePower: PropTypes.bool.isRequired,
   detailPower: PropTypes.bool.isRequired,

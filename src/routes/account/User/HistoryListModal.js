@@ -58,7 +58,7 @@ const ModalForm = ({
       <Table
         columns={columns}
         dataSource={curItem.historyList}
-        loading={loading.models.accountUser}
+        loading={loading}
         rowKey={record => record.modify_time}
       />
     </Modal>
@@ -66,7 +66,7 @@ const ModalForm = ({
 }
 
 ModalForm.propTypes = {
-  loading: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
   modal: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,
 }

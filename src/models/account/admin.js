@@ -110,7 +110,7 @@ export default {
     * toggleResign ({ payload }, { call, put }) {
       const { curItem: { suspended, id } } = payload
       const { success } = yield call(update, {
-        userid: id,
+        id,
         suspended: suspended === 1 ? 0 : 1,
       })
       if (success) {
