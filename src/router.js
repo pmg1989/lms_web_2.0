@@ -88,7 +88,7 @@ const Routers = function ({ history, app }) {
               },
             },
             {
-              path: 'update/:id',
+              path: 'update',
               name: 'update',
               getComponent (nextState, cb) {
                 require.ensure([], (require) => {
@@ -98,7 +98,7 @@ const Routers = function ({ history, app }) {
               },
             },
             {
-              path: 'detail/:id',
+              path: 'detail',
               name: 'detail',
               getComponent (nextState, cb) {
                 require.ensure([], (require) => {
