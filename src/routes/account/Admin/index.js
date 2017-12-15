@@ -37,7 +37,7 @@ function Admin ({ dispatch, curPowers, accountAdmin, modal, loading }) {
 
   const listProps = {
     accountAdmin,
-    loading,
+    loading: loading.effects[`${namespace}/query`],
     updatePower,
     detailPower,
     resignPower,
@@ -84,7 +84,7 @@ function Admin ({ dispatch, curPowers, accountAdmin, modal, loading }) {
   const modalProps = {
     schools: accountAdmin.schools,
     modal,
-    loading,
+    loading: loading.models.accountAdmin,
     onOk (data) {
       dispatch({
         type: data.id
@@ -100,7 +100,7 @@ function Admin ({ dispatch, curPowers, accountAdmin, modal, loading }) {
 
   const levalModalProps = {
     modal,
-    loading,
+    loading: loading.models.accountAdmin,
     onOk (data) {
       dispatch({
         type: `${namespace}/levelTeacher`,

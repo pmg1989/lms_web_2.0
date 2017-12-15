@@ -29,7 +29,7 @@ function ListHome ({ curPowers, dispatch, lessonList, loading }) {
 
   const listProps = {
     lessonList,
-    loading,
+    loading: loading.effects[`${namespace}/query`],
     detailPower,
     updatePower,
     onPageChange (fieldsValue) {

@@ -42,7 +42,7 @@ const ModalForm = ({
     maskClosable: false,
     width: 600,
     wrapClassName: 'vertical-center-modal',
-    confirmLoading: loading.models.accountUser,
+    confirmLoading: loading,
     onOk: handleOk,
     onCancel,
   }
@@ -97,7 +97,7 @@ const ModalForm = ({
 ModalForm.propTypes = {
   modal: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
-  loading: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
   onOk: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
 }

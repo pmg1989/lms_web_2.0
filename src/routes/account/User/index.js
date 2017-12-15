@@ -29,7 +29,7 @@ function User ({ curPowers, dispatch, accountUser, modal, loading }) {
 
   const listProps = {
     accountUser,
-    loading,
+    loading: loading.effects[`${namespace}/query`],
     detailPower,
     updatePower,
     onPageChange (fieldsValue) {
@@ -54,7 +54,7 @@ function User ({ curPowers, dispatch, accountUser, modal, loading }) {
 
   const modalProps = {
     modal,
-    loading,
+    loading: loading.effects[`${namespace}/showModal`],
     setTeacherPower,
     getHistoryPower,
     onCancel () {
@@ -84,7 +84,7 @@ function User ({ curPowers, dispatch, accountUser, modal, loading }) {
 
   const teacherModalProps = {
     modal,
-    loading,
+    loading: loading.models.accountUser,
     onOk (curItem) {
       dispatch({
         type: `${namespace}/setTeacher`,
@@ -98,7 +98,7 @@ function User ({ curPowers, dispatch, accountUser, modal, loading }) {
 
   const historyListModalProps = {
     modal,
-    loading,
+    loading: loading.models.accountUser,
     onCancel () {
       dispatch({ type: 'modal/hideModal', payload: { showParent: true } })
     },

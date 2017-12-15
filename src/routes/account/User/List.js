@@ -95,7 +95,7 @@ function List ({
       className={styles.table}
       columns={columns}
       dataSource={getFilterList()}
-      loading={loading.effects['accountUser/query']}
+      loading={loading}
       pagination={{ ...pagination, total }}
       onPageChange={onPageChange}
       rowKey={record => record.id}
@@ -105,7 +105,7 @@ function List ({
 
 List.propTypes = {
   accountUser: PropTypes.object.isRequired,
-  loading: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
   detailPower: PropTypes.bool.isRequired,
   onPageChange: PropTypes.func.isRequired,
   // updatePower: PropTypes.bool.isRequired,
