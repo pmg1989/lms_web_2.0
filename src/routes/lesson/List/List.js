@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu } from 'antd'
 import moment from 'moment'
+import { Link } from 'dva/router'
 import { DataTable, DropMenu } from 'components'
 import { DETAIL, UPDATE } from 'constants/options'
 import { getSubject } from 'utils/dictionary'
@@ -15,17 +16,8 @@ function List ({
   loading,
   onPageChange,
   detailPower,
-  // updatePower,
-  onDetailItem,
-  onEditItem,
+  updatePower,
 }) {
-  const handleMenuClick = (key, record) => {
-    return {
-      [DETAIL]: onDetailItem,
-      [UPDATE]: onEditItem,
-    }[key](record)
-  }
-
   const columns = [
     {
       title: '课程名称',
@@ -65,9 +57,9 @@ function List ({
       // width: 80,
       render: (text, record) => (
         <DropMenu>
-          <Menu onClick={({ key }) => handleMenuClick(key, record)}>
-            {detailPower && <Menu.Item key={DETAIL}>查看</Menu.Item>}
-            {/* {updatePower && <Menu.Item key={UPDATE}>编辑</Menu.Item>} */}
+          <Menu>
+            {detailPower && <Menu.Item key={DETAIL}><Link to={`/lesson/detail?id=${record.id}`}>查看</Link></Menu.Item>}
+            {updatePower && <Menu.Item key={UPDATE}><Link to={`/lesson/update?id=${record.id}`}>编辑</Link></Menu.Item>}
           </Menu>
         </DropMenu>
       ),
@@ -93,9 +85,7 @@ List.propTypes = {
   loading: PropTypes.bool.isRequired,
   detailPower: PropTypes.bool.isRequired,
   onPageChange: PropTypes.func.isRequired,
-  // updatePower: PropTypes.bool.isRequired,
-  onDetailItem: PropTypes.func.isRequired,
-  onEditItem: PropTypes.func.isRequired,
+  updatePower: PropTypes.bool.isRequired,
 }
 
 export default List
