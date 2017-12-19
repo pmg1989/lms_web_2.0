@@ -1,12 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import ItemForm from './ItemForm'
 
 const LessonItem = ({ lessonItem, loading }) => {
-  console.log(lessonItem, loading)
+  const itemFormProps = {
+    lessonItem,
+    loading: loading.models.lessonItem,
+  }
+
   return (
-    <div>
-            LessonItem
+    <div className="content-inner">
+      <ItemForm {...itemFormProps} />
     </div>
   )
 }

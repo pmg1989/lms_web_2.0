@@ -58,8 +58,8 @@ function List ({
       render: (text, record) => (
         <DropMenu>
           <Menu>
-            {detailPower && <Menu.Item key={DETAIL}><Link to={`/lesson/detail?id=${record.id}`}>查看</Link></Menu.Item>}
-            {updatePower && <Menu.Item key={UPDATE}><Link to={`/lesson/update?id=${record.id}`}>编辑</Link></Menu.Item>}
+            {detailPower && <Menu.Item key={DETAIL}><Link to={`/lesson/detail?lessonid=${record.id}`}>查看</Link></Menu.Item>}
+            {updatePower && <Menu.Item key={UPDATE}><Link to={`/lesson/update?lessonid=${record.id}`}>编辑</Link></Menu.Item>}
           </Menu>
         </DropMenu>
       ),
