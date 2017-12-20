@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, InputNumber, Select, Spin, Button, Row, Col, Checkbox } from 'antd'
+import { Form, InputNumber, Select, Spin, Button, Row, Col, Checkbox, DatePicker } from 'antd'
 import { getSchool, getUserInfo } from 'utils'
 import styles from './ItemForm.less'
 
@@ -46,6 +46,7 @@ class ItemForm extends Component {
     e.preventDefault()
     validateFieldsAndScroll((err, values) => {
       if (!err) {
+        values.startdate = values.startdate.startOf('day').format('X')
         values.openweekday = values.openweekday.sort().join(',')
         console.log(values)
       }
@@ -149,16 +150,16 @@ class ItemForm extends Component {
             </Select>)
             }
           </FormItem>
-          <FormItem label="工作日" hasFeedback {...formItemLayout}>
+          <FormItem label="每周" hasFeedback {...formItemLayout}>
             {getFieldDecorator('openweekday', {
               initialValue: [],
               rules: [
                 {
                   required: true,
-                  message: '请选择工作日',
+                  message: '请选择每周工作日',
                 },
               ],
-            })(<Checkbox.Group disabled={disabled} placeholder="--请选择工作日--">
+            })(<Checkbox.Group disabled={disabled} placeholder="--请选择每周工作日--">
               <Row>
                 <Col span={6}><Checkbox value="1">周一</Checkbox></Col>
                 <Col span={6}><Checkbox value="2">周二</Checkbox></Col>
@@ -173,7 +174,29 @@ class ItemForm extends Component {
           <FormItem label="持续周数" {...formItemLayout}>
             {getFieldDecorator('numsections', {
               initialValue: item.numsections || 16,
+              rules: [
+                {
+                  required: true,
+                  message: '请输入持续周数',
+                },
+              ],
             })(<InputNumber min={1} disabled={disabled} placeholder="请输入持续周数" />)
+            }
+          </FormItem>
+          <FormItem label="首次上课日期" {...formItemLayout}>
+            {getFieldDecorator('startdate', {
+              // initialValue: '',
+              rules: [
+                {
+                  required: true,
+                  message: '请选择首次上课日期',
+                },
+              ],
+            })(<DatePicker
+              className={styles.date_picker}
+              placeholder="请选择首次上课日期"
+              disabledDate={current => current && current.valueOf() < Date.now()}
+            />)
             }
           </FormItem>
           <FormItem wrapperCol={{ span: 17, offset: 4 }}>
