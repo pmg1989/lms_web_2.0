@@ -2,7 +2,7 @@ import { getCurPowers } from 'utils'
 import { query, queryCourseCategory } from 'services/lesson/item'
 import { query as querySchools } from 'services/common/school'
 import { query as queryClassRooms } from 'services/common/classroom'
-import { query as queryTeachers } from 'services/account/admin'
+import { query as queryUsers } from 'services/account/admin'
 
 export default {
   namespace: 'lessonItem',
@@ -12,6 +12,7 @@ export default {
     classroomsDic: {},
     courseCategorys: [],
     teachersDic: {},
+    studentList: [],
   },
 
   subscriptions: {
@@ -47,7 +48,7 @@ export default {
       const { data: schools } = yield call(querySchools)
       const { data: classrooms } = yield call(queryClassRooms, { school_id: 0 })
       const { data: courseCategorys } = yield call(queryCourseCategory)
-      const { data: teachers } = yield call(queryTeachers, { rolename: 'teacher', school: '' })
+      const { data: teachers } = yield call(queryUsers, { rolename: 'teacher', school: '' })
 
       const classroomsDic = classrooms.reduce((dic, classroom) => {
         if (classroom.school_id) {
@@ -78,6 +79,17 @@ export default {
         },
       })
     },
+    * queryStudents ({ payload }, { call, put }) {
+      const { data, success } = yield call(queryUsers, { rolename: 'student', ...payload })
+      if (success) {
+        yield put({
+          type: 'queryStudentsSuccess',
+          payload: {
+            studentList: data,
+          },
+        })
+      }
+    },
   },
 
   reducers: {
@@ -85,6 +97,9 @@ export default {
       return { ...state, ...action.payload }
     },
     querySourceSuccess (state, action) {
+      return { ...state, ...action.payload }
+    },
+    queryStudentsSuccess (state, action) {
       return { ...state, ...action.payload }
     },
   },

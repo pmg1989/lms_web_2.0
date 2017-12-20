@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, InputNumber, Select, Spin, Button, Row, Col, Checkbox, DatePicker } from 'antd'
+import { Form, InputNumber, Select, Spin, Button, Row, Col, Checkbox, DatePicker, Tag } from 'antd'
+import debounce from 'lodash.debounce'
+import moment from 'moment'
 import { getSchool, getUserInfo } from 'utils'
 import { timeList } from 'utils/dictionary'
 import styles from './ItemForm.less'
@@ -22,13 +24,21 @@ class ItemForm extends Component {
     lessonItem: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
+    onQueryStudentList: PropTypes.func.isRequired,
   }
 
-  state = {
-    schoolId: getUserInfo().school_id,
-    timeStarts: timeList,
-    timeEnds: timeList,
-    teachers: [],
+  constructor (props) {
+    super(props)
+    this.state = {
+      schoolId: getUserInfo().school_id,
+      timeStarts: timeList,
+      timeEnds: timeList,
+      teachers: [],
+      fetching: false,
+      errorMsg: '没有匹配的学员数据',
+    }
+
+    this.queryStudentList = debounce(this.queryStudentList, 800)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -82,6 +92,27 @@ class ItemForm extends Component {
     }
   }
 
+  handleChange = () => {
+    this.setState({ fetching: false })
+  }
+
+  queryStudentList = (phone2) => {
+    const { onQueryStudentList, form: { getFieldsValue } } = this.props
+    this.setState({ fetching: true })
+    const { school_id, available } = getFieldsValue(['school_id', 'available'])
+    const params = getFieldsValue(['categoryid', 'teacherid', 'startdate', 'numsections', 'openweekday'])
+    if (params.categoryid && params.teacherid && params.startdate && available && params.numsections && params.openweekday.length) {
+      params.startdate = moment(`${params.startdate.format('YYYY-MM-DD')} ${available}`).format('X')
+      params.openweekday = params.openweekday.sort().join(',')
+      console.log(school_id, params)
+      // this.props.onQueryStudentList(params)
+      onQueryStudentList({ phone2, school: '' })
+    } else {
+      console.log('error')
+      this.setState({ fetching: false, errorMsg: '请先完善表单数据！' })
+    }
+  }
+
   handleSubmit = (e) => {
     const { form: { validateFieldsAndScroll } } = this.props
     e.preventDefault()
@@ -89,6 +120,9 @@ class ItemForm extends Component {
       if (!err) {
         values.startdate = values.startdate.startOf('day').format('X')
         values.openweekday = values.openweekday.sort().join(',')
+        if (values.studentid && values.studentid.length) {
+          values.studentid = values.studentid.map(item => item.key).join(',')
+        }
         console.log(values)
       }
     })
@@ -96,18 +130,11 @@ class ItemForm extends Component {
 
   render () {
     const {
-      lessonItem: {
-        item,
-        courseCategorys,
-        schools,
-        classroomsDic,
-      },
+      lessonItem: { item, courseCategorys, schools, classroomsDic, studentList },
       loading,
-      form: {
-        getFieldDecorator,
-      },
+      form: { getFieldDecorator },
     } = this.props
-    const { schoolId, teachers, timeStarts, timeEnds } = this.state
+    const { schoolId, teachers, timeStarts, timeEnds, fetching, errorMsg } = this.state
 
     const disabled = false
     const classrooms = classroomsDic[schoolId] || []
@@ -277,6 +304,20 @@ class ItemForm extends Component {
                 }
               </FormItem>
             </Col>
+          </FormItem>
+          <FormItem label="添加学员" hasFeedback {...formItemLayout} >
+            {getFieldDecorator('studentid', {
+            })(<Select
+              mode="multiple"
+              labelInValue
+              placeholder="请逐个输入学员手机号码进行验证"
+              notFoundContent={fetching ? <Spin size="small" /> : <Tag color="red">{errorMsg}</Tag>}
+              filterOption={false}
+              onChange={this.handleChange}
+              onSearch={this.queryStudentList}
+            >
+              {studentList.map(d => <Option key={d.id} value={d.id}>{d.firstname}</Option>)}
+            </Select>)}
           </FormItem>
           <FormItem wrapperCol={{ span: 17, offset: 4 }}>
             <Button className={styles.btn} type="primary" htmlType="submit" size="large">创建</Button>

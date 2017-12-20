@@ -3,10 +3,18 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import ItemForm from './ItemForm'
 
-const LessonItem = ({ lessonItem, loading }) => {
+const namespace = 'lessonItem'
+
+const LessonItem = ({ dispatch, lessonItem, loading }) => {
   const itemFormProps = {
     lessonItem,
     loading: loading.models.lessonItem,
+    onQueryStudentList (params) {
+      dispatch({
+        type: `${namespace}/queryStudents`,
+        payload: params,
+      })
+    },
   }
 
   return (
@@ -17,7 +25,7 @@ const LessonItem = ({ lessonItem, loading }) => {
 }
 
 LessonItem.propTypes = {
-  // dispatch: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
   lessonItem: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
 }
