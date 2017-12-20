@@ -1,8 +1,7 @@
 import { getCurPowers } from 'utils'
-import { query } from 'services/lesson/item'
+import { query, queryCourseCategory } from 'services/lesson/item'
 import { query as querySchools } from 'services/common/school'
 import { query as queryClassRooms } from 'services/common/classroom'
-import { query as queryCategorys } from 'services/common/category'
 import { query as queryTeachers } from 'services/account/admin'
 
 export default {
@@ -11,7 +10,7 @@ export default {
     item: {},
     schools: [],
     classroomsDic: [],
-    categorys: [],
+    courseCategorys: [],
     teachersDic: {},
   },
 
@@ -47,7 +46,7 @@ export default {
     * querySource ({ }, { call, put }) {
       const { data: schools } = yield call(querySchools)
       const { data: classrooms } = yield call(queryClassRooms, { school_id: 0 })
-      const { data: categorys } = yield call(queryCategorys)
+      const { data: courseCategorys } = yield call(queryCourseCategory)
       const { data: teachers } = yield call(queryTeachers, { rolename: 'teacher', school: '' })
 
       const classroomsDic = classrooms.reduce((dic, classroom) => {
@@ -73,7 +72,7 @@ export default {
         type: 'querySourceSuccess',
         payload: {
           schools,
-          categorys,
+          courseCategorys,
           classroomsDic,
           teachersDic,
         },
