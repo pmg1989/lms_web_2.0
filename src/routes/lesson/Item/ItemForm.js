@@ -28,18 +28,44 @@ class ItemForm extends Component {
     schoolId: getUserInfo().school_id,
     timeStarts: timeList,
     timeEnds: timeList,
+    teachers: [],
   }
 
   componentWillReceiveProps (nextProps) {
-    if (!this.props.lessonItem.item.category_summary && nextProps.lessonItem.item.category_summary) {
-      this.handleSchoolChange(nextProps.lessonItem.item.school_id, false)
+    const { lessonItem } = this.props
+    const { lessonItem: { item, teachersDic } } = nextProps
+    if (!lessonItem.item.category_summary && item.category_summary) {
+      this.handleSchoolChange(item.school_id, false)
+    }
+    if (!Object.keys(lessonItem.teachersDic).length && Object.keys(teachersDic).length) {
+      const teachersState = teachersDic[item.school_id || this.state.schoolId] || []
+      teachersState.length && this.setState({ teachers: teachersState })
     }
   }
 
   handleSchoolChange = (schoolId, needSetValue = true) => {
     this.setState({ schoolId })
     if (needSetValue) {
-      this.props.form.setFieldsValue({ teacherid: undefined, classroomid: undefined })
+      const { form: { setFieldsValue, getFieldValue }, lessonItem: { teachersDic, courseCategorys } } = this.props
+      const categoryid = getFieldValue('categoryid')
+      const courseCategory = courseCategorys.find(cur => cur.id === categoryid)
+      const teachers = teachersDic[schoolId] || []
+      this.setState({ teachers: teachers.filter(cur => courseCategory && courseCategory.idnumber.includes(cur.teacher_subject)) })
+      setFieldsValue({ teacherid: undefined, classroomid: undefined })
+    }
+  }
+
+  handleCategoryChange = (categoryid) => {
+    const { lessonItem: { courseCategorys, teachersDic }, form: { getFieldValue, setFieldsValue } } = this.props
+    const courseCategory = courseCategorys.find(cur => cur.id === categoryid)
+    const schoolId = getFieldValue('school_id')
+    const teachers = teachersDic[schoolId] || []
+    this.setState({ teachers: teachers.filter(cur => courseCategory.idnumber.includes(cur.teacher_subject)) })
+
+    const oldCategoryid = getFieldValue('categoryid')
+    const oldCourseCategory = courseCategorys.find(cur => cur.id === oldCategoryid)
+    if (oldCourseCategory && oldCourseCategory.idnumber.split('-')[0] !== courseCategory.idnumber.split('-')[0]) {
+      setFieldsValue({ teacherid: undefined })
     }
   }
 
@@ -75,17 +101,15 @@ class ItemForm extends Component {
         courseCategorys,
         schools,
         classroomsDic,
-        teachersDic,
       },
       loading,
       form: {
         getFieldDecorator,
       },
     } = this.props
-    const { schoolId, timeStarts, timeEnds } = this.state
+    const { schoolId, teachers, timeStarts, timeEnds } = this.state
 
     const disabled = false
-    const teachers = teachersDic[schoolId] || []
     const classrooms = classroomsDic[schoolId] || []
 
     const courseCategorysProps = {
@@ -98,9 +122,11 @@ class ItemForm extends Component {
     return (
       <Spin spinning={loading} size="large">
         <Form className={styles.form_box} onSubmit={this.handleSubmit}>
-          <FormItem label="课程类型" {...formItemLayout} extra="支持关键字输入筛选">
+          <FormItem label="课程类型" {...formItemLayout} extra="支持输入关键字筛选">
             {getFieldDecorator('categoryid', {
               initialValue: item.categoryid,
+              // initialValue: courseCategorys[0] && courseCategorys[0].id,
+              onChange: this.handleCategoryChange,
               rules: [
                 {
                   required: true,

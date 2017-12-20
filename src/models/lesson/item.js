@@ -9,7 +9,7 @@ export default {
   state: {
     item: {},
     schools: [],
-    classroomsDic: [],
+    classroomsDic: {},
     courseCategorys: [],
     teachersDic: {},
   },
@@ -21,10 +21,10 @@ export default {
           const curPowers = getCurPowers(pathname)
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
-            dispatch({ type: 'querySource' })
             if (pathname === '/lesson/update' || pathname === '/lesson/detail') {
               dispatch({ type: 'query', payload: { lessonid } })
             }
+            dispatch({ type: 'querySource' })
           }
         }
       })
