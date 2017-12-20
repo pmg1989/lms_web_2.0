@@ -60,11 +60,11 @@ export default {
         return dic
       }, {})
       const teachersDic = teachers.reduce((dic, teacher) => {
-        if (teacher.school) {
-          if (!dic[teacher.school]) {
-            dic[teacher.school] = []
+        if (teacher.school_id) {
+          if (!dic[teacher.school_id]) {
+            dic[teacher.school_id] = []
           }
-          dic[teacher.school].push(teacher)
+          dic[teacher.school_id].push(teacher)
         }
         return dic
       }, {})

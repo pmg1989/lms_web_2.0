@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Select, Spin } from 'antd'
 import { getSchool, getUserInfo } from 'utils'
@@ -15,91 +15,110 @@ const formItemLayout = {
   },
 }
 
-const ItemForm = ({
-  lessonItem: {
-    item,
-    schools,
-    classroomsDic,
-    teachersDic,
-  },
-  loading,
-  form: {
-    getFieldDecorator,
-  },
-}) => {
-  const disabled = false
-  const teachers = teachersDic[item.school || getSchool()] || []
-  const classrooms = classroomsDic[item.school_id || getUserInfo().school_id] || []
+class ItemForm extends Component {
+  static propTypes = {
+    lessonItem: PropTypes.object.isRequired,
+    form: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
+  }
 
-  // const renderUserId = () => {
-  //   return (teachers.find(teacher => teacher.username === getUserInfo().uname) || {}).id
-  // }
+  state = {
+    schoolId: getUserInfo().school_id,
+  }
 
-  // const renderClassRoomId = () => {
-  //   return (classrooms.find(classroom => classroom.name === getUserInfo().uname) || {}).id
-  // }
+  componentWillReceiveProps (nextProps) {
+    if (!this.props.lessonItem.item.category_summary && nextProps.lessonItem.item.category_summary) {
+      this.handleSchoolChange(nextProps.lessonItem.item.school_id, false)
+    }
+  }
 
-  return (
-    <Spin spinning={loading} size="large">
-      <Form>
-        <FormItem label="课程名称" {...formItemLayout}>
-          {getFieldDecorator('category_summary', {
-            initialValue: item.category_summary,
-            rules: [
-              {
-                required: true,
-                message: '请输入课程名称',
-              },
-            ],
-          })(<Input disabled={disabled} placeholder="请输入课程名称" />)}
-        </FormItem>
-        <FormItem label="课程编号" {...formItemLayout}>
-          {getFieldDecorator('course_idnumber', {
-            initialValue: item.course_idnumber,
-            rules: [
-              {
-                required: true,
-                message: '请输入课程名称',
-              },
-            ],
-          })(<Input disabled={disabled} placeholder="请输入课程名称" />)}
-        </FormItem>
-        <FormItem label="校区" {...formItemLayout}>
-          {getFieldDecorator('school', {
-            initialValue: item.school || getSchool(),
-            // onChange: handleSchoolChange,
-          })(<Select disabled={getSchool() !== 'global'}>
-            {schools.map(school => <Option key={school.id} value={school.school}>{school.name}</Option>)}
-          </Select>)
-          }
-        </FormItem>
-        <FormItem label="老师" {...formItemLayout}>
-          {getFieldDecorator('teacherid', {
-            initialValue: '',
-            // onChange: handleChange,
-          })(<Select disabled={getUserInfo().rolename === 'teacher'}>
-            {teachers.map(teacher => <Option key={teacher.id} value={teacher.id.toString()}>{teacher.firstname}</Option>)}
-          </Select>)
-          }
-        </FormItem>
-        <FormItem label="教室" {...formItemLayout}>
-          {getFieldDecorator('classroomid', {
-            initialValue: '',
-            // onChange: handleChange,
-          })(<Select disabled={getUserInfo().rolename === 'teacher'}>
-            {classrooms.map(classroom => <Option key={classroom.id} value={classroom.id.toString()}>{classroom.name}</Option>)}
-          </Select>)
-          }
-        </FormItem>
-      </Form>
-    </Spin>
-  )
-}
+  handleSchoolChange = (schoolId, needSetValue = true) => {
+    this.setState({ schoolId })
+    if (needSetValue) {
+      this.props.form.setFieldsValue({ teacherid: undefined })
+      this.props.form.setFieldsValue({ classroomid: undefined })
+    }
+  }
 
-ItemForm.propTypes = {
-  lessonItem: PropTypes.object.isRequired,
-  form: PropTypes.object.isRequired,
-  loading: PropTypes.bool.isRequired,
+  render () {
+    const {
+      lessonItem: {
+        item,
+        schools,
+        classroomsDic,
+        teachersDic,
+      },
+      loading,
+      form: {
+        getFieldDecorator,
+      },
+    } = this.props
+    const { schoolId } = this.state
+
+    const disabled = false
+    const teachers = teachersDic[schoolId] || []
+    const classrooms = classroomsDic[schoolId] || []
+
+    return (
+      <Spin spinning={loading} size="large">
+        <Form>
+          <FormItem label="课程名称" {...formItemLayout}>
+            {getFieldDecorator('category_summary', {
+              initialValue: item.category_summary,
+              rules: [
+                {
+                  required: true,
+                  message: '请输入课程名称',
+                },
+              ],
+            })(<Input disabled={disabled} placeholder="请输入课程名称" />)}
+          </FormItem>
+          <FormItem label="课程编号" {...formItemLayout}>
+            {getFieldDecorator('course_idnumber', {
+              initialValue: item.course_idnumber,
+              rules: [
+                {
+                  required: true,
+                  message: '请输入课程名称',
+                },
+              ],
+            })(<Input disabled={disabled} placeholder="请输入课程名称" />)}
+          </FormItem>
+          <FormItem label="校区" {...formItemLayout}>
+            {getFieldDecorator('school_id', {
+              initialValue: item.school_id || getUserInfo().school_id.toString(),
+              onChange: this.handleSchoolChange,
+            })(<Select disabled={getSchool() !== 'global'}>
+              {schools.map(school => <Option key={school.id} value={school.id.toString()}>{school.name}</Option>)}
+            </Select>)
+            }
+          </FormItem>
+          <FormItem label="老师" {...formItemLayout}>
+            {getFieldDecorator('teacherid', {
+              // initialValue: '',
+            })(<Select disabled={getUserInfo().rolename === 'teacher'} placeholder="--请选择老师--">
+              {teachers.map(teacher => <Option key={teacher.id} value={teacher.id.toString()}>{teacher.firstname}</Option>)}
+            </Select>)
+            }
+          </FormItem>
+          <FormItem label="代课老师" {...formItemLayout}>
+            {getFieldDecorator('teacher_substitute', {
+              initialValue: item.teacher_substitute,
+            })(<Input disabled={disabled} placeholder="请输入代课老师" />)
+            }
+          </FormItem>
+          <FormItem label="教室" {...formItemLayout}>
+            {getFieldDecorator('classroomid', {
+              // initialValue: '',
+            })(<Select disabled={getUserInfo().rolename === 'teacher'} placeholder="--请选择教室--">
+              {classrooms.map(classroom => <Option key={classroom.id} value={classroom.id.toString()}>{classroom.name}</Option>)}
+            </Select>)
+            }
+          </FormItem>
+        </Form>
+      </Spin>
+    )
+  }
 }
 
 export default Form.create()(ItemForm)
