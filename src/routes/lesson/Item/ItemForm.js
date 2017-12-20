@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, InputNumber, Select, Spin, Button, Row, Col, Checkbox, DatePicker } from 'antd'
 import { getSchool, getUserInfo } from 'utils'
+import { timeList } from 'utils/dictionary'
 import styles from './ItemForm.less'
 
 const FormItem = Form.Item
@@ -25,6 +26,8 @@ class ItemForm extends Component {
 
   state = {
     schoolId: getUserInfo().school_id,
+    timeStarts: timeList,
+    timeEnds: timeList,
   }
 
   componentWillReceiveProps (nextProps) {
@@ -36,8 +39,20 @@ class ItemForm extends Component {
   handleSchoolChange = (schoolId, needSetValue = true) => {
     this.setState({ schoolId })
     if (needSetValue) {
-      this.props.form.setFieldsValue({ teacherid: undefined })
-      this.props.form.setFieldsValue({ classroomid: undefined })
+      this.props.form.setFieldsValue({ teacherid: undefined, classroomid: undefined })
+    }
+  }
+
+  handleTimeStartsChange = (available) => {
+    const index = timeList.findIndex(cur => cur === available)
+    this.setState({ timeEnds: timeList.slice(index + 1) })
+
+    const deadline = this.props.form.getFieldValue('deadline')
+    if (deadline) {
+      const deadlineIndex = timeList.findIndex(cur => cur === deadline)
+      if (deadlineIndex <= index) {
+        this.props.form.setFieldsValue({ deadline: timeList[index + 1] })
+      }
     }
   }
 
@@ -67,7 +82,7 @@ class ItemForm extends Component {
         getFieldDecorator,
       },
     } = this.props
-    const { schoolId } = this.state
+    const { schoolId, timeStarts, timeEnds } = this.state
 
     const disabled = false
     const teachers = teachersDic[schoolId] || []
@@ -198,6 +213,44 @@ class ItemForm extends Component {
               disabledDate={current => current && current.valueOf() < Date.now()}
             />)
             }
+          </FormItem>
+          <FormItem label="上课时间" {...formItemLayout}>
+            <Col span={11}>
+              <FormItem>
+                {getFieldDecorator('available', {
+                  // initialValue: '',
+                  onChange: this.handleTimeStartsChange,
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择上课时间',
+                    },
+                  ],
+                })(<Select className={styles.date_picker} disabled={disabled} placeholder="--请选择上课时间--">
+                  {timeStarts.map(time => <Option key={time} value={time}>{time}</Option>)}
+                </Select>)
+                }
+              </FormItem>
+            </Col>
+            <Col span={2}>
+              <span style={{ display: 'inline-block', width: '100%', textAlign: 'center' }}>--</span>
+            </Col>
+            <Col span={11}>
+              <FormItem>
+                {getFieldDecorator('deadline', {
+                  // initialValue: '',
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择下课时间',
+                    },
+                  ],
+                })(<Select className={styles.date_picker} disabled={disabled} placeholder="--请选择下课时间--">
+                  {timeEnds.map(time => <Option key={time} value={time}>{time}</Option>)}
+                </Select>)
+                }
+              </FormItem>
+            </Col>
           </FormItem>
           <FormItem wrapperCol={{ span: 17, offset: 4 }}>
             <Button className={styles.btn} type="primary" htmlType="submit" size="large">创建</Button>
