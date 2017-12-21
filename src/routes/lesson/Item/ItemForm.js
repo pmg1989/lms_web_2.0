@@ -149,7 +149,7 @@ class ItemForm extends Component {
     return (
       <Spin spinning={loading} size="large">
         <Form className={styles.form_box} onSubmit={this.handleSubmit}>
-          <FormItem label="课程类型" {...formItemLayout} extra="支持输入关键字筛选">
+          <FormItem label="课程类型" hasFeedback {...formItemLayout} extra="支持输入关键字筛选">
             {getFieldDecorator('categoryid', {
               initialValue: item.categoryid,
               // initialValue: courseCategorys[0] && courseCategorys[0].id,
@@ -164,7 +164,7 @@ class ItemForm extends Component {
               {courseCategorys.map(courseCategory => <Option key={courseCategory.id} value={courseCategory.id.toString()}>{courseCategory.description}</Option>)}
             </Select>)}
           </FormItem>
-          {/* <FormItem label="课程编号" {...formItemLayout}>
+          {/* <FormItem label="课程编号" hasFeedbac {...formItemLayout}>
             {getFieldDecorator('course_idnumber', {
               initialValue: item.course_idnumber,
               rules: [
@@ -175,7 +175,7 @@ class ItemForm extends Component {
               ],
             })(<Input disabled={disabled} placeholder="请输入课程名称" />)}
           </FormItem> */}
-          <FormItem label="校区" {...formItemLayout}>
+          <FormItem label="校区" hasFeedback {...formItemLayout}>
             {getFieldDecorator('school_id', {
               initialValue: item.school_id || getUserInfo().school_id.toString(),
               onChange: this.handleSchoolChange,
@@ -184,7 +184,7 @@ class ItemForm extends Component {
             </Select>)
             }
           </FormItem>
-          <FormItem label="老师" {...formItemLayout}>
+          <FormItem label="老师" hasFeedback {...formItemLayout}>
             {getFieldDecorator('teacherid', {
               // initialValue: '',
               rules: [
@@ -198,13 +198,13 @@ class ItemForm extends Component {
             </Select>)
             }
           </FormItem>
-          {/* <FormItem label="代课老师" {...formItemLayout}>
+          {/* <FormItem label="代课老师" hasFeedbac {...formItemLayout}>
             {getFieldDecorator('teacher_substitute', {
               initialValue: item.teacher_substitute,
             })(<Input disabled={disabled} placeholder="请输入代课老师" />)
             }
           </FormItem> */}
-          <FormItem label="教室" {...formItemLayout}>
+          <FormItem label="教室" hasFeedback {...formItemLayout}>
             {getFieldDecorator('classroomid', {
               // initialValue: '',
               rules: [
@@ -220,7 +220,7 @@ class ItemForm extends Component {
           </FormItem>
           <FormItem label="每周" hasFeedback {...formItemLayout}>
             {getFieldDecorator('openweekday', {
-              initialValue: [],
+              // initialValue: [],
               rules: [
                 {
                   required: true,
@@ -239,7 +239,7 @@ class ItemForm extends Component {
               </Row>
             </Checkbox.Group>)}
           </FormItem>
-          <FormItem label="持续周数" {...formItemLayout}>
+          <FormItem label="持续周数" hasFeedback {...formItemLayout}>
             {getFieldDecorator('numsections', {
               initialValue: item.numsections || 16,
               rules: [
@@ -251,7 +251,7 @@ class ItemForm extends Component {
             })(<InputNumber min={1} disabled={disabled} placeholder="请输入持续周数" />)
             }
           </FormItem>
-          <FormItem label="首次上课日期" {...formItemLayout}>
+          <FormItem label="首次上课日期" hasFeedback {...formItemLayout}>
             {getFieldDecorator('startdate', {
               // initialValue: '',
               rules: [
@@ -267,7 +267,7 @@ class ItemForm extends Component {
             />)
             }
           </FormItem>
-          <FormItem label="上课时间" {...formItemLayout}>
+          <FormItem label="上课时间" hasFeedback {...formItemLayout}>
             <Col span={11}>
               <FormItem>
                 {getFieldDecorator('available', {
