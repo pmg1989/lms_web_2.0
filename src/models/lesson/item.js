@@ -41,11 +41,8 @@ export default {
       // const { data: students } = yield call()
 
       data.categoryid = 74
-      data.school_id = 3
-      data.classroomid = 200001
-      data.openweekday = '5,6,0'
-      data.numsections = 2
-      data.startdate = 1513839600
+      data.school_id = 2
+      data.classroomid = 1 // 200001
 
       if (success) {
         yield put({

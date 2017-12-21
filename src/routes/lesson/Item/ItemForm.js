@@ -166,6 +166,7 @@ class ItemForm extends Component {
     const { schoolId, teachers, timeStarts, timeEnds, fetching, errorMsg } = this.state
 
     const disabled = type === 'detail'
+    const disabledEdit = type === 'update'
     const classrooms = classroomsDic[schoolId] || []
 
     const courseCategorysProps = {
@@ -191,7 +192,7 @@ class ItemForm extends Component {
                   message: '请输入课程类型',
                 },
               ],
-            })(<Select disabled={disabled} {...courseCategorysProps}>
+            })(<Select disabled={disabled || disabledEdit} {...courseCategorysProps}>
               {courseCategorys.map(courseCategory => <Option key={courseCategory.id} value={courseCategory.id.toString()}>{courseCategory.description}</Option>)}
             </Select>)}
           </FormItem>
@@ -205,14 +206,14 @@ class ItemForm extends Component {
                     message: '请输入课程名称',
                   },
                 ],
-              })(<Input disabled={disabled} placeholder="请输入课程名称" />)}
+              })(<Input disabled={disabled || disabledEdit} placeholder="请输入课程名称" />)}
             </FormItem>
           }
           <FormItem label="校区" hasFeedback {...formItemLayout}>
             {getFieldDecorator('school_id', {
               initialValue: (item.school_id && item.school_id.toString()) || getUserInfo().school_id.toString(),
               onChange: this.handleSchoolChange,
-            })(<Select disabled={disabled || getSchool() !== 'global'} placeholder="--请选择校区--">
+            })(<Select disabled={disabled || disabledEdit || getSchool() !== 'global'} placeholder="--请选择校区--">
               {schools.map(school => <Option key={school.id} value={school.id.toString()}>{school.name}</Option>)}
             </Select>)
             }
@@ -226,7 +227,7 @@ class ItemForm extends Component {
                   message: '请选择老师',
                 },
               ],
-            })(<Select disabled={disabled} placeholder="--请选择老师--">
+            })(<Select disabled={disabled || disabledEdit} placeholder="--请选择老师--">
               {teachers.map(teacher => <Option key={teacher.id} value={teacher.id.toString()}>{teacher.firstname}</Option>)}
             </Select>)
             }
@@ -246,57 +247,61 @@ class ItemForm extends Component {
                   message: '请选择教室',
                 },
               ],
-            })(<Select disabled={disabled} placeholder="--请选择教室--">
+            })(<Select disabled={disabled || disabledEdit} placeholder="--请选择教室--">
               {classrooms.map(classroom => <Option key={classroom.id} value={classroom.id.toString()}>{classroom.name}</Option>)}
             </Select>)
             }
           </FormItem>
-          <FormItem label="每周" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('openweekday', {
-              initialValue: item.openweekday && item.openweekday.split(','),
-              onChange: this.handleWeekdayChange,
-              rules: [
-                {
-                  required: true,
-                  message: '请选择每周工作日',
-                },
-              ],
-            })(<Checkbox.Group disabled={disabled} placeholder="--请选择每周工作日--">
-              <Row>
-                <Col span={6}><Checkbox value="1">周一</Checkbox></Col>
-                <Col span={6}><Checkbox value="2">周二</Checkbox></Col>
-                <Col span={6}><Checkbox value="3">周三</Checkbox></Col>
-                <Col span={6}><Checkbox value="4">周四</Checkbox></Col>
-                <Col span={6}><Checkbox value="5">周五</Checkbox></Col>
-                <Col span={6}><Checkbox value="6">周六</Checkbox></Col>
-                <Col span={6}><Checkbox value="0">周日</Checkbox></Col>
-              </Row>
-            </Checkbox.Group>)}
-          </FormItem>
-          <FormItem label="持续周数" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('numsections', {
-              initialValue: item.numsections || 4,
-              rules: [
-                {
-                  required: true,
-                  message: '请输入持续周数',
-                },
-              ],
-            })(<InputNumber min={1} disabled={disabled} placeholder="请输入持续周数" />)
-            }
-          </FormItem>
-          <FormItem label="首次上课日期" hasFeedback {...formItemLayout}>
+          {type === 'create' &&
+            <FormItem label="每周" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('openweekday', {
+                initialValue: item.openweekday && item.openweekday.split(','),
+                onChange: this.handleWeekdayChange,
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择每周工作日',
+                  },
+                ],
+              })(<Checkbox.Group disabled={disabled} placeholder="--请选择每周工作日--">
+                <Row>
+                  <Col span={6}><Checkbox value="1">周一</Checkbox></Col>
+                  <Col span={6}><Checkbox value="2">周二</Checkbox></Col>
+                  <Col span={6}><Checkbox value="3">周三</Checkbox></Col>
+                  <Col span={6}><Checkbox value="4">周四</Checkbox></Col>
+                  <Col span={6}><Checkbox value="5">周五</Checkbox></Col>
+                  <Col span={6}><Checkbox value="6">周六</Checkbox></Col>
+                  <Col span={6}><Checkbox value="0">周日</Checkbox></Col>
+                </Row>
+              </Checkbox.Group>)}
+            </FormItem>
+          }
+          {type === 'create' &&
+            <FormItem label="持续周数" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('numsections', {
+                initialValue: item.numsections || 4,
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入持续周数',
+                  },
+                ],
+              })(<InputNumber min={1} disabled={disabled} placeholder="请输入持续周数" />)
+              }
+            </FormItem>
+          }
+          <FormItem label="上课日期" hasFeedback {...formItemLayout}>
             {getFieldDecorator('startdate', {
-              initialValue: item.startdate && moment.unix(item.startdate),
+              initialValue: item.available && moment.unix(item.available),
               rules: [
                 {
                   required: true,
-                  message: '请选择首次上课日期',
+                  message: '请选择上课日期',
                 },
               ],
             })(<DatePicker disabled={disabled}
               className={styles.date_picker}
-              placeholder="请选择首次上课日期"
+              placeholder="请选择上课日期"
               disabledDate={this.disabledDate}
             />)
             }
