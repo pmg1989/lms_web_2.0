@@ -10,6 +10,8 @@ import styles from './ItemForm.less'
 const FormItem = Form.Item
 const Option = Select.Option
 
+const now = Date.now()
+
 const formItemLayout = {
   labelCol: {
     span: 4,
@@ -55,6 +57,16 @@ class ItemForm extends Component {
     }
   }
 
+  disabledDate = (current) => {
+    const weekdays = this.props.form.getFieldValue('openweekday')
+    if (current && weekdays) {
+      const curTimeSpan = current.valueOf()
+      const weekday = current.isoWeekday() % 7
+      return curTimeSpan < now || !weekdays.includes(weekday.toString())
+    }
+    return true
+  }
+
   handleSchoolChange = (schoolId, needSetValue = true) => {
     this.setState({ schoolId })
     if (needSetValue) {
@@ -78,6 +90,14 @@ class ItemForm extends Component {
     const oldCourseCategory = courseCategorys.find(cur => cur.id === oldCategoryid)
     if (oldCourseCategory && oldCourseCategory.idnumber.split('-')[0] !== courseCategory.idnumber.split('-')[0]) {
       setFieldsValue({ teacherid: undefined })
+    }
+  }
+
+  handleWeekdayChange = (weekdays) => {
+    const { form: { getFieldValue, setFieldsValue } } = this.props
+    const startdate = getFieldValue('startdate')
+    if (startdate && !weekdays.includes((startdate.isoWeekday() % 7).toString())) {
+      setFieldsValue({ startdate: undefined })
     }
   }
 
@@ -230,6 +250,7 @@ class ItemForm extends Component {
           <FormItem label="每周" hasFeedback {...formItemLayout}>
             {getFieldDecorator('openweekday', {
               // initialValue: [],
+              onChange: this.handleWeekdayChange,
               rules: [
                 {
                   required: true,
@@ -272,7 +293,7 @@ class ItemForm extends Component {
             })(<DatePicker
               className={styles.date_picker}
               placeholder="请选择首次上课日期"
-              disabledDate={current => current && current.valueOf() < Date.now()}
+              disabledDate={this.disabledDate}
             />)
             }
           </FormItem>
