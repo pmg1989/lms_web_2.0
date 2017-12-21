@@ -176,7 +176,7 @@ class ItemForm extends Component {
       filterOption: (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0,
     }
 
-    const teacherId = teachers.length && teachers.find(cur => cur.firstname === item.teacher).id
+    const teacherId = teachers.length && item.teacher && teachers.find(cur => cur.firstname === item.teacher).id
 
     return (
       <Spin spinning={loading} size="large">
