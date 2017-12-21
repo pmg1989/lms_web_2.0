@@ -77,6 +77,36 @@ const Routers = function ({ history, app }) {
                 }, 'lesson-list')
               },
             },
+            {
+              path: 'create',
+              name: 'create',
+              getComponent (nextState, cb) {
+                require.ensure([], (require) => {
+                  registerModel(app, require('./models/lesson/item'))
+                  cb(null, require('./routes/lesson/Item'))
+                }, 'lesson-item')
+              },
+            },
+            {
+              path: 'update',
+              name: 'update',
+              getComponent (nextState, cb) {
+                require.ensure([], (require) => {
+                  registerModel(app, require('./models/lesson/item'))
+                  cb(null, require('./routes/lesson/Item'))
+                }, 'lesson-item')
+              },
+            },
+            {
+              path: 'detail',
+              name: 'detail',
+              getComponent (nextState, cb) {
+                require.ensure([], (require) => {
+                  registerModel(app, require('./models/lesson/item'))
+                  cb(null, require('./routes/lesson/Item'))
+                }, 'lesson-item')
+              },
+            },
           ],
         },
         // account

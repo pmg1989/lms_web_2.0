@@ -38,18 +38,6 @@ function ListHome ({ curPowers, dispatch, lessonList, loading }) {
         payload: { ...fieldsValue, isPostBack: false },
       })
     },
-    onDetailItem (item) {
-      dispatch({
-        type: `${namespace}/showModal`,
-        payload: { type: 'detail', curItem: item },
-      })
-    },
-    onEditItem (item) {
-      dispatch({
-        type: `${namespace}/showModal`,
-        payload: { type: 'update', curItem: item },
-      })
-    },
   }
 
   return (
