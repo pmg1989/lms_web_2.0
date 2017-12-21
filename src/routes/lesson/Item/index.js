@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import ItemForm from './ItemForm'
 
 const namespace = 'lessonItem'
@@ -14,6 +15,15 @@ const LessonItem = ({ dispatch, lessonItem, loading }) => {
         type: `${namespace}/queryStudents`,
         payload: params,
       })
+    },
+    onSubmit (params) {
+      dispatch({
+        type: `${namespace}/create`,
+        payload: { params },
+      })
+    },
+    onGoBack () {
+      dispatch(routerRedux.goBack())
     },
   }
 

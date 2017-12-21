@@ -9,7 +9,7 @@ export async function queryCourseCategory (params) {
 }
 
 export async function create (params) {
-  return request({ wsfunction: '', ...params })
+  return request({ wsfunction: 'mod_frontservice_createcourse', ...params })
 }
 
 export async function update (params) {

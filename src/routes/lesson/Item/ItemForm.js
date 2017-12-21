@@ -24,6 +24,8 @@ class ItemForm extends Component {
     lessonItem: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    onGoBack: PropTypes.func.isRequired,
     onQueryStudentList: PropTypes.func.isRequired,
   }
 
@@ -114,16 +116,22 @@ class ItemForm extends Component {
   }
 
   handleSubmit = (e) => {
-    const { form: { validateFieldsAndScroll } } = this.props
+    const { form: { validateFieldsAndScroll }, onSubmit } = this.props
     e.preventDefault()
     validateFieldsAndScroll((err, values) => {
       if (!err) {
-        values.startdate = values.startdate.startOf('day').format('X')
+        const stateDate = values.startdate
+        values.startdate = stateDate.startOf('day').format('X')
         values.openweekday = values.openweekday.sort().join(',')
+        values.available = moment(`${stateDate.format('YYYY-MM-DD')} ${values.available}`).format('X')
+        values.deadline = moment(`${stateDate.format('YYYY-MM-DD')} ${values.deadline}`).format('X')
         if (values.studentid && values.studentid.length) {
           values.studentid = values.studentid.map(item => item.key).join(',')
+        } else {
+          delete values.studentid
         }
-        console.log(values)
+        delete values.school_id
+        onSubmit(values)
       }
     })
   }
@@ -132,6 +140,7 @@ class ItemForm extends Component {
     const {
       lessonItem: { item, courseCategorys, schools, classroomsDic, studentList },
       loading,
+      onGoBack,
       form: { getFieldDecorator },
     } = this.props
     const { schoolId, teachers, timeStarts, timeEnds, fetching, errorMsg } = this.state
@@ -241,7 +250,7 @@ class ItemForm extends Component {
           </FormItem>
           <FormItem label="持续周数" hasFeedback {...formItemLayout}>
             {getFieldDecorator('numsections', {
-              initialValue: item.numsections || 16,
+              initialValue: item.numsections || 4,
               rules: [
                 {
                   required: true,
@@ -307,6 +316,7 @@ class ItemForm extends Component {
           </FormItem>
           <FormItem label="添加学员" hasFeedback {...formItemLayout} >
             {getFieldDecorator('studentid', {
+              // initialValue: '',
             })(<Select
               mode="multiple"
               labelInValue
@@ -321,7 +331,7 @@ class ItemForm extends Component {
           </FormItem>
           <FormItem wrapperCol={{ span: 17, offset: 4 }}>
             <Button className={styles.btn} type="primary" htmlType="submit" size="large">创建</Button>
-            <Button className={styles.btn} type="default" size="large">返回</Button>
+            <Button className={styles.btn} type="default" onClick={onGoBack} size="large">返回</Button>
           </FormItem>
         </Form>
       </Spin>
