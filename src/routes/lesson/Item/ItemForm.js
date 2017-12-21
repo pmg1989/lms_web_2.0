@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, InputNumber, Select, Spin, Button, Row, Col, Checkbox, DatePicker, Tag } from 'antd'
+import { Form, Input, InputNumber, Select, Spin, Button, Row, Col, Checkbox, DatePicker, Tag } from 'antd'
 import debounce from 'lodash.debounce'
 import moment from 'moment'
 import { getSchool, getUserInfo } from 'utils'
@@ -49,7 +49,7 @@ class ItemForm extends Component {
     const { lessonItem } = this.props
     const { lessonItem: { item, teachersDic } } = nextProps
     if (!lessonItem.item.category_summary && item.category_summary) {
-      this.handleSchoolChange(item.school_id, false)
+      this.handleSchoolChange(item.school_id || this.state.schoolId, false)
     }
     if (!Object.keys(lessonItem.teachersDic).length && Object.keys(teachersDic).length) {
       const teachersState = teachersDic[item.school_id || this.state.schoolId] || []
@@ -114,7 +114,7 @@ class ItemForm extends Component {
     }
   }
 
-  handleChange = () => {
+  handleMultipleChange = () => {
     this.setState({ fetching: false })
   }
 
@@ -158,14 +158,14 @@ class ItemForm extends Component {
 
   render () {
     const {
-      lessonItem: { item, courseCategorys, schools, classroomsDic, studentList },
+      lessonItem: { type, item, courseCategorys, schools, classroomsDic, studentList },
       loading,
       onGoBack,
       form: { getFieldDecorator },
     } = this.props
     const { schoolId, teachers, timeStarts, timeEnds, fetching, errorMsg } = this.state
 
-    const disabled = false
+    const disabled = type === 'detail'
     const classrooms = classroomsDic[schoolId] || []
 
     const courseCategorysProps = {
@@ -175,12 +175,14 @@ class ItemForm extends Component {
       filterOption: (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0,
     }
 
+    const teacherId = teachers.length && teachers.find(cur => cur.firstname === item.teacher).id
+
     return (
       <Spin spinning={loading} size="large">
         <Form className={styles.form_box} onSubmit={this.handleSubmit}>
           <FormItem label="课程类型" hasFeedback {...formItemLayout} extra="支持输入关键字筛选">
             {getFieldDecorator('categoryid', {
-              initialValue: item.categoryid,
+              initialValue: item.categoryid && item.categoryid.toString(),
               // initialValue: courseCategorys[0] && courseCategorys[0].id,
               onChange: this.handleCategoryChange,
               rules: [
@@ -189,24 +191,26 @@ class ItemForm extends Component {
                   message: '请输入课程类型',
                 },
               ],
-            })(<Select {...courseCategorysProps}>
+            })(<Select disabled={disabled} {...courseCategorysProps}>
               {courseCategorys.map(courseCategory => <Option key={courseCategory.id} value={courseCategory.id.toString()}>{courseCategory.description}</Option>)}
             </Select>)}
           </FormItem>
-          {/* <FormItem label="课程编号" hasFeedbac {...formItemLayout}>
-            {getFieldDecorator('course_idnumber', {
-              initialValue: item.course_idnumber,
-              rules: [
-                {
-                  required: true,
-                  message: '请输入课程名称',
-                },
-              ],
-            })(<Input disabled={disabled} placeholder="请输入课程名称" />)}
-          </FormItem> */}
+          {type !== 'create' &&
+            <FormItem label="课程编号" hasFeedbac {...formItemLayout}>
+              {getFieldDecorator('course_idnumber', {
+                initialValue: item.course_idnumber,
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入课程名称',
+                  },
+                ],
+              })(<Input disabled={disabled} placeholder="请输入课程名称" />)}
+            </FormItem>
+          }
           <FormItem label="校区" hasFeedback {...formItemLayout}>
             {getFieldDecorator('school_id', {
-              initialValue: item.school_id || getUserInfo().school_id.toString(),
+              initialValue: (item.school_id && item.school_id.toString()) || getUserInfo().school_id.toString(),
               onChange: this.handleSchoolChange,
             })(<Select disabled={getSchool() !== 'global'} placeholder="--请选择校区--">
               {schools.map(school => <Option key={school.id} value={school.id.toString()}>{school.name}</Option>)}
@@ -215,7 +219,7 @@ class ItemForm extends Component {
           </FormItem>
           <FormItem label="老师" hasFeedback {...formItemLayout}>
             {getFieldDecorator('teacherid', {
-              // initialValue: '',
+              initialValue: teacherId || '',
               rules: [
                 {
                   required: true,
@@ -235,7 +239,7 @@ class ItemForm extends Component {
           </FormItem> */}
           <FormItem label="教室" hasFeedback {...formItemLayout}>
             {getFieldDecorator('classroomid', {
-              // initialValue: '',
+              initialValue: item.classroomid && item.classroomid.toString(),
               rules: [
                 {
                   required: true,
@@ -249,7 +253,7 @@ class ItemForm extends Component {
           </FormItem>
           <FormItem label="每周" hasFeedback {...formItemLayout}>
             {getFieldDecorator('openweekday', {
-              // initialValue: [],
+              initialValue: item.openweekday && item.openweekday.split(','),
               onChange: this.handleWeekdayChange,
               rules: [
                 {
@@ -283,14 +287,14 @@ class ItemForm extends Component {
           </FormItem>
           <FormItem label="首次上课日期" hasFeedback {...formItemLayout}>
             {getFieldDecorator('startdate', {
-              // initialValue: '',
+              initialValue: item.startdate && moment.unix(item.startdate),
               rules: [
                 {
                   required: true,
                   message: '请选择首次上课日期',
                 },
               ],
-            })(<DatePicker
+            })(<DatePicker disabled={disabled}
               className={styles.date_picker}
               placeholder="请选择首次上课日期"
               disabledDate={this.disabledDate}
@@ -301,7 +305,7 @@ class ItemForm extends Component {
             <Col span={11}>
               <FormItem>
                 {getFieldDecorator('available', {
-                  // initialValue: '',
+                  initialValue: item.deadline && moment.unix(item.available).format('HH:mm'),
                   onChange: this.handleTimeStartsChange,
                   rules: [
                     {
@@ -321,7 +325,7 @@ class ItemForm extends Component {
             <Col span={11}>
               <FormItem>
                 {getFieldDecorator('deadline', {
-                  // initialValue: '',
+                  initialValue: item.deadline && moment.unix(item.deadline).format('HH:mm'),
                   rules: [
                     {
                       required: true,
@@ -339,12 +343,13 @@ class ItemForm extends Component {
             {getFieldDecorator('studentid', {
               // initialValue: '',
             })(<Select
+              disabled={disabled}
               mode="multiple"
               labelInValue
               placeholder="请逐个输入学员手机号码进行验证"
               notFoundContent={fetching ? <Spin size="small" /> : <Tag color="red">{errorMsg}</Tag>}
               filterOption={false}
-              onChange={this.handleChange}
+              onChange={this.handleMultipleChange}
               onSearch={this.queryStudentList}
             >
               {studentList.map(d => <Option key={d.id} value={d.id}>{d.firstname}</Option>)}

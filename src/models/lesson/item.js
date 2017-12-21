@@ -8,6 +8,7 @@ import { query as queryUsers } from 'services/account/admin'
 export default {
   namespace: 'lessonItem',
   state: {
+    type: 'create',
     item: {},
     schools: [],
     classroomsDic: {},
@@ -24,7 +25,7 @@ export default {
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             if (pathname === '/lesson/update' || pathname === '/lesson/detail') {
-              dispatch({ type: 'query', payload: { lessonid } })
+              dispatch({ type: 'query', payload: { lessonid, type: pathname === '/lesson/update' ? 'update' : 'detail' } })
             }
             dispatch({ type: 'querySource' })
           }
@@ -35,12 +36,22 @@ export default {
 
   effects: {
     * query ({ payload }, { call, put }) {
-      const { data, success } = yield call(query, payload)
+      const { lessonid, type } = payload
+      const { data, success } = yield call(query, { lessonid })
+
+      data.categoryid = 74
+      data.school_id = 3
+      data.classroomid = 200001
+      data.openweekday = '5,6,0'
+      data.numsections = 2
+      data.startdate = 1513839600
+
       if (success) {
         yield put({
           type: 'querySuccess',
           payload: {
             item: data,
+            type,
           },
         })
       }
