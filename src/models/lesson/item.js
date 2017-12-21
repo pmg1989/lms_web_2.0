@@ -38,6 +38,7 @@ export default {
     * query ({ payload }, { call, put }) {
       const { lessonid, type } = payload
       const { data, success } = yield call(query, { lessonid })
+      // const { data: students } = yield call()
 
       data.categoryid = 74
       data.school_id = 3

@@ -212,7 +212,7 @@ class ItemForm extends Component {
             {getFieldDecorator('school_id', {
               initialValue: (item.school_id && item.school_id.toString()) || getUserInfo().school_id.toString(),
               onChange: this.handleSchoolChange,
-            })(<Select disabled={getSchool() !== 'global'} placeholder="--请选择校区--">
+            })(<Select disabled={disabled || getSchool() !== 'global'} placeholder="--请选择校区--">
               {schools.map(school => <Option key={school.id} value={school.id.toString()}>{school.name}</Option>)}
             </Select>)
             }
