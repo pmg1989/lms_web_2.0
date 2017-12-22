@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { getCurPowers, renderQuery, getSchool } from 'utils'
-import { query } from 'services/lesson/list'
+import { query, remove } from 'services/lesson/list'
 import { query as querySchools } from 'services/common/school'
 import { query as queryCategorys } from 'services/common/category'
 import { query as queryTeachers } from 'services/account/admin'
@@ -72,9 +72,9 @@ export default {
       const { searchQuery } = yield select(({ lessonList }) => lessonList)
       const { isPostBack, current, pageSize, ...queryParams } = payload
       const querys = renderQuery(searchQuery, queryParams)
-      console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
-      console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
-      console.log(querys)
+      // console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
+      // console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
+      // console.log(querys)
       // 判断是否是首次加载页面，作为前端分页判断标识符
       if (isPostBack) {
         const { data, success } = yield call(query, querys)
@@ -106,13 +106,27 @@ export default {
         })
       }
     },
+    * remove ({ payload }, { call, put }) {
+      const { params } = payload
+      const { success } = yield call(remove, params)
+      if (success) {
+        yield put({
+          type: 'removeSuccess',
+          payload: { id: params.lessonid },
+        })
+      }
+    },
   },
   reducers: {
-    querySearchSuccess (state, action) {
-      return { ...state, ...action.payload }
+    querySearchSuccess (state, { payload }) {
+      return { ...state, ...payload }
     },
-    querySuccess (state, action) {
-      return { ...state, ...action.payload }
+    querySuccess (state, { payload }) {
+      return { ...state, ...payload }
+    },
+    removeSuccess (state, { payload }) {
+      const list = state.list.filter(item => item.id !== payload.id)
+      return { ...state, list, pagination: { ...state.pagination, total: list.length } }
     },
   },
 }

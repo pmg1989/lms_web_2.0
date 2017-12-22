@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { checkPower } from 'utils'
-import { DETAIL, ADD, UPDATE } from 'constants/options'
+import { DETAIL, ADD, UPDATE, DELETE } from 'constants/options'
 import Search from './Search'
 import List from './List'
 
@@ -12,6 +12,7 @@ function ListHome ({ curPowers, dispatch, lessonList, loading }) {
   const detailPower = checkPower(DETAIL, curPowers)
   const addPower = checkPower(ADD, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
+  const deletePower = checkPower(DELETE, curPowers)
 
   const searchProps = {
     addPower,
@@ -32,10 +33,17 @@ function ListHome ({ curPowers, dispatch, lessonList, loading }) {
     loading: loading.effects[`${namespace}/query`],
     detailPower,
     updatePower,
+    deletePower,
     onPageChange (fieldsValue) {
       dispatch({
         type: `${namespace}/query`,
         payload: { ...fieldsValue, isPostBack: false },
+      })
+    },
+    onDeleteItem (params) {
+      dispatch({
+        type: `${namespace}/remove`,
+        payload: { params },
       })
     },
   }

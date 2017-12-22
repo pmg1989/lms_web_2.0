@@ -1,12 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu } from 'antd'
+import { Menu, Modal } from 'antd'
 import moment from 'moment'
 import { Link } from 'dva/router'
 import { DataTable, DropMenu } from 'components'
-import { DETAIL, UPDATE } from 'constants/options'
+import { DETAIL, UPDATE, DELETE } from 'constants/options'
 import { getSubject } from 'utils/dictionary'
 import styles from './List.less'
+
+const confirm = Modal.confirm
 
 function List ({
   lessonList: {
@@ -17,7 +19,20 @@ function List ({
   onPageChange,
   detailPower,
   updatePower,
+  deletePower,
+  onDeleteItem,
 }) {
+  const handleMenuClick = (key, record) => {
+    if (+key === DELETE) {
+      confirm({
+        title: '您确定要删除代课老师吗?',
+        onOk () {
+          onDeleteItem({ lessonid: record.id })
+        },
+      })
+    }
+  }
+
   const columns = [
     {
       title: '课程名称',
@@ -57,9 +72,10 @@ function List ({
       // width: 80,
       render: (text, record) => (
         <DropMenu>
-          <Menu>
+          <Menu onClick={({ key }) => handleMenuClick(key, record)}>
             {detailPower && <Menu.Item key={DETAIL}><Link to={`/lesson/detail?lessonid=${record.id}`}>查看</Link></Menu.Item>}
             {updatePower && <Menu.Item key={UPDATE}><Link to={`/lesson/update?lessonid=${record.id}`}>编辑</Link></Menu.Item>}
+            {deletePower && <Menu.Item key={DELETE}>删除</Menu.Item>}
           </Menu>
         </DropMenu>
       ),
@@ -86,6 +102,8 @@ List.propTypes = {
   detailPower: PropTypes.bool.isRequired,
   onPageChange: PropTypes.func.isRequired,
   updatePower: PropTypes.bool.isRequired,
+  deletePower: PropTypes.bool.isRequired,
+  onDeleteItem: PropTypes.func.isRequired,
 }
 
 export default List
