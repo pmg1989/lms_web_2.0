@@ -69,8 +69,8 @@ export default {
       })
     },
     * query ({ payload }, { select, call, put }) {
-      const { searchQuery } = yield select(({ lessonList }) => lessonList)
-      const { isPostBack, current, pageSize, ...queryParams } = payload
+      const { searchQuery, pagination } = yield select(({ lessonList }) => lessonList)
+      const { isPostBack, isSearch, current, pageSize, ...queryParams } = payload
       const querys = renderQuery(searchQuery, queryParams)
       // console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
       // console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
@@ -85,8 +85,8 @@ export default {
             payload: {
               list,
               pagination: {
-                current: payload.current ? +payload.current : page.current,
-                pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
+                current: payload.current || (isSearch ? +payload.current : pagination.current),
+                pageSize: payload.pageSize || (isSearch ? +payload.pageSize : pagination.pageSize),
                 total: list.length,
               },
               searchQuery: querys,

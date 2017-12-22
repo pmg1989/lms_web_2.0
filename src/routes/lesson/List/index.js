@@ -23,7 +23,7 @@ function ListHome ({ curPowers, dispatch, lessonList, loading }) {
     onSearch (fieldsValue) {
       dispatch({
         type: `${namespace}/query`,
-        payload: { ...fieldsValue, isPostBack: true },
+        payload: { ...fieldsValue, isSearch: true, isPostBack: true },
       })
     },
   }
