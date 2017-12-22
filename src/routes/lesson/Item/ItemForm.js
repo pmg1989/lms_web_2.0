@@ -58,7 +58,7 @@ class ItemForm extends Component {
     }
   }
 
-  TeacherDaiForm = ({ teacherId, disabled }) => {
+  TeacherDaiFormItem = ({ teacherId, disabled }) => {
     const { form: { getFieldDecorator, getFieldValue, setFieldsValue }, lessonItem: { item }, addDaiTeacherPower, onChangeDaiTeacher } = this.props
     const { teachers } = this.state
     const teacherDaiId = teachers.length && item.teacher_substitute && teachers.find(cur => cur.firstname === item.teacher_substitute).id
@@ -113,7 +113,7 @@ class ItemForm extends Component {
     )
   }
 
-  AddStudentForm = ({ disabled }) => {
+  AddStudentFormItem = ({ disabled }) => {
     const { form: { getFieldDecorator, getFieldsValue }, lessonItem: { studentList }, onQueryStudentList } = this.props
     const { fetching, errorMsg } = this.state
 
@@ -332,7 +332,7 @@ class ItemForm extends Component {
             </Select>)
             }
           </FormItem>
-          {type !== 'create' && <this.TeacherDaiForm teacherId={teacherId} disabled={disabled} />}
+          {type !== 'create' && <this.TeacherDaiFormItem teacherId={teacherId} disabled={disabled} />}
           <FormItem label="教室" hasFeedback {...formItemLayout}>
             {getFieldDecorator('classroomid', {
               initialValue: item.classroomid && item.classroomid.toString(),
@@ -439,7 +439,7 @@ class ItemForm extends Component {
               </FormItem>
             </Col>
           </FormItem>
-          {type === 'create' && <this.AddStudentForm disabled={disabled} />}
+          {type === 'create' && <this.AddStudentFormItem disabled={disabled} />}
           <FormItem wrapperCol={{ span: 17, offset: 4 }}>
             {addPower &&
               <Button className={styles.btn} onClick={this.handleAdd} type="primary" htmlType="submit" size="large">创建</Button>
