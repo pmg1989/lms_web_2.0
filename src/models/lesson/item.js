@@ -26,6 +26,8 @@ export default {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             if (pathname === '/lesson/update' || pathname === '/lesson/detail') {
               dispatch({ type: 'query', payload: { lessonid, type: pathname === '/lesson/update' ? 'update' : 'detail' } })
+            } else {
+              dispatch({ type: 'querySuccess', payload: { item: {}, type: 'create' } })
             }
             dispatch({ type: 'querySource' })
           }

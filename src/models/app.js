@@ -34,15 +34,13 @@ export default {
   },
   effects: {
     * logout ({ }, { call, put }) {
-      const data = yield call(logout)
-      if (data && data.success) {
-        yield setLoginOut()
-        yield put({ type: 'logoutSuccess' })
-        yield put(routerRedux.push({
-          pathname: '/login',
-          state: { nextPathname: location.pathname, nextSearch: location.search },
-        }))
-      }
+      yield setLoginOut()
+      yield put({ type: 'logoutSuccess' })
+      yield put(routerRedux.push({
+        pathname: '/login',
+        state: { nextPathname: location.pathname, nextSearch: location.search },
+      }))
+      yield call(logout)
     },
   },
   reducers: {

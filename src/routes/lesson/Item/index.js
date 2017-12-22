@@ -2,12 +2,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { checkPower } from 'utils'
+import { ADD, UPDATE } from 'constants/options'
 import ItemForm from './ItemForm'
 
 const namespace = 'lessonItem'
 
-const LessonItem = ({ dispatch, lessonItem, loading }) => {
+const LessonItem = ({ dispatch, curPowers, lessonItem, loading }) => {
+  const addPower = checkPower(ADD, curPowers)
+  const updatePower = checkPower(UPDATE, curPowers)
+
   const itemFormProps = {
+    addPower,
+    updatePower,
     lessonItem,
     loading: loading.models.lessonItem,
     onQueryStudentList (params) {
@@ -36,6 +43,7 @@ const LessonItem = ({ dispatch, lessonItem, loading }) => {
 
 LessonItem.propTypes = {
   dispatch: PropTypes.func.isRequired,
+  curPowers: PropTypes.array.isRequired,
   lessonItem: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
 }

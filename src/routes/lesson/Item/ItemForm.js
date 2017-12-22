@@ -23,6 +23,8 @@ const formItemLayout = {
 
 class ItemForm extends Component {
   static propTypes = {
+    addPower: PropTypes.bool.isRequired,
+    updatePower: PropTypes.bool.isRequired,
     lessonItem: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
@@ -135,7 +137,7 @@ class ItemForm extends Component {
     }
   }
 
-  handleSubmit = (e) => {
+  handleAdd = (e) => {
     const { form: { validateFieldsAndScroll }, onSubmit } = this.props
     e.preventDefault()
     validateFieldsAndScroll((err, values) => {
@@ -159,7 +161,7 @@ class ItemForm extends Component {
   render () {
     const {
       lessonItem: { type, item, courseCategorys, schools, classroomsDic, studentList },
-      loading,
+      addPower, updatePower, loading,
       onGoBack,
       form: { getFieldDecorator },
     } = this.props
@@ -180,7 +182,7 @@ class ItemForm extends Component {
 
     return (
       <Spin spinning={loading} size="large">
-        <Form className={styles.form_box} onSubmit={this.handleSubmit}>
+        <Form className={styles.form_box}>
           <FormItem label="课程类型" hasFeedback {...formItemLayout} extra="支持输入关键字筛选">
             {getFieldDecorator('categoryid', {
               initialValue: item.categoryid && item.categoryid.toString(),
@@ -361,7 +363,12 @@ class ItemForm extends Component {
             </Select>)}
           </FormItem>
           <FormItem wrapperCol={{ span: 17, offset: 4 }}>
-            <Button className={styles.btn} type="primary" htmlType="submit" size="large">创建</Button>
+            {addPower &&
+              <Button className={styles.btn} onClick={this.handleAdd} type="primary" htmlType="submit" size="large">创建</Button>
+            }
+            {updatePower &&
+              <Button className={styles.btn} type="primary" size="large">修改</Button>
+            }
             <Button className={styles.btn} type="default" onClick={onGoBack} size="large">返回</Button>
           </FormItem>
         </Form>
