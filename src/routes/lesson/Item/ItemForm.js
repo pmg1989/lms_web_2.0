@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Modal, Input, InputNumber, Select, Spin, Button, Row, Col, Checkbox, DatePicker, Tag, Icon } from 'antd'
-import debounce from 'lodash.debounce'
 import moment from 'moment'
 import { getSchool, getUserInfo } from 'utils'
 import { timeList } from 'utils/dictionary'
@@ -38,18 +37,13 @@ class ItemForm extends Component {
     onQueryStudentList: PropTypes.func.isRequired,
   }
 
-  constructor (props) {
-    super(props)
-    this.state = {
-      schoolId: getUserInfo().school_id,
-      timeStarts: timeList,
-      timeEnds: timeList,
-      teachers: [],
-      fetching: false,
-      errorMsg: '没有匹配的学员数据',
-    }
-
-    this.queryStudentList = debounce(this.queryStudentList, 800)
+  state = {
+    schoolId: getUserInfo().school_id,
+    timeStarts: timeList,
+    timeEnds: timeList,
+    teachers: [],
+    fetching: false,
+    errorMsg: '没有匹配的学员数据',
   }
 
   componentWillReceiveProps (nextProps) {
@@ -119,6 +113,55 @@ class ItemForm extends Component {
     )
   }
 
+  AddStudentForm = ({ disabled }) => {
+    const { form: { getFieldDecorator, getFieldsValue }, lessonItem: { studentList }, onQueryStudentList } = this.props
+    const { fetching, errorMsg } = this.state
+
+    const handleMultipleChange = () => {
+      this.setState({ fetching: false })
+    }
+
+    const queryStudentList = (phone2) => {
+      const { school_id, available } = getFieldsValue(['school_id', 'available'])
+      const params = getFieldsValue(['categoryid', 'teacherid', 'startdate', 'numsections', 'openweekday'])
+
+      if (params.categoryid && params.teacherid && params.startdate && available && params.numsections && params.openweekday.length) {
+        if (!(/^1(3|4|5|7|8)\d{9}$/.test(phone2))) {
+          return false
+        }
+
+        this.setState({ fetching: true })
+        params.startdate = moment(`${params.startdate.format('YYYY-MM-DD')} ${available}`).format('X')
+        params.openweekday = params.openweekday.sort().join(',')
+        console.log(school_id, params)
+        // this.props.onQueryStudentList(params)
+        onQueryStudentList({ phone2, school: '' })
+      } else {
+        console.log('error')
+        this.setState({ fetching: false, errorMsg: '请先完善表单数据！' })
+      }
+      return true
+    }
+
+    return (
+      <FormItem label="添加学员" hasFeedback {...formItemLayout} >
+        {getFieldDecorator('studentid', {
+        })(<Select
+          disabled={disabled}
+          mode="multiple"
+          labelInValue
+          placeholder="请逐个输入学员手机号码进行验证"
+          notFoundContent={fetching ? <Spin size="small" /> : <Tag color="red">{errorMsg}</Tag>}
+          filterOption={false}
+          onChange={handleMultipleChange}
+          onSearch={queryStudentList}
+        >
+          {studentList.map(d => <Option key={d.id} value={d.id}>{d.firstname}</Option>)}
+        </Select>)}
+      </FormItem>
+    )
+  }
+
   disabledDate = (current) => {
     const weekdays = this.props.form.getFieldValue('openweekday')
     if (current && weekdays) {
@@ -176,27 +219,6 @@ class ItemForm extends Component {
     }
   }
 
-  handleMultipleChange = () => {
-    this.setState({ fetching: false })
-  }
-
-  queryStudentList = (phone2) => {
-    const { onQueryStudentList, form: { getFieldsValue } } = this.props
-    this.setState({ fetching: true })
-    const { school_id, available } = getFieldsValue(['school_id', 'available'])
-    const params = getFieldsValue(['categoryid', 'teacherid', 'startdate', 'numsections', 'openweekday'])
-    if (params.categoryid && params.teacherid && params.startdate && available && params.numsections && params.openweekday.length) {
-      params.startdate = moment(`${params.startdate.format('YYYY-MM-DD')} ${available}`).format('X')
-      params.openweekday = params.openweekday.sort().join(',')
-      console.log(school_id, params)
-      // this.props.onQueryStudentList(params)
-      onQueryStudentList({ phone2, school: '' })
-    } else {
-      console.log('error')
-      this.setState({ fetching: false, errorMsg: '请先完善表单数据！' })
-    }
-  }
-
   handleAdd = (e) => {
     const { form: { validateFieldsAndScroll }, onSubmit } = this.props
     e.preventDefault()
@@ -237,11 +259,11 @@ class ItemForm extends Component {
 
   render () {
     const {
-      lessonItem: { type, item, courseCategorys, schools, classroomsDic, studentList },
+      lessonItem: { type, item, courseCategorys, schools, classroomsDic },
       addPower, updatePower, addDeleteStudentPower, loading, onGoBack,
       form: { getFieldDecorator },
     } = this.props
-    const { schoolId, teachers, timeStarts, timeEnds, fetching, errorMsg } = this.state
+    const { schoolId, teachers, timeStarts, timeEnds } = this.state
 
     const disabled = type === 'detail'
     const disabledEdit = type === 'update'
@@ -417,22 +439,7 @@ class ItemForm extends Component {
               </FormItem>
             </Col>
           </FormItem>
-          <FormItem label="添加学员" hasFeedback {...formItemLayout} >
-            {getFieldDecorator('studentid', {
-              // initialValue: '',
-            })(<Select
-              disabled={disabled}
-              mode="multiple"
-              labelInValue
-              placeholder="请逐个输入学员手机号码进行验证"
-              notFoundContent={fetching ? <Spin size="small" /> : <Tag color="red">{errorMsg}</Tag>}
-              filterOption={false}
-              onChange={this.handleMultipleChange}
-              onSearch={this.queryStudentList}
-            >
-              {studentList.map(d => <Option key={d.id} value={d.id}>{d.firstname}</Option>)}
-            </Select>)}
-          </FormItem>
+          {type === 'create' && <this.AddStudentForm disabled={disabled} />}
           <FormItem wrapperCol={{ span: 17, offset: 4 }}>
             {addPower &&
               <Button className={styles.btn} onClick={this.handleAdd} type="primary" htmlType="submit" size="large">创建</Button>
