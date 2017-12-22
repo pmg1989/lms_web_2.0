@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { getCurPowers, renderQuery, getSchool } from 'utils'
-import { query, remove, removeCourse } from 'services/lesson/list'
+import { query, remove, removeCourse, deleteBatch } from 'services/lesson/list'
 import { query as querySchools } from 'services/common/school'
 import { query as queryCategorys } from 'services/common/category'
 import { query as queryTeachers } from 'services/account/admin'
@@ -126,6 +126,16 @@ export default {
         })
       }
     },
+    * removeBatch ({ payload }, { call, put }) {
+      const { params } = payload
+      const { success } = yield call(deleteBatch, params)
+      if (success) {
+        yield put({
+          type: 'removeBatchSuccess',
+          payload: { ids: params.lessonids.split(',') },
+        })
+      }
+    },
   },
   reducers: {
     querySearchSuccess (state, { payload }) {
@@ -136,6 +146,10 @@ export default {
     },
     removeSuccess (state, { payload }) {
       const list = state.list.filter(item => item.id !== payload.id)
+      return { ...state, list, pagination: { ...state.pagination, total: list.length } }
+    },
+    removeBatchSuccess (state, { payload }) {
+      const list = state.list.filter(item => !payload.ids.includes(item.id.toString()))
       return { ...state, list, pagination: { ...state.pagination, total: list.length } }
     },
   },

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Modal } from 'antd'
+import { Menu, Modal, Tag, Icon } from 'antd'
 import moment from 'moment'
 import { Link } from 'dva/router'
 import { DataTable, DropMenu } from 'components'
@@ -9,6 +9,7 @@ import { getSubject } from 'utils/dictionary'
 import styles from './List.less'
 
 const confirm = Modal.confirm
+let selectedKeys = []
 
 function List ({
   lessonList: {
@@ -22,6 +23,7 @@ function List ({
   deletePower,
   onDeleteItem,
   onDeleteCourseItem,
+  onDeleteBatch,
 }) {
   const handleMenuClick = (key, record) => {
     if (+key === DELETE) {
@@ -40,6 +42,31 @@ function List ({
         },
       })
     }
+  }
+
+  const rowSelection = {
+    onChange: (selectedRowKeys) => {
+      selectedKeys = selectedRowKeys
+    },
+    selections: [{
+      key: 'deleteAll',
+      text: <Tag color="#f50"><Icon type="delete" /> 批量删除</Tag>,
+      onSelect: () => {
+        if (selectedKeys.length) {
+          confirm({
+            title: '您确定要批量删除这些记录吗?',
+            onOk () {
+              onDeleteBatch({ lessonids: selectedKeys.join(',') })
+            },
+          })
+        } else {
+          Modal.warning({
+            title: '警告',
+            content: '请至少选中一条记录！',
+          })
+        }
+      },
+    }],
   }
 
   const columns = [
@@ -101,6 +128,7 @@ function List ({
       loading={loading}
       pagination={pagination}
       onPageChange={onPageChange}
+      rowSelection={rowSelection}
       rowKey={record => record.id}
     />
   )
@@ -115,6 +143,7 @@ List.propTypes = {
   deletePower: PropTypes.bool.isRequired,
   onDeleteItem: PropTypes.func.isRequired,
   onDeleteCourseItem: PropTypes.func.isRequired,
+  onDeleteBatch: PropTypes.func.isRequired,
 }
 
 export default List

@@ -30,7 +30,7 @@ function ListHome ({ curPowers, dispatch, lessonList, loading }) {
 
   const listProps = {
     lessonList,
-    loading: loading.effects[`${namespace}/query`],
+    loading: loading.models.lessonList,
     detailPower,
     updatePower,
     deletePower,
@@ -49,6 +49,12 @@ function ListHome ({ curPowers, dispatch, lessonList, loading }) {
     onDeleteCourseItem (params) {
       dispatch({
         type: `${namespace}/removeCourse`,
+        payload: { params },
+      })
+    },
+    onDeleteBatch (params) {
+      dispatch({
+        type: `${namespace}/removeBatch`,
         payload: { params },
       })
     },
