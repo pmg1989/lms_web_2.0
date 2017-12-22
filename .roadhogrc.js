@@ -17,7 +17,7 @@ export default {
         "/api/moodle": {
             "target": process.env.PROXY_HOST || 'http://school.newband.com:8084',
             "changeOrigin": true,
-            "pathRewrite": { "^/api": "/" }
+            "pathRewrite": { "^/api/": "/" }
         },
     },
     autoprefixer: {
