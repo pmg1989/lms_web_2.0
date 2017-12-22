@@ -96,7 +96,7 @@ class ItemForm extends Component {
     return (
       <FormItem label="代课老师" hasFeedbac {...formItemLayout} extra="操作代课老师下拉框即可快速修改代课老师啦">
         <Row gutter={24}>
-          <Col span={20}>
+          <Col span={18}>
             {getFieldDecorator('teacher_substitute', {
               initialValue: teacherDaiId || undefined,
               onChange: handleDaiTeacherChange,
@@ -105,8 +105,8 @@ class ItemForm extends Component {
             </Select>)
             }
           </Col>
-          <Col span={4}>
-            <Button size="large" type="danger" onClick={handleDeleteDaiTeacher} disabled={disabled || !addDaiTeacherPower}><Icon type="close-circle-o" />删除</Button>
+          <Col span={6}>
+            <Button size="large" type="danger" onClick={handleDeleteDaiTeacher} disabled={disabled || !addDaiTeacherPower}><Icon type="close-circle-o" />删除代课老师</Button>
           </Col>
         </Row>
       </FormItem>
