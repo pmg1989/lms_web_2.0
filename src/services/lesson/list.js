@@ -8,6 +8,10 @@ export async function remove (params) {
   return request({ wsfunction: 'mod_frontservice_deletelesson', ...params })
 }
 
+export async function removeCourse (params) {
+  return request({ wsfunction: 'mod_frontservice_deletecourse', ...params })
+}
+
 export async function deleteBatch (params) {
   return request({ wsfunction: 'mod_frontservice_deletelessons', ...params })
 }

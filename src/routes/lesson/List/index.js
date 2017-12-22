@@ -46,6 +46,12 @@ function ListHome ({ curPowers, dispatch, lessonList, loading }) {
         payload: { params },
       })
     },
+    onDeleteCourseItem (params) {
+      dispatch({
+        type: `${namespace}/removeCourse`,
+        payload: { params },
+      })
+    },
   }
 
   return (

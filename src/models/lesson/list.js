@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { getCurPowers, renderQuery, getSchool } from 'utils'
-import { query, remove } from 'services/lesson/list'
+import { query, remove, removeCourse } from 'services/lesson/list'
 import { query as querySchools } from 'services/common/school'
 import { query as queryCategorys } from 'services/common/category'
 import { query as queryTeachers } from 'services/account/admin'
@@ -113,6 +113,16 @@ export default {
         yield put({
           type: 'removeSuccess',
           payload: { id: params.lessonid },
+        })
+      }
+    },
+    * removeCourse ({ payload }, { call, put }) {
+      const { params } = payload
+      const { success } = yield call(removeCourse, params)
+      if (success) {
+        yield put({
+          type: 'query',
+          payload: { isPostBack: true },
         })
       }
     },

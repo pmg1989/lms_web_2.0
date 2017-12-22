@@ -21,13 +21,22 @@ function List ({
   updatePower,
   deletePower,
   onDeleteItem,
+  onDeleteCourseItem,
 }) {
   const handleMenuClick = (key, record) => {
     if (+key === DELETE) {
       confirm({
-        title: '您确定要删除代课老师吗?',
+        title: '您确定要删除课程吗?',
         onOk () {
           onDeleteItem({ lessonid: record.id })
+        },
+      })
+    }
+    if (key === `${DELETE}_course`) {
+      confirm({
+        title: '您确定要删除课程系列吗?',
+        onOk () {
+          onDeleteCourseItem({ courseid: record.course })
         },
       })
     }
@@ -76,6 +85,7 @@ function List ({
             {detailPower && <Menu.Item key={DETAIL}><Link to={`/lesson/detail?lessonid=${record.id}`}>查看</Link></Menu.Item>}
             {updatePower && <Menu.Item key={UPDATE}><Link to={`/lesson/update?lessonid=${record.id}`}>编辑</Link></Menu.Item>}
             {deletePower && <Menu.Item key={DELETE}>删除</Menu.Item>}
+            {deletePower && <Menu.Item key={`${DELETE}_course`}>删除系列</Menu.Item>}
           </Menu>
         </DropMenu>
       ),
@@ -104,6 +114,7 @@ List.propTypes = {
   updatePower: PropTypes.bool.isRequired,
   deletePower: PropTypes.bool.isRequired,
   onDeleteItem: PropTypes.func.isRequired,
+  onDeleteCourseItem: PropTypes.func.isRequired,
 }
 
 export default List
