@@ -290,7 +290,7 @@ class ItemForm extends Component {
             }
           </FormItem>
           {type !== 'create' &&
-            <FormItem label="代课老师" hasFeedbac {...formItemLayout}>
+            <FormItem label="代课老师" hasFeedbac {...formItemLayout} extra="操作代课老师下拉框即可快速修改代课老师啦">
               <Row gutter={24}>
                 <Col span={20}>
                   {getFieldDecorator('teacher_substitute', {
