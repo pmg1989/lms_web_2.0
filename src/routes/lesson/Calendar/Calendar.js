@@ -118,23 +118,25 @@ class Calendar extends Component {
 
     return (
       <Spin spinning={loading} size="large">
-        {!isPostBack &&
-          <BigCalendar
-            className={styles.calendar_box}
-            events={lessons}
-            views={allViews}
-            step={30}
-            defaultDate={new Date()}
-            onView={this.handleViews}
-            onNavigate={this.handleNavigate}
-            components={{
-              event: MonthEvent,
-              agenda: {
-                event: AgendaEvent,
-              },
-            }}
-          />
-        }
+        <div className={styles.calendar_container}>
+          {!isPostBack &&
+            <BigCalendar
+              className={styles.calendar_box}
+              events={lessons}
+              views={allViews}
+              step={30}
+              defaultDate={new Date()}
+              onView={this.handleViews}
+              onNavigate={this.handleNavigate}
+              components={{
+                event: MonthEvent,
+                agenda: {
+                  event: AgendaEvent,
+                },
+              }}
+            />
+          }
+        </div>
       </Spin>
     )
   }
