@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Select, Spin, Button, Row, Col, Checkbox, DatePicker, Tag } from 'antd'
+import { Form, Modal, Input, InputNumber, Select, Spin, Button, Row, Col, Checkbox, DatePicker, Tag, Icon } from 'antd'
 import debounce from 'lodash.debounce'
 import moment from 'moment'
 import { getSchool, getUserInfo } from 'utils'
@@ -9,6 +9,8 @@ import styles from './ItemForm.less'
 
 const FormItem = Form.Item
 const Option = Select.Option
+const confirm = Modal.confirm
+const warning = Modal.warning
 
 const now = Date.now()
 
@@ -25,11 +27,14 @@ class ItemForm extends Component {
   static propTypes = {
     addPower: PropTypes.bool.isRequired,
     updatePower: PropTypes.bool.isRequired,
+    addDaiTeacherPower: PropTypes.bool.isRequired,
+    addDeleteStudentPower: PropTypes.bool.isRequired,
     lessonItem: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onGoBack: PropTypes.func.isRequired,
+    onChangeDaiTeacher: PropTypes.func.isRequired,
     onQueryStudentList: PropTypes.func.isRequired,
   }
 
@@ -93,6 +98,38 @@ class ItemForm extends Component {
     if (oldCourseCategory && oldCourseCategory.idnumber.split('-')[0] !== courseCategory.idnumber.split('-')[0]) {
       setFieldsValue({ teacherid: undefined })
     }
+  }
+
+  handleDaiTeacherChange = (teacherid) => {
+    const { lessonItem: { item }, onChangeDaiTeacher } = this.props
+    const params = {
+      lessonid: item.id,
+      userid: teacherid,
+      rolename: 'substitute-teacher',
+    }
+    onChangeDaiTeacher({ params, type: 'change' })
+  }
+
+  handleDeleteDaiTeacher = () => {
+    const { lessonItem: { item }, form: { getFieldValue, setFieldsValue }, onChangeDaiTeacher } = this.props
+    const teacherDaiId = getFieldValue('teacher_substitute')
+    if (!teacherDaiId) {
+      warning({ title: '操作警告', content: '没有代课老师，无法删除！' })
+      return false
+    }
+    const params = {
+      lessonid: item.id,
+      userid: teacherDaiId,
+      rolename: 'substitute-teacher',
+    }
+    confirm({
+      title: '您确定要删除代课老师吗?',
+      onOk () {
+        onChangeDaiTeacher({ params, type: 'delete' })
+        setFieldsValue({ teacher_substitute: undefined })
+      },
+    })
+    return true
   }
 
   handleWeekdayChange = (weekdays) => {
@@ -178,7 +215,7 @@ class ItemForm extends Component {
   render () {
     const {
       lessonItem: { type, item, courseCategorys, schools, classroomsDic, studentList },
-      addPower, updatePower, loading,
+      addPower, updatePower, addDaiTeacherPower, addDeleteStudentPower, loading,
       onGoBack,
       form: { getFieldDecorator },
     } = this.props
@@ -196,7 +233,8 @@ class ItemForm extends Component {
     }
 
     const teacherId = teachers.length && item.teacher && teachers.find(cur => cur.firstname === item.teacher).id
-
+    const teacherDaiId = teachers.length && item.teacher_substitute && teachers.find(cur => cur.firstname === item.teacher_substitute).id
+    console.log(addDeleteStudentPower)
     return (
       <Spin spinning={loading} size="large">
         <Form className={styles.form_box}>
@@ -239,7 +277,7 @@ class ItemForm extends Component {
           </FormItem>
           <FormItem label="老师" hasFeedback {...formItemLayout}>
             {getFieldDecorator('teacherid', {
-              initialValue: teacherId || '',
+              initialValue: teacherId || undefined,
               rules: [
                 {
                   required: true,
@@ -251,12 +289,24 @@ class ItemForm extends Component {
             </Select>)
             }
           </FormItem>
-          {/* <FormItem label="代课老师" hasFeedbac {...formItemLayout}>
-            {getFieldDecorator('teacher_substitute', {
-              initialValue: item.teacher_substitute,
-            })(<Input disabled={disabled} placeholder="请输入代课老师" />)
-            }
-          </FormItem> */}
+          {type !== 'create' &&
+            <FormItem label="代课老师" hasFeedbac {...formItemLayout}>
+              <Row gutter={24}>
+                <Col span={20}>
+                  {getFieldDecorator('teacher_substitute', {
+                    initialValue: teacherDaiId || undefined,
+                    onChange: this.handleDaiTeacherChange,
+                  })(<Select size="large" disabled={disabled || !addDaiTeacherPower} placeholder="--请选择添加代课老师--">
+                    {teachers.filter(cur => cur.id !== teacherId).map(teacher => <Option key={teacher.id} value={teacher.id.toString()}>{teacher.firstname}</Option>)}
+                  </Select>)
+                  }
+                </Col>
+                <Col span={4}>
+                  <Button size="large" type="danger" onClick={this.handleDeleteDaiTeacher} disabled={disabled || !addDaiTeacherPower}><Icon type="close-circle-o" />删除</Button>
+                </Col>
+              </Row>
+            </FormItem>
+          }
           <FormItem label="教室" hasFeedback {...formItemLayout}>
             {getFieldDecorator('classroomid', {
               initialValue: item.classroomid && item.classroomid.toString(),

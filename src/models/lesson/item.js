@@ -1,6 +1,7 @@
 import { getCurPowers } from 'utils'
 import { routerRedux } from 'dva/router'
-import { query, create, update, queryCourseCategory } from 'services/lesson/item'
+import { message } from 'antd'
+import { query, create, update, queryCourseCategory, enrollesson, unenrollesson } from 'services/lesson/item'
 import { query as querySchools } from 'services/common/school'
 import { query as queryClassRooms } from 'services/common/classroom'
 import { query as queryUsers } from 'services/account/admin'
@@ -113,6 +114,21 @@ export default {
       const { success } = yield call(update, payload.params)
       if (success) {
         yield put(routerRedux.goBack())
+      }
+    },
+    * changeDaiTeacher ({ payload }, { call }) {
+      const { params, type } = payload
+      if (type === 'change') { // 添加 / 修改代课老师
+        const { success } = yield call(enrollesson, params)
+        if (success) {
+          message.success('成功修改代课老师！')
+        }
+      } else {
+        // 删除代课老师
+        const { success } = yield call(unenrollesson, params)
+        if (success) {
+          message.success('成功删除代课老师！')
+        }
       }
     },
   },

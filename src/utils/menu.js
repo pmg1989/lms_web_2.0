@@ -42,7 +42,7 @@ const menu = [
         id: 24,
         key: 'update',
         name: '修改课程',
-        power: [2, 4],
+        power: [2, 4, 12, 13],
       },
       {
         id: 25,

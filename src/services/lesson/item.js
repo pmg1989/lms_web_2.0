@@ -15,3 +15,11 @@ export async function create (params) {
 export async function update (params) {
   return request({ wsfunction: 'mod_frontservice_modifylesson', ...params })
 }
+
+export async function enrollesson (params) {
+  return request({ wsfunction: 'mod_frontservice_enrollesson', ...params })
+}
+
+export async function unenrollesson (params) {
+  return request({ wsfunction: 'mod_frontservice_unenrollesson', ...params })
+}
