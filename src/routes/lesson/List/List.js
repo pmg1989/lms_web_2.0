@@ -4,7 +4,7 @@ import { Menu, Modal, Tag, Icon } from 'antd'
 import moment from 'moment'
 import { Link } from 'dva/router'
 import { DataTable, DropMenu } from 'components'
-import { DETAIL, UPDATE, DELETE } from 'constants/options'
+import { UPDATE, DETAIL, DELETE } from 'constants/options'
 import { getSubject } from 'utils/dictionary'
 import styles from './List.less'
 
@@ -18,8 +18,8 @@ function List ({
   },
   loading,
   onPageChange,
-  detailPower,
   updatePower,
+  detailPower,
   deletePower,
   onDeleteItem,
   onDeleteCourseItem,
@@ -137,9 +137,9 @@ function List ({
 List.propTypes = {
   lessonList: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
-  detailPower: PropTypes.bool.isRequired,
   onPageChange: PropTypes.func.isRequired,
   updatePower: PropTypes.bool.isRequired,
+  detailPower: PropTypes.bool.isRequired,
   deletePower: PropTypes.bool.isRequired,
   onDeleteItem: PropTypes.func.isRequired,
   onDeleteCourseItem: PropTypes.func.isRequired,
