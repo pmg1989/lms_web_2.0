@@ -1,6 +1,6 @@
 import { getCurPowers } from 'utils'
 import { routerRedux } from 'dva/router'
-import { create, query, queryCourseCategory } from 'services/lesson/item'
+import { query, create, update, queryCourseCategory } from 'services/lesson/item'
 import { query as querySchools } from 'services/common/school'
 import { query as queryClassRooms } from 'services/common/classroom'
 import { query as queryUsers } from 'services/account/admin'
@@ -106,9 +106,13 @@ export default {
       const { data, success } = yield call(create, payload.params)
       if (success) {
         console.log(data)
-        yield put(routerRedux.push({
-          pathname: '/lesson/list',
-        }))
+        yield put(routerRedux.goBack())
+      }
+    },
+    * update ({ payload }, { call, put }) {
+      const { success } = yield call(update, payload.params)
+      if (success) {
+        yield put(routerRedux.goBack())
       }
     },
   },

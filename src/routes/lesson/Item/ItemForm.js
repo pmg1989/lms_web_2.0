@@ -158,6 +158,23 @@ class ItemForm extends Component {
     })
   }
 
+  handleUpdate = (e) => {
+    const { form: { validateFieldsAndScroll }, lessonItem: { item }, onSubmit } = this.props
+    e.preventDefault()
+    validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        const stateDate = values.startdate
+        const data = {
+          available: moment(`${stateDate.format('YYYY-MM-DD')} ${values.available}`).format('X'),
+          deadline: moment(`${stateDate.format('YYYY-MM-DD')} ${values.deadline}`).format('X'),
+          classroomid: values.classroomid,
+          lessonid: item.id,
+        }
+        onSubmit(data)
+      }
+    })
+  }
+
   render () {
     const {
       lessonItem: { type, item, courseCategorys, schools, classroomsDic, studentList },
@@ -367,7 +384,7 @@ class ItemForm extends Component {
               <Button className={styles.btn} onClick={this.handleAdd} type="primary" htmlType="submit" size="large">创建</Button>
             }
             {updatePower &&
-              <Button className={styles.btn} type="primary" size="large">修改</Button>
+              <Button className={styles.btn} onClick={this.handleUpdate} type="primary" size="large">修改</Button>
             }
             <Button className={styles.btn} type="default" onClick={onGoBack} size="large">返回</Button>
           </FormItem>

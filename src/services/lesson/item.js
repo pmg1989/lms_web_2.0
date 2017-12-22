@@ -13,5 +13,5 @@ export async function create (params) {
 }
 
 export async function update (params) {
-  return request({ wsfunction: '', ...params })
+  return request({ wsfunction: 'mod_frontservice_modifylesson', ...params })
 }

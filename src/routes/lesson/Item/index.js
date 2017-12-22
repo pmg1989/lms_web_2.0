@@ -25,7 +25,7 @@ const LessonItem = ({ dispatch, curPowers, lessonItem, loading }) => {
     },
     onSubmit (params) {
       dispatch({
-        type: `${namespace}/create`,
+        type: params.lessonid ? `${namespace}/update` : `${namespace}/create`,
         payload: { params },
       })
     },
