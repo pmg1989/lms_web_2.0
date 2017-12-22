@@ -11,6 +11,8 @@ export const RESIGN = 8 // 离职
 export const LEAVE = 9 // 请假
 export const SET_TEACHER = 10 // 设置老师
 export const GET_HISTORY_LIST = 11 // 查看合同的操作历史记录
+export const ADD_DAI_TEACHER = 12 // 添加代课老师
+export const ADD_DELETE_STUDENT = 13 // 学员排课/退课
 
 export const powerName = {
   [MENU]: '查看菜单',
@@ -25,4 +27,6 @@ export const powerName = {
   [LEAVE]: '请假',
   [SET_TEACHER]: '设置老师',
   [GET_HISTORY_LIST]: '查看历史',
+  [ADD_DAI_TEACHER]: '添加代课老师',
+  [ADD_DELETE_STUDENT]: '学员排课/退课',
 }

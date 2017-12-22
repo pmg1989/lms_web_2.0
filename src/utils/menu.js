@@ -36,13 +36,13 @@ const menu = [
         id: 23,
         key: 'create',
         name: '排课',
-        power: [2],
+        power: [2, 3],
       },
       {
         id: 24,
         key: 'update',
         name: '修改课程',
-        power: [2],
+        power: [2, 4, 12, 13],
       },
       {
         id: 25,

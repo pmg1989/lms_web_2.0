@@ -2,14 +2,31 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { checkPower } from 'utils'
+import { ADD, UPDATE, ADD_DAI_TEACHER, ADD_DELETE_STUDENT } from 'constants/options'
 import ItemForm from './ItemForm'
 
 const namespace = 'lessonItem'
 
-const LessonItem = ({ dispatch, lessonItem, loading }) => {
+const LessonItem = ({ dispatch, curPowers, lessonItem, loading }) => {
+  const addPower = checkPower(ADD, curPowers)
+  const updatePower = checkPower(UPDATE, curPowers)
+  const addDaiTeacherPower = checkPower(ADD_DAI_TEACHER, curPowers)
+  const addDeleteStudentPower = checkPower(ADD_DELETE_STUDENT, curPowers)
+
   const itemFormProps = {
+    addPower,
+    updatePower,
+    addDaiTeacherPower,
+    addDeleteStudentPower,
     lessonItem,
     loading: loading.models.lessonItem,
+    onChangeDaiTeacher ({ type, params }) {
+      dispatch({
+        type: `${namespace}/changeDaiTeacher`,
+        payload: { type, params },
+      })
+    },
     onQueryStudentList (params) {
       dispatch({
         type: `${namespace}/queryStudents`,
@@ -18,7 +35,7 @@ const LessonItem = ({ dispatch, lessonItem, loading }) => {
     },
     onSubmit (params) {
       dispatch({
-        type: `${namespace}/create`,
+        type: params.lessonid ? `${namespace}/update` : `${namespace}/create`,
         payload: { params },
       })
     },
@@ -36,6 +53,7 @@ const LessonItem = ({ dispatch, lessonItem, loading }) => {
 
 LessonItem.propTypes = {
   dispatch: PropTypes.func.isRequired,
+  curPowers: PropTypes.array.isRequired,
   lessonItem: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
 }

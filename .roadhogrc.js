@@ -15,7 +15,7 @@ export default {
     outputPath: `./dist/${version}`,
     proxy: {
         "/api/moodle": {
-            "target": process.env.PROXY_HOST || 'http://school.newband.com:8086',
+            "target": process.env.PROXY_HOST || 'http://school.newband.com:8084',
             "changeOrigin": true,
             "pathRewrite": { "^/api": "/" }
         },

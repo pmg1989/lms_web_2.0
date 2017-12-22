@@ -1,6 +1,7 @@
 import { getCurPowers } from 'utils'
 import { routerRedux } from 'dva/router'
-import { create, query, queryCourseCategory } from 'services/lesson/item'
+import { message } from 'antd'
+import { query, create, update, queryCourseCategory, enrollesson, unenrollesson } from 'services/lesson/item'
 import { query as querySchools } from 'services/common/school'
 import { query as queryClassRooms } from 'services/common/classroom'
 import { query as queryUsers } from 'services/account/admin'
@@ -8,6 +9,7 @@ import { query as queryUsers } from 'services/account/admin'
 export default {
   namespace: 'lessonItem',
   state: {
+    type: 'create',
     item: {},
     schools: [],
     classroomsDic: {},
@@ -24,7 +26,9 @@ export default {
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             if (pathname === '/lesson/update' || pathname === '/lesson/detail') {
-              dispatch({ type: 'query', payload: { lessonid } })
+              dispatch({ type: 'query', payload: { lessonid, type: pathname === '/lesson/update' ? 'update' : 'detail' } })
+            } else {
+              dispatch({ type: 'querySuccess', payload: { item: {}, type: 'create' } })
             }
             dispatch({ type: 'querySource' })
           }
@@ -35,12 +39,20 @@ export default {
 
   effects: {
     * query ({ payload }, { call, put }) {
-      const { data, success } = yield call(query, payload)
+      const { lessonid, type } = payload
+      const { data, success } = yield call(query, { lessonid })
+      // const { data: students } = yield call()
+
+      data.categoryid = 74
+      data.school_id = 2
+      data.classroomid = 1 // 200001
+
       if (success) {
         yield put({
           type: 'querySuccess',
           payload: {
             item: data,
+            type,
           },
         })
       }
@@ -95,9 +107,28 @@ export default {
       const { data, success } = yield call(create, payload.params)
       if (success) {
         console.log(data)
-        yield put(routerRedux.push({
-          pathname: '/lesson/list',
-        }))
+        yield put(routerRedux.goBack())
+      }
+    },
+    * update ({ payload }, { call, put }) {
+      const { success } = yield call(update, payload.params)
+      if (success) {
+        yield put(routerRedux.goBack())
+      }
+    },
+    * changeDaiTeacher ({ payload }, { call }) {
+      const { params, type } = payload
+      if (type === 'change') { // 添加 / 修改代课老师
+        const { success } = yield call(enrollesson, params)
+        if (success) {
+          message.success('成功修改代课老师！')
+        }
+      } else {
+        // 删除代课老师
+        const { success } = yield call(unenrollesson, params)
+        if (success) {
+          message.success('成功删除代课老师！')
+        }
       }
     },
   },
