@@ -44,8 +44,6 @@ export default {
         4: [1],
         41: [1, 2, 4],
       }
-      const allPathPowers = getAllPathPowers(menu, data.role_power)
-      setLoginIn(data, allPathPowers)
 
       if (success) {
         yield put({
@@ -55,6 +53,9 @@ export default {
             userPower: data.role_power,
           },
         })
+
+        const allPathPowers = getAllPathPowers(menu, data.role_power)
+        setLoginIn(data, allPathPowers)
 
         const nextLocation = yield select(state => state.routing.locationBeforeTransitions)
         const nextPathname = nextLocation.state && nextLocation.state.nextPathname && nextLocation.state.nextPathname !== '/no-power' ? nextLocation.state.nextPathname : dashboard
