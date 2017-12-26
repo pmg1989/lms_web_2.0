@@ -1,4 +1,5 @@
 import { browserHistory } from 'react-router'
+import { Base64 } from 'js-base64'
 import menu from './menu'
 import Cookie from './cookie'
 
@@ -57,10 +58,18 @@ const isLogin = () => {
   return Cookie.get('user_session') && Cookie.get('user_session') > new Date().getTime()
 }
 
-const setLoginIn = (data, pathPowers) => {
+const setLoginIn = (data, pathPowers, formProps) => {
   const now = new Date()
-  now.setDate(now.getDate() + 1)
-  Cookie.set('user_session', now.getTime())
+  if (formProps.remember) {
+    now.setDate(now.getDate() + 7)
+    Cookie.set('user_session', now.getTime())
+    Cookie.set('user_password', Base64.encode(formProps.password))
+  } else {
+    now.setDate(now.getDate() + 1)
+    Cookie.set('user_session', now.getTime())
+    Cookie.remove('user_password')
+  }
+  Cookie.set('user_name', data.uname)
   Cookie.set('utoken', data.utoken)
   Cookie.set('user_power', data.role_power)
   localStorage.setItem('user_info', JSON.stringify(data))

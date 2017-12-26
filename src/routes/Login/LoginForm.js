@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Form, Input } from 'antd'
+import { Base64 } from 'js-base64'
+import { Button, Form, Input, Checkbox, Icon } from 'antd'
 import QueueAnim from 'rc-queue-anim'
-import { config } from 'utils'
+import { config, Cookie } from 'utils'
 import styles from './LoginForm.less'
 
 const FormItem = Form.Item
@@ -33,35 +34,41 @@ const Login = ({
           <span>{config.logoText}</span>
         </div>
       </QueueAnim>
-      <form onSubmit={handleOk}>
+      <Form onSubmit={handleOk}>
         <QueueAnim delay={200} type="top">
           <FormItem hasFeedback key="1">
             {getFieldDecorator('username', {
+              initialValue: Cookie.get('user_name'),
               rules: [
                 {
                   required: true,
                   message: '请填写用户名',
                 },
               ],
-            })(<Input size="large" placeholder="用户名" />)}
+            })(<Input prefix={<Icon type="user" />} size="large" placeholder="用户名" />)}
           </FormItem>
           <FormItem hasFeedback key="2">
             {getFieldDecorator('password', {
+              initialValue: Base64.decode(Cookie.get('user_password') || ''),
               rules: [
                 {
                   required: true,
                   message: '请填写密码',
                 },
               ],
-            })(<Input size="large" type="password" placeholder="密码" />)}
+            })(<Input prefix={<Icon type="lock" />} size="large" type="password" placeholder="密码" />)}
           </FormItem>
           <FormItem key="3">
-            <Button type="primary" htmlType="submit" size="large" loading={loading}>
-              登录
-            </Button>
+            {getFieldDecorator('remember', {
+              valuePropName: 'checked',
+              initialValue: true,
+            })(
+              <Checkbox>记住密码(一周)</Checkbox>
+            )}
+            <Button type="primary" htmlType="submit" size="large" loading={loading}>登录</Button>
           </FormItem>
         </QueueAnim>
-      </form>
+      </Form>
     </div>
   )
 }
