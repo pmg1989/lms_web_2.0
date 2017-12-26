@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Modal, Icon, Select, Checkbox, Row, Col } from 'antd'
+import { Form, Input, InputNumber, Modal, Icon, Select, Checkbox, Row, Col, AutoComplete } from 'antd'
 import { getSchool, getUserInfo } from 'utils'
 import { validPhone } from 'utils/utilsValid'
 import { roleNames, categorys, subjects, getModalType } from 'utils/dictionary'
 
 const FormItem = Form.Item
 const Option = Select.Option
+const AutoCompleteOption = AutoComplete.Option
 
 const formItemLayout = {
   labelCol: {
@@ -30,6 +31,7 @@ class ModalForm extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      emailList: [],
       mySubjects: Object.entries(subjects),
       myLevelList: Array.from(Array(21).keys()),
       isTeacher: true,
@@ -113,6 +115,11 @@ class ModalForm extends Component {
     })
   }
 
+  handleWebsiteChange = (value) => {
+    const emailList = (!value || value.indexOf('@') >= 0) ? [] : ['newband.com', '163.com', 'qq.com', 'sina.com'].map(domain => `${value}@${domain}`)
+    this.setState({ emailList })
+  }
+
   render () {
     const {
       schools,
@@ -123,7 +130,7 @@ class ModalForm extends Component {
       },
       onCancel,
     } = this.props
-    const { mySubjects, myLevelList, isTeacher, schoolId } = this.state
+    const { emailList, mySubjects, myLevelList, isTeacher, schoolId } = this.state
 
     // if (!curItem.roleList) {
     //   curItem.roleList = []
@@ -146,6 +153,10 @@ class ModalForm extends Component {
     if (disabled) {
       modalFormOpts.footer = null
     }
+
+    const websiteOptions = emailList.map(website => (
+      <AutoCompleteOption key={website}>{website}</AutoCompleteOption>
+    ))
 
     return (
       <Modal {...modalFormOpts}>
@@ -199,7 +210,14 @@ class ModalForm extends Component {
                   message: '邮箱格式不正确',
                 },
               ],
-            })(<Input disabled={disabled || type === 'update'} type="email" placeholder="请输入邮箱" />)}
+            })(
+              <AutoComplete
+                dataSource={websiteOptions}
+                onChange={this.handleWebsiteChange}
+              >
+                <Input disabled={disabled || type === 'update'} type="email" placeholder="请输入邮箱" />
+              </AutoComplete>
+            )}
           </FormItem>
           <FormItem label="校区" hasFeedback {...formItemLayout}>
             {getFieldDecorator('school', {
