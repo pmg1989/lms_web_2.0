@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Modal, Icon, Select, Checkbox, Row, Col } from 'antd'
 import { getSchool, getUserInfo } from 'utils'
-import { InputEmail } from 'components'
+import { InputAutoComplete } from 'components'
 import { validPhone } from 'utils/utilsValid'
 import { roleNames, categorys, subjects, getModalType } from 'utils/dictionary'
 
@@ -200,7 +200,7 @@ class ModalForm extends Component {
                   message: '邮箱格式不正确',
                 },
               ],
-            })(<InputEmail disabled={disabled || type === 'update'} />)}
+            })(<InputAutoComplete disabled={disabled || type === 'update'} />)}
           </FormItem>
           <FormItem label="校区" hasFeedback {...formItemLayout}>
             {getFieldDecorator('school', {

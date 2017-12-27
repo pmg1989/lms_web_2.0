@@ -1,13 +1,20 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { AutoComplete, Input } from 'antd'
+import { AutoComplete } from 'antd'
 
-class InputEmail extends Component {
+class InputAutoComplete extends Component {
   static propTypes = {
     value: PropTypes.string,
     placeholder: PropTypes.string,
     disabled: PropTypes.bool,
+    dataSource: PropTypes.array,
     onChange: PropTypes.func,
+  }
+
+  static defaultProps = {
+    disabled: false,
+    placeholder: '请输入邮箱',
+    dataSource: ['newband.com', '163.com', 'qq.com', 'sina.com'],
   }
 
   state = {
@@ -23,7 +30,7 @@ class InputEmail extends Component {
       if (!value || value.indexOf('@') >= 0) {
         dataSource = []
       } else {
-        dataSource = ['newband.com', '163.com', 'qq.com'].map(domain => `${value}@${domain}`)
+        dataSource = nextProps.dataSource.map(domain => `${value}@${domain}`)
       }
       this.setState({ value, dataSource })
     }
@@ -45,16 +52,15 @@ class InputEmail extends Component {
 
     return (
       <AutoComplete
+        backfill
         dataSource={dataSource}
         onChange={this.handleChange}
-        placeholder={placeholder || '请输入邮箱'}
+        placeholder={placeholder}
         value={value}
         disabled={disabled}
-      >
-        <Input type="email" />
-      </AutoComplete>
+      />
     )
   }
 }
 
-export default InputEmail
+export default InputAutoComplete
