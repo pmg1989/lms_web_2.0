@@ -74,24 +74,29 @@ function List ({
       title: '课程名称',
       dataIndex: 'category_summary',
       key: 'category_summary',
+      sorter: (a, b) => a.category_summary.localeCompare(b.category_summary),
     }, {
       title: '开课时间',
       dataIndex: 'available',
       key: 'available',
       render: (available, record) => (<span>{moment.unix(available).format('YYYY-MM-DD')}<br />{moment.unix(available).format('HH:mm')} - {moment.unix(record.deadline).format('HH:mm')}</span>),
+      sorter: (a, b) => a.available - b.available,
     }, {
       title: '科目',
       dataIndex: 'category_idnumber',
       key: 'category_idnumber',
       render: subject => <span>{getSubject(subject.split('-')[0])}</span>,
+      sorter: (a, b) => a.category_idnumber.localeCompare(b.category_idnumber),
     }, {
       title: '教室',
       dataIndex: 'classroom',
       key: 'classroom',
+      sorter: (a, b) => a.classroom.localeCompare(b.classroom),
     }, {
       title: '老师',
       dataIndex: 'teacher',
       key: 'teacher',
+      sorter: (a, b) => a.teacher.localeCompare(b.teacher),
     }, {
       title: '已选学生人数',
       dataIndex: 'num_student',

@@ -63,10 +63,12 @@ function List ({
       title: '用户名',
       dataIndex: 'username',
       key: 'username',
+      sorter: (a, b) => a.username.localeCompare(b.username),
     }, {
       title: '真实姓名',
       dataIndex: 'firstname',
       key: 'firstname',
+      sorter: (a, b) => a.firstname.localeCompare(b.firstname),
     }, {
       title: '手机号',
       dataIndex: 'phone2',
@@ -110,6 +112,7 @@ function List ({
       dataIndex: 'timecreated',
       key: 'timecreated',
       render: timecreated => (<span>{moment.unix(timecreated).format('YYYY-MM-DD HH:mm')}</span>),
+      sorter: (a, b) => a.timecreated - b.timecreated,
     }, {
       title: '操作',
       key: 'operation',
