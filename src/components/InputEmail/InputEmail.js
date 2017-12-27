@@ -1,10 +1,29 @@
 import React, { Component } from 'react'
-import { AutoComplete } from 'antd'
+import PropTypes from 'prop-types'
+import { AutoComplete, Input } from 'antd'
 
-class InputEmailComplete extends Component {
-  state = { dataSource: [] }
+class InputEmail extends Component {
+  static propTypes = {
+    value: PropTypes.string,
+    placeholder: PropTypes.string,
+    disabled: PropTypes.bool,
+    onChange: PropTypes.func,
+  }
 
-  handleChange (value) {
+  state = {
+    value: '',
+    dataSource: [],
+  }
+
+  componentWillReceiveProps (nextProps) {
+    // Should be a controlled component.
+    if ('value' in nextProps) {
+      const value = nextProps.value
+      this.setState({ value })
+    }
+  }
+
+  handleChange = (value) => {
     let dataSource
     if (!value || value.indexOf('@') >= 0) {
       dataSource = []
@@ -12,18 +31,31 @@ class InputEmailComplete extends Component {
       dataSource = ['newband.com', '163.com', 'qq.com'].map(domain => `${value}@${domain}`)
     }
     this.setState({ dataSource })
+    if (!('value' in this.props)) {
+      this.setState({ value })
+    }
+    const onChange = this.props.onChange
+    if (onChange) {
+      onChange(value)
+    }
   }
 
   render () {
-    const { dataSource } = this.state
+    const { placeholder, disabled } = this.props
+    const { value, dataSource } = this.state
+
     return (
       <AutoComplete
         dataSource={dataSource}
-        onChange={::this.handleChange}
-        placeholder="input here"
-      />
+        onChange={this.handleChange}
+        placeholder={placeholder || '请输入邮箱'}
+        value={value}
+        disabled={disabled}
+      >
+        <Input type="email" />
+      </AutoComplete>
     )
   }
 }
 
-export default InputEmailComplete
+export default InputEmail
