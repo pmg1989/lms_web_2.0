@@ -19,18 +19,17 @@ class InputEmail extends Component {
     // Should be a controlled component.
     if ('value' in nextProps) {
       const value = nextProps.value
-      this.setState({ value })
+      let dataSource
+      if (!value || value.indexOf('@') >= 0) {
+        dataSource = []
+      } else {
+        dataSource = ['newband.com', '163.com', 'qq.com'].map(domain => `${value}@${domain}`)
+      }
+      this.setState({ value, dataSource })
     }
   }
 
   handleChange = (value) => {
-    let dataSource
-    if (!value || value.indexOf('@') >= 0) {
-      dataSource = []
-    } else {
-      dataSource = ['newband.com', '163.com', 'qq.com'].map(domain => `${value}@${domain}`)
-    }
-    this.setState({ dataSource })
     if (!('value' in this.props)) {
       this.setState({ value })
     }
