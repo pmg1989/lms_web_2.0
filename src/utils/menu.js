@@ -48,7 +48,7 @@ const menu = [
         id: 25,
         key: 'detail',
         name: '查看课程',
-        power: [2],
+        power: [2, 4],
       },
     ],
   },

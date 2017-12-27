@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Modal, Input, InputNumber, Select, Spin, Button, Row, Col, Checkbox, DatePicker, Tag, Icon } from 'antd'
 import moment from 'moment'
+import { Link } from 'dva/router'
 import { getSchool, getUserInfo } from 'utils'
 import { timeList } from 'utils/dictionary'
 import styles from './ItemForm.less'
@@ -502,8 +503,11 @@ class ItemForm extends Component {
             {addPower &&
               <Button className={styles.btn} onClick={this.handleAdd} type="primary" htmlType="submit" size="large">创建</Button>
             }
-            {updatePower &&
+            {updatePower && type === 'update' &&
               <Button className={styles.btn} onClick={this.handleUpdate} type="primary" size="large">修改</Button>
+            }
+            {updatePower && type === 'detail' &&
+              <Link to={`/lesson/update?lessonid=${item.id}`}><Button className={styles.btn} type="primary" size="large">修改</Button></Link>
             }
             <Button className={styles.btn} type="default" onClick={onGoBack} size="large">返回</Button>
           </FormItem>
