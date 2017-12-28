@@ -30,7 +30,7 @@ export default {
             } else {
               dispatch({ type: 'querySuccess', payload: { item: {}, type: 'create' } })
             }
-            dispatch({ type: 'querySource' })
+            // dispatch({ type: 'querySource' })
           }
         }
       })
@@ -56,6 +56,11 @@ export default {
           },
         })
       }
+
+      yield put({
+        type: 'lessonStudent/query',
+        payload: { lessonid },
+      })
     },
     * querySource ({ }, { call, put }) {
       const { data: schools } = yield call(querySchools)
