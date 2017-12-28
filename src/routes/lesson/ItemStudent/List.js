@@ -11,6 +11,7 @@ function List ({
   lessonStudent: {
     list,
   },
+  uploadRecordStatus,
   loading,
   addDeletePower,
   otherPower,
@@ -77,7 +78,7 @@ function List ({
           <Menu onClick={({ key }) => handleMenuClick(key, record)}>
             {addDeletePower && <Menu.Item key={DELETE}>退课</Menu.Item>}
             {otherPower && <Menu.Item key={UPDATE}>评价</Menu.Item>}
-            {otherPower && <Menu.Item key={ADD}>上传录音</Menu.Item>}
+            {otherPower && uploadRecordStatus && <Menu.Item key={ADD}>上传录音</Menu.Item>}
             {otherPower && <Menu.Item key={DETAIL}>查看反馈</Menu.Item>}
           </Menu>
         </DropMenu>
@@ -130,6 +131,7 @@ function List ({
 }
 
 List.propTypes = {
+  uploadRecordStatus: PropTypes.bool.isRequired,
   lessonStudent: PropTypes.object.isRequired,
   loading: PropTypes.bool,
   addDeletePower: PropTypes.bool.isRequired,

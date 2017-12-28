@@ -5,11 +5,12 @@ import List from './List'
 
 const namespace = 'lessonStudent'
 
-const LessonItemStudent = ({ dispatch, lessonid, addDeletePower, otherPower, lessonStudent, loading }) => {
+const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId }, addDeletePower, otherPower, lessonStudent, loading }) => {
   const listProps = {
     loading: loading.models.lessonStudent,
     addDeletePower,
     otherPower,
+    uploadRecordStatus: categoryId.includes('jl-') && user.teacher_category === 'jl',
     lessonStudent,
     onDeleteItem (item) {
       dispatch({
@@ -36,13 +37,14 @@ LessonItemStudent.propTypes = {
   dispatch: PropTypes.func.isRequired,
   addDeletePower: PropTypes.bool.isRequired,
   otherPower: PropTypes.bool.isRequired,
-  lessonid: PropTypes.number.isRequired,
+  lessonInfo: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
   lessonStudent: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
 }
 
-function mapStateToProps ({ lessonStudent, loading }) {
-  return { lessonStudent, loading }
+function mapStateToProps ({ lessonStudent, loading, app: { user } }) {
+  return { lessonStudent, loading, user }
 }
 
 export default connect(mapStateToProps)(LessonItemStudent)

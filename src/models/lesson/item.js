@@ -43,8 +43,7 @@ export default {
       const { data, success } = yield call(query, { lessonid })
 
       data.categoryid = 74
-      data.school_id = 2
-      data.classroomid = 1 // 200001
+      console.log('remember to delete it')
 
       if (success) {
         yield put({
