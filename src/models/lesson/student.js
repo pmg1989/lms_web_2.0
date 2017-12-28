@@ -13,10 +13,8 @@ export default {
   effects: {
     * query ({ payload }, { call, put }) {
       const { lessonid } = payload
-      console.log(lessonid)
       const { data, success } = yield call(query, { lessonid })
       if (success) {
-        console.log(data)
         yield put({
           type: 'querySuccess',
           payload: {

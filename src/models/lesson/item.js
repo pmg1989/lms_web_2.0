@@ -30,7 +30,7 @@ export default {
             } else {
               dispatch({ type: 'querySuccess', payload: { item: {}, type: 'create' } })
             }
-            dispatch({ type: 'querySource' })
+            // dispatch({ type: 'querySource' })
           }
         }
       })

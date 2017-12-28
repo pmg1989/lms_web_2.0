@@ -5,6 +5,7 @@ import moment from 'moment'
 import { Link } from 'dva/router'
 import { getSchool, getUserInfo } from 'utils'
 import { timeList } from 'utils/dictionary'
+import ItemStudent from '../ItemStudent'
 import styles from './ItemForm.less'
 
 const FormItem = Form.Item
@@ -29,6 +30,7 @@ class ItemForm extends Component {
     updatePower: PropTypes.bool.isRequired,
     addDaiTeacherPower: PropTypes.bool.isRequired,
     addDeleteStudentPower: PropTypes.bool.isRequired,
+    otherStudentPower: PropTypes.bool.isRequired,
     lessonItem: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
@@ -318,7 +320,8 @@ class ItemForm extends Component {
   render () {
     const {
       lessonItem: { type, item, courseCategorys, schools, classroomsDic },
-      addPower, updatePower, addDeleteStudentPower, loading, onGoBack,
+      addPower, updatePower, addDeleteStudentPower, otherStudentPower, 
+      loading, onGoBack,
       form: { getFieldDecorator },
     } = this.props
     const { schoolId, showStudentForm, teachers, timeStarts, timeEnds } = this.state
@@ -335,7 +338,7 @@ class ItemForm extends Component {
     }
 
     const teacherId = teachers.length && item.teacher && teachers.find(cur => cur.firstname === item.teacher).id
-    console.log(addDeleteStudentPower)
+
     return (
       <Spin spinning={loading} size="large">
         <Form className={styles.form_box}>
@@ -498,7 +501,10 @@ class ItemForm extends Component {
             </Col>
           </FormItem>
           {type === 'create' && showStudentForm && <this.AddStudentFormItem disabled={disabled} />}
-          {type !== 'create' && showStudentForm && <this.EditStudentFormItem disabled={disabled} />}
+          {type !== 'create' &&
+          <FormItem label="修改学员" hasFeedback {...formItemLayout}>
+            <ItemStudent addDeletePower={addDeleteStudentPower} otherPower={otherStudentPower} />
+          </FormItem>}
           <FormItem wrapperCol={{ span: 17, offset: 4 }}>
             {addPower &&
               <Button className={styles.btn} onClick={this.handleAdd} type="primary" htmlType="submit" size="large">创建</Button>
