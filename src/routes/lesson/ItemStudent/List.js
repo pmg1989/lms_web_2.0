@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Modal, Radio, Row, Col } from 'antd'
+import { Menu, Modal, Radio, Row, Col, Tag } from 'antd'
 import { DataTable, DropMenu } from 'components'
 import { ADD, UPDATE, DETAIL, DELETE } from 'constants/options'
 import styles from './List.less'
@@ -47,18 +47,26 @@ function List ({
       title: '姓名',
       dataIndex: 'firstname',
       key: 'firstname',
-      width: 280,
+      width: 250,
     }, {
       title: '考勤',
       dataIndex: 'acronym',
       key: 'acronym',
-      width: 280,
+      width: 240,
       render: (acronym, record) => (
         <Radio.Group defaultValue={acronym} onChange={e => onAttendance({ status: e.target.value, userid: record.id })}>
           <Radio.Button value="P"><span className={styles.primary}>出席</span></Radio.Button>
           <Radio.Button value="L"><span className={styles.warning}>迟到</span></Radio.Button>
           <Radio.Button value="A"><span className={styles.danger}>缺席</span></Radio.Button>
         </Radio.Group>
+      ),
+    }, {
+      title: '评价状态',
+      dataIndex: 'gradetime',
+      key: 'gradetime',
+      width: 70,
+      render: gradetime => (
+        <Tag color={gradetime ? 'green' : 'red'}>{gradetime ? '已' : '未'}评价</Tag>
       ),
     }, {
       title: '操作',
