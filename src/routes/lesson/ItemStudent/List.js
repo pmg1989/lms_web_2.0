@@ -42,7 +42,7 @@ function List ({
       // width: 80,
       render: (text, record) => (
         <DropMenu>
-          <Menu onClick={({ key }) => handleMenuClick(key, record)}>   
+          <Menu onClick={({ key }) => handleMenuClick(key, record)}>
             {addDeletePower && <Menu.Item key={DELETE}>退课</Menu.Item>}
             {otherPower && <Menu.Item key={UPDATE}>评价</Menu.Item>}
             {otherPower && <Menu.Item key={ADD}>上传录音</Menu.Item>}

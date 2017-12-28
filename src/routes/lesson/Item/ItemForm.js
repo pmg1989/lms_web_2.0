@@ -320,7 +320,7 @@ class ItemForm extends Component {
   render () {
     const {
       lessonItem: { type, item, courseCategorys, schools, classroomsDic },
-      addPower, updatePower, addDeleteStudentPower, otherStudentPower, 
+      addPower, updatePower, addDeleteStudentPower, otherStudentPower,
       loading, onGoBack,
       form: { getFieldDecorator },
     } = this.props
