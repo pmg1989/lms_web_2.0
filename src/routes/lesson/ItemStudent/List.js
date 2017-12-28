@@ -17,6 +17,7 @@ function List ({
   otherPower,
   onDeleteItem,
   onAttendance,
+  onShowModal,
 }) {
   const handleDeleteItem = (record) => {
     if (record.acronym) {
@@ -36,10 +37,10 @@ function List ({
 
   const handleMenuClick = (key, record) => {
     return {
-      // [UPDATE]: onEditItem,
-      // [DETAIL]: onDetailItem,
       [DELETE]: handleDeleteItem,
-      // [DETAIL]: handleLeaveItem,
+      [UPDATE]: () => onShowModal(1, record.id),
+      [ADD]: () => onShowModal(2, record.id),
+      [DETAIL]: () => onShowModal(3, record.id),
     }[key](record)
   }
 
@@ -78,7 +79,7 @@ function List ({
           <Menu onClick={({ key }) => handleMenuClick(key, record)}>
             {addDeletePower && <Menu.Item key={DELETE}>退课</Menu.Item>}
             {otherPower && <Menu.Item key={UPDATE}>评价</Menu.Item>}
-            {otherPower && uploadRecordStatus && <Menu.Item key={ADD}>上传录音</Menu.Item>}
+            {otherPower && !uploadRecordStatus && <Menu.Item key={ADD}>上传录音</Menu.Item>}
             {otherPower && <Menu.Item key={DETAIL}>查看反馈</Menu.Item>}
           </Menu>
         </DropMenu>
@@ -138,6 +139,7 @@ List.propTypes = {
   otherPower: PropTypes.bool.isRequired,
   onDeleteItem: PropTypes.func.isRequired,
   onAttendance: PropTypes.func.isRequired,
+  onShowModal: PropTypes.func.isRequired,
 }
 
 export default List

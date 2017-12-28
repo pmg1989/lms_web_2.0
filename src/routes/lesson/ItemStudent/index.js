@@ -24,6 +24,24 @@ const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId 
         payload: { params: { ...item, lessonid } },
       })
     },
+    onShowModal (modalId, userid) {
+      if (modalId === 1) {
+        dispatch({
+          type: `${namespace}/showCommentModal`,
+          payload: { params: { userid, lessonid } },
+        })
+      } else if (modalId === 2) {
+        dispatch({
+          type: `${namespace}/showRecordModal`,
+          payload: { params: { userid, lessonid } },
+        })
+      } else {
+        dispatch({
+          type: `${namespace}/showFeedbackModal`,
+          payload: { params: { userid, lessonid } },
+        })
+      }
+    },
   }
 
   return (

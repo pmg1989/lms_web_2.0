@@ -1,5 +1,5 @@
 import { message } from 'antd'
-import { query, attendance } from 'services/lesson/student'
+import { query, attendance, queryComment, queryFeedback } from 'services/lesson/student'
 import { unenrollesson } from 'services/lesson/item'
 
 export default {
@@ -37,6 +37,27 @@ export default {
           type: 'removeSuccess',
           payload: { id: params.userid },
         })
+      }
+    },
+    * showCommentModal ({ payload }, { call, put }) {
+      const { type, params } = payload
+      const { data, success } = yield call(queryComment, params)
+      if (success) {
+        yield put({ type: 'modal/showModal', payload: { type, curItem: data, id: 1 } })
+      }
+    },
+    * showRecordModal ({ payload }, { call, put }) {
+      const { type, params } = payload
+      const { data, success } = yield call(queryComment, params)
+      if (success) {
+        yield put({ type: 'modal/showModal', payload: { type, curItem: data, id: 2 } })
+      }
+    },
+    * showFeedbackModal ({ payload }, { call, put }) {
+      const { type, params } = payload
+      const { data, success } = yield call(queryFeedback, params)
+      if (success) {
+        yield put({ type: 'modal/showModal', payload: { type, curItem: data, id: 3 } })
       }
     },
   },
