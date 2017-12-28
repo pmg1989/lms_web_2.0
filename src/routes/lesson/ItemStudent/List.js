@@ -17,15 +17,29 @@ function List ({
   onDeleteItem,
   onAttendance,
 }) {
-  const handleMenuClick = (key, record) => {
-    if (+key === DELETE) {
+  const handleDeleteItem = (record) => {
+    if (record.acronym) {
+      Modal.warning({
+        title: '警告',
+        content: '已经考勤的学员，不能退课！',
+      })
+    } else {
       confirm({
-        title: '您确定要删除课程吗?',
+        title: '您确定要退课吗?',
         onOk () {
-          onDeleteItem({ lessonid: record.id })
+          onDeleteItem({ userid: record.id, rolename: 'student' })
         },
       })
     }
+  }
+
+  const handleMenuClick = (key, record) => {
+    return {
+      // [UPDATE]: onEditItem,
+      // [DETAIL]: onDetailItem,
+      [DELETE]: handleDeleteItem,
+      // [DETAIL]: handleLeaveItem,
+    }[key](record)
   }
 
   const columns = [

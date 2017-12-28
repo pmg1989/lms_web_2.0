@@ -11,10 +11,10 @@ const LessonItemStudent = ({ dispatch, lessonid, addDeletePower, otherPower, les
     addDeletePower,
     otherPower,
     lessonStudent,
-    onDeleteItem (params) {
+    onDeleteItem (item) {
       dispatch({
         type: `${namespace}/remove`,
-        payload: { params },
+        payload: { params: { ...item, lessonid } },
       })
     },
     onAttendance (item) {
