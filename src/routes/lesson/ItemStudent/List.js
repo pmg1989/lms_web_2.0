@@ -91,7 +91,7 @@ function List ({
   const dataTableProps = {
     loading,
     columns,
-    scroll: { x: 708 },
+    scroll: { x: 706 },
     dataSource: list,
     pagination: false,
     animate: false,
@@ -99,31 +99,34 @@ function List ({
     rowKey: record => record.id,
   }
 
-  dataTableProps.defaultExpandAllRows = true
-  dataTableProps.expandedRowRender = (record) => {
-    const { jl_song: { song, original_singer: originalSinger, back_source: backSource } } = record
-    if (song && originalSinger) {
-      return (
-        <div className={styles.text_left}>
-          <Row>
-            <Col span={8}>歌曲名：{song}</Col>
-            <Col span={8}>原唱：{originalSinger}</Col>
-            <Col span={8}>{backSource === 2 && '不'}自带伴奏</Col>
-          </Row>
-          <Row>
-            <Col span={24}>文件名：{record.jl_recording.name}</Col>
-          </Row>
-          <Row>
-            <Col span={24}>
-              <audio controls src={record.jl_recording.url}>
-                <track kind="captions" />
-              </audio>
-            </Col>
-          </Row>
-        </div>
-      )
+  const needExpanded = list.some(item => item.jl_song.song && item.jl_song.original_singer)
+  if (needExpanded) {
+    dataTableProps.defaultExpandAllRows = true
+    dataTableProps.expandedRowRender = (record) => {
+      const { jl_song: { song, original_singer: originalSinger, back_source: backSource } } = record
+      if (song && originalSinger) {
+        return (
+          <div className={styles.text_left}>
+            <Row>
+              <Col span={8}>歌曲名：{song}</Col>
+              <Col span={8}>原唱：{originalSinger}</Col>
+              <Col span={8}>{backSource === 2 && '不'}自带伴奏</Col>
+            </Row>
+            <Row>
+              <Col span={24}>文件名：{record.jl_recording.name}</Col>
+            </Row>
+            <Row>
+              <Col span={24}>
+                <audio controls src={record.jl_recording.url}>
+                  <track kind="captions" />
+                </audio>
+              </Col>
+            </Row>
+          </div>
+        )
+      }
+      return false
     }
-    return false
   }
 
   return (
