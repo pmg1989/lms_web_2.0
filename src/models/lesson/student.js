@@ -1,5 +1,5 @@
 // import { getCurPowers } from 'utils'
-import { query } from 'services/lesson/student'
+import { query, attendance } from 'services/lesson/student'
 
 export default {
   namespace: 'lessonStudent',
@@ -23,10 +23,24 @@ export default {
         })
       }
     },
+    * attendance ({ payload }, { call, put }) {
+      const { params } = payload
+      const { success } = yield call(attendance, params)
+      if (success) {
+        yield put({
+          type: 'attendanceSuccess',
+          payload: {
+          },
+        })
+      }
+    },
   },
 
   reducers: {
     querySuccess (state, action) {
+      return { ...state, ...action.payload }
+    },
+    attendanceSuccess (state, action) {
       return { ...state, ...action.payload }
     },
   },

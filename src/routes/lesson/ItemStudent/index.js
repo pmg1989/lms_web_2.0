@@ -5,7 +5,7 @@ import List from './List'
 
 const namespace = 'lessonStudent'
 
-const LessonItemStudent = ({ dispatch, addDeletePower, otherPower, lessonStudent, loading }) => {
+const LessonItemStudent = ({ dispatch, lessonid, addDeletePower, otherPower, lessonStudent, loading }) => {
   const listProps = {
     loading: loading.models.lessonStudent,
     addDeletePower,
@@ -15,6 +15,12 @@ const LessonItemStudent = ({ dispatch, addDeletePower, otherPower, lessonStudent
       dispatch({
         type: `${namespace}/remove`,
         payload: { params },
+      })
+    },
+    onAttendance (item) {
+      dispatch({
+        type: `${namespace}/attendance`,
+        payload: { params: { ...item, lessonid } },
       })
     },
   }
@@ -30,6 +36,7 @@ LessonItemStudent.propTypes = {
   dispatch: PropTypes.func.isRequired,
   addDeletePower: PropTypes.bool.isRequired,
   otherPower: PropTypes.bool.isRequired,
+  lessonid: PropTypes.number.isRequired,
   lessonStudent: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
 }

@@ -15,6 +15,7 @@ function List ({
   addDeletePower,
   otherPower,
   onDeleteItem,
+  onAttendance,
 }) {
   const handleMenuClick = (key, record) => {
     if (+key === DELETE) {
@@ -38,8 +39,8 @@ function List ({
       dataIndex: 'acronym',
       key: 'acronym',
       width: 280,
-      render: acronym => (
-        <Radio.Group defaultValue={acronym}>
+      render: (acronym, record) => (
+        <Radio.Group defaultValue={acronym} onChange={e => onAttendance({ status: e.target.value, userid: record.id })}>
           <Radio.Button value="P"><span className={styles.primary}>出席</span></Radio.Button>
           <Radio.Button value="L"><span className={styles.warning}>迟到</span></Radio.Button>
           <Radio.Button value="A"><span className={styles.danger}>缺席</span></Radio.Button>
@@ -112,6 +113,7 @@ List.propTypes = {
   addDeletePower: PropTypes.bool.isRequired,
   otherPower: PropTypes.bool.isRequired,
   onDeleteItem: PropTypes.func.isRequired,
+  onAttendance: PropTypes.func.isRequired,
 }
 
 export default List

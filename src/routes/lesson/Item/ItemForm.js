@@ -503,7 +503,7 @@ class ItemForm extends Component {
           {type === 'create' && showStudentForm && <this.AddStudentFormItem disabled={disabled} />}
           {type !== 'create' &&
           <FormItem label="修改学员" hasFeedback {...formItemLayout}>
-            <ItemStudent addDeletePower={addDeleteStudentPower} otherPower={otherStudentPower} />
+            <ItemStudent lessonid={item.id} addDeletePower={addDeleteStudentPower} otherPower={otherStudentPower} />
           </FormItem>}
           <FormItem wrapperCol={{ span: 17, offset: 4 }}>
             {addPower &&
