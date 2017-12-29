@@ -2,12 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import List from './List'
+import CommentModal from './CommentModal'
 
 const namespace = 'lessonStudent'
 
-const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId }, addDeletePower, otherPower, lessonStudent, loading }) => {
+const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId }, addDeletePower, otherPower, lessonStudent, loading, modal }) => {
   const listProps = {
-    loading: loading.models.lessonStudent,
+    loading: loading.effects['lessonStudent/query'],
     addDeletePower,
     otherPower,
     uploadRecordStatus: categoryId.includes('jl-') && user.teacher_category === 'jl',
@@ -28,25 +29,42 @@ const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId 
       if (modalId === 1) {
         dispatch({
           type: `${namespace}/showCommentModal`,
-          payload: { params: { userid, lessonid } },
+          payload: { type: 'update', params: { userid, lessonid } },
         })
       } else if (modalId === 2) {
         dispatch({
           type: `${namespace}/showRecordModal`,
-          payload: { params: { userid, lessonid } },
+          payload: { type: 'update', params: { userid, lessonid } },
         })
       } else {
         dispatch({
           type: `${namespace}/showFeedbackModal`,
-          payload: { params: { userid, lessonid } },
+          payload: { type: 'detail', params: { userid, lessonid } },
         })
       }
+    },
+  }
+
+  const commentModalProps = {
+    modal,
+    loading: loading.models.lessonStudent,
+    onOk (data) {
+      dispatch({
+        type: `${namespace}/comment`,
+        payload: {
+          params: { ...data, lessonid },
+        },
+      })
+    },
+    onCancel () {
+      dispatch({ type: 'modal/hideModal' })
     },
   }
 
   return (
     <div>
       <List {...listProps} />
+      {modal.visible && modal.id === 1 && <CommentModal {...commentModalProps} />}
     </div>
   )
 }
@@ -59,10 +77,11 @@ LessonItemStudent.propTypes = {
   user: PropTypes.object.isRequired,
   lessonStudent: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
+  modal: PropTypes.object.isRequired,
 }
 
-function mapStateToProps ({ lessonStudent, loading, app: { user } }) {
-  return { lessonStudent, loading, user }
+function mapStateToProps ({ lessonStudent, loading, modal, app: { user } }) {
+  return { lessonStudent, loading, modal, user }
 }
 
 export default connect(mapStateToProps)(LessonItemStudent)

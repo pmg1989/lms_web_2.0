@@ -12,6 +12,10 @@ export async function queryComment (params) {
   return request({ wsfunction: 'mod_frontservice_get_assignfeedbackcomment', ...params })
 }
 
+export async function comment (params) {
+  return request({ wsfunction: 'mod_frontservice_savegrade', ...params })
+}
+
 export async function queryFeedback (params) {
   return request({ wsfunction: 'mod_frontservice_getsubmission', ...params })
 }

@@ -1,5 +1,5 @@
 import { message } from 'antd'
-import { query, attendance, queryComment, queryFeedback } from 'services/lesson/student'
+import { query, attendance, queryComment, comment, queryFeedback } from 'services/lesson/student'
 import { unenrollesson } from 'services/lesson/item'
 
 export default {
@@ -26,7 +26,7 @@ export default {
       const { params } = payload
       const { success } = yield call(attendance, params)
       if (!success) {
-        message.success('对不起，考勤失败！')
+        message.error('对不起，考勤失败！')
       }
     },
     * remove ({ payload }, { call, put }) {
@@ -41,9 +41,22 @@ export default {
     },
     * showCommentModal ({ payload }, { call, put }) {
       const { type, params } = payload
+      yield put({ type: 'modal/showModal', payload: { type, id: 1 } })
       const { data, success } = yield call(queryComment, params)
       if (success) {
-        yield put({ type: 'modal/showModal', payload: { type, curItem: data, id: 1 } })
+        yield put({ type: 'modal/setItem', payload: { type, curItem: { ...data.commenttext.suggestion, userid: params.userid }, id: 1 } })
+      }
+    },
+    * comment ({ payload }, { call, put }) {
+      const { params } = payload
+      const { success } = yield call(comment, params)
+      if (success) {
+        message.success('评价成功！')
+        yield put({
+          type: 'commentSuccess',
+          payload: { id: params.userid },
+        })
+        yield put({ type: 'modal/hideModal' })
       }
     },
     * showRecordModal ({ payload }, { call, put }) {
@@ -57,7 +70,7 @@ export default {
       const { type, params } = payload
       const { data, success } = yield call(queryFeedback, params)
       if (success) {
-        yield put({ type: 'modal/showModal', payload: { type, curItem: data, id: 3 } })
+        yield put({ type: 'modal/showModal', payload: { type, curItem: { ...data.onlinetext.weekly, userid: params.userid }, id: 3 } })
       }
     },
   },
@@ -68,6 +81,10 @@ export default {
     },
     removeSuccess (state, action) {
       const list = state.list.filter(item => item.id !== action.payload.id)
+      return { ...state, list }
+    },
+    commentSuccess (state, action) {
+      const list = state.list.map(item => (item.id === action.payload.id ? ({ ...item, gradetime: new Date().getTime() }) : item))
       return { ...state, list }
     },
   },
