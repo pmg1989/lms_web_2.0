@@ -338,6 +338,7 @@ class ItemForm extends Component {
     }
 
     const teacherId = teachers.length && item.teacher && teachers.find(cur => cur.firstname === item.teacher).id
+    // const ItemStudentGen = () => <ItemStudent lessonInfo={{ lessonid: item.id, categoryId: item.category_idnumber }} addDeletePower={addDeleteStudentPower} otherPower={otherStudentPower} />
 
     return (
       <Spin spinning={loading} size="large">
@@ -503,6 +504,7 @@ class ItemForm extends Component {
           {type === 'create' && showStudentForm && <this.AddStudentFormItem disabled={disabled} />}
           {type !== 'create' &&
           <FormItem label="修改学员" hasFeedback {...formItemLayout}>
+            {/* <ItemStudentGen /> */}
             <ItemStudent lessonInfo={{ lessonid: item.id, categoryId: item.category_idnumber }} addDeletePower={addDeleteStudentPower} otherPower={otherStudentPower} />
           </FormItem>}
           <FormItem wrapperCol={{ span: 17, offset: 4 }}>
