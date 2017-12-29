@@ -25,21 +25,21 @@ const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId 
         payload: { params: { ...item, lessonid } },
       })
     },
-    onShowModal (modalId, userid) {
+    onShowModal ({ modalId, type, userid }) {
       if (modalId === 1) {
         dispatch({
           type: `${namespace}/showCommentModal`,
-          payload: { type: 'update', params: { userid, lessonid } },
+          payload: { type, params: { userid, lessonid } },
         })
       } else if (modalId === 2) {
         dispatch({
           type: `${namespace}/showRecordModal`,
-          payload: { type: 'update', params: { userid, lessonid } },
+          payload: { type, params: { userid, lessonid } },
         })
       } else {
         dispatch({
           type: `${namespace}/showFeedbackModal`,
-          payload: { type: 'detail', params: { userid, lessonid } },
+          payload: { type, params: { userid, lessonid } },
         })
       }
     },

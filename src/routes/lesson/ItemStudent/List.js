@@ -38,9 +38,9 @@ function List ({
   const handleMenuClick = (key, record) => {
     return {
       [DELETE]: handleDeleteItem,
-      [UPDATE]: () => onShowModal(1, record.id),
-      [ADD]: () => onShowModal(2, record.id),
-      [DETAIL]: () => onShowModal(3, record.id),
+      [UPDATE]: () => onShowModal({ modalId: 1, userid: record.id, type: record.gradetime ? 'update' : 'create' }),
+      [ADD]: () => onShowModal({ modalId: 2, userid: record.id, type: 'create' }),
+      [DETAIL]: () => onShowModal({ modalId: 3, userid: record.id, type: 'detail' }),
     }[key](record)
   }
 
