@@ -1,19 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, Icon, Spin } from 'antd'
+import { Form, Input, Modal, Icon, Spin, Row, Col } from 'antd'
 import { getModalType } from 'utils/dictionary'
 
 const FormItem = Form.Item
 const { TextArea } = Input
-
-const formItemLayout = {
-  labelCol: {
-    span: 4,
-  },
-  wrapperCol: {
-    span: 17,
-  },
-}
 
 const ModalForm = ({
   modal: { curItem, type, visible },
@@ -35,18 +26,22 @@ const ModalForm = ({
   return (
     <Modal {...modalFormOpts}>
       <Spin size="large" spinning={loading}>
-        <Form>
-          <FormItem label="建议与意见(针对教学内容)" {...formItemLayout}>
-            {getFieldDecorator('lesson_suggestion', {
-              initialValue: curItem.lesson_suggestion,
-            })(<TextArea disabled rows={4} />)}
-          </FormItem>
-          <FormItem label="对老师的评价(针对老师)" {...formItemLayout}>
-            {getFieldDecorator('teacher_suggestion', {
-              initialValue: curItem.teacher_suggestion,
-            })(<TextArea disabled rows={4} />)}
-          </FormItem>
-        </Form>
+        <Row>
+          <Col span={20} offset={2}>
+            <Form layout="vertical">
+              <FormItem label="建议与意见(针对教学内容)">
+                {getFieldDecorator('lesson_suggestion', {
+                  initialValue: curItem.lesson_suggestion,
+                })(<TextArea disabled rows={4} />)}
+              </FormItem>
+              <FormItem label="对老师的评价(针对老师)">
+                {getFieldDecorator('teacher_suggestion', {
+                  initialValue: curItem.teacher_suggestion,
+                })(<TextArea disabled rows={4} />)}
+              </FormItem>
+            </Form>
+          </Col>
+        </Row>
       </Spin>
     </Modal>
   )
