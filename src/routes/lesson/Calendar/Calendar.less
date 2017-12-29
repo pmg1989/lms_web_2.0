@@ -8,9 +8,17 @@
 @hd-color: #F2D600;
 @jl-color: #FF80CE;
 @light-color: #878e96;
+.inner_box {
+    min-width: 700px;
+}
+
+.calendar_container {
+    min-height: 770px;
+}
+
 .calendar_box {
     // min-height: e('calc(100vh - 184px)');
-    height: 800px;
+    height: 770px;
     .title_box {
         display: flex;
         flex-direction: row;
@@ -29,6 +37,8 @@
             height: 16px;
             width: 16px;
             margin-right: 6px;
+            // flex-shrink: 0;
+            flex: none;
         }
         .vocal-e {
             border: solid 2px @vocal-color;

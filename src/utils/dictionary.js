@@ -17,6 +17,8 @@ export const subjects = {
   rhythm: '节奏',
   record: '录音',
   theory: '乐理',
+  jl: '交流',
+  hd: '互动',
   composition: '流行音乐创作实践',
 }
 

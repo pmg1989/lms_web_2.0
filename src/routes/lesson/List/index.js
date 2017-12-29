@@ -2,16 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { checkPower } from 'utils'
-import { DETAIL, ADD, UPDATE, DELETE } from 'constants/options'
+import { ADD, UPDATE, DETAIL, DELETE } from 'constants/options'
 import Search from './Search'
 import List from './List'
 
 const namespace = 'lessonList'
 
 function ListHome ({ curPowers, dispatch, lessonList, loading }) {
-  const detailPower = checkPower(DETAIL, curPowers)
   const addPower = checkPower(ADD, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
+  const detailPower = checkPower(DETAIL, curPowers)
   const deletePower = checkPower(DELETE, curPowers)
 
   const searchProps = {
@@ -23,7 +23,7 @@ function ListHome ({ curPowers, dispatch, lessonList, loading }) {
     onSearch (fieldsValue) {
       dispatch({
         type: `${namespace}/query`,
-        payload: { ...fieldsValue, isPostBack: true },
+        payload: { ...fieldsValue, isSearch: true, isPostBack: true },
       })
     },
   }

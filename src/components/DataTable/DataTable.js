@@ -65,7 +65,6 @@ class DataTable extends Component {
     const getBodyWrapper = body => (<TableBodyWrapper {...getBodyWrapperProps} body={body} />)
 
     let tableProps = {
-      simple: true,
       bordered: true,
       scroll: { x: 1200 },
       onChange: this.handlePageChange,

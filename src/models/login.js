@@ -35,8 +35,8 @@ export default {
         21: [1, 2, 3, 4, 5],
         22: [1, 2, 3, 4, 5, 6],
         23: [2, 3],
-        24: [2, 4, 12, 13],
-        25: [2],
+        24: [2, 4, 12, 13, 14],
+        25: [2, 4],
         3: [1],
         31: [1, 2, 3, 4, 5, 6],
         32: [1, 2, 3, 4, 5, 6, 8, 9],
@@ -44,8 +44,6 @@ export default {
         4: [1],
         41: [1, 2, 4],
       }
-      const allPathPowers = getAllPathPowers(menu, data.role_power)
-      setLoginIn(data, allPathPowers)
 
       if (success) {
         yield put({
@@ -55,6 +53,9 @@ export default {
             userPower: data.role_power,
           },
         })
+
+        const allPathPowers = getAllPathPowers(menu, data.role_power)
+        setLoginIn(data, allPathPowers, payload)
 
         const nextLocation = yield select(state => state.routing.locationBeforeTransitions)
         const nextPathname = nextLocation.state && nextLocation.state.nextPathname && nextLocation.state.nextPathname !== '/no-power' ? nextLocation.state.nextPathname : dashboard

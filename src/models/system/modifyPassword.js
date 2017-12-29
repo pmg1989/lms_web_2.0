@@ -1,5 +1,6 @@
-import { getCurPowers } from 'utils'
+import { getCurPowers, Cookie } from 'utils'
 import { message } from 'antd'
+import { Base64 } from 'js-base64'
 import { update } from 'services/system/modifyPassword'
 
 export default {
@@ -30,6 +31,7 @@ export default {
         userid,
       })
       if (success) {
+        Cookie.set('user_password', Base64.encode(password))
         message.success('恭喜你，密码修改成功，可尝试注销重新登录！', 3)
       }
     },

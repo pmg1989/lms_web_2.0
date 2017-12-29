@@ -34,13 +34,13 @@ export default {
   },
   effects: {
     * logout ({ }, { call, put }) {
+      yield call(logout)
       yield setLoginOut()
       yield put({ type: 'logoutSuccess' })
       yield put(routerRedux.push({
         pathname: '/login',
         state: { nextPathname: location.pathname, nextSearch: location.search },
       }))
-      yield call(logout)
     },
   },
   reducers: {

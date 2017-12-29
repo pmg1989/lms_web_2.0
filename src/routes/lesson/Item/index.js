@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { checkPower } from 'utils'
-import { ADD, UPDATE, ADD_DAI_TEACHER, ADD_DELETE_STUDENT } from 'constants/options'
+import { ADD, UPDATE, ADD_DAI_TEACHER, ADD_DELETE_STUDENT, OTHER_STUDENT } from 'constants/options'
 import ItemForm from './ItemForm'
 
 const namespace = 'lessonItem'
@@ -13,12 +13,14 @@ const LessonItem = ({ dispatch, curPowers, lessonItem, loading }) => {
   const updatePower = checkPower(UPDATE, curPowers)
   const addDaiTeacherPower = checkPower(ADD_DAI_TEACHER, curPowers)
   const addDeleteStudentPower = checkPower(ADD_DELETE_STUDENT, curPowers)
+  const otherStudentPower = checkPower(OTHER_STUDENT, curPowers)
 
   const itemFormProps = {
     addPower,
     updatePower,
     addDaiTeacherPower,
     addDeleteStudentPower,
+    otherStudentPower,
     lessonItem,
     loading: loading.models.lessonItem,
     onChangeDaiTeacher ({ type, params }) {

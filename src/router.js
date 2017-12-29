@@ -93,6 +93,7 @@ const Routers = function ({ history, app }) {
               getComponent (nextState, cb) {
                 require.ensure([], (require) => {
                   registerModel(app, require('./models/lesson/item'))
+                  registerModel(app, require('./models/lesson/student'))
                   cb(null, require('./routes/lesson/Item'))
                 }, 'lesson-item')
               },
@@ -103,6 +104,7 @@ const Routers = function ({ history, app }) {
               getComponent (nextState, cb) {
                 require.ensure([], (require) => {
                   registerModel(app, require('./models/lesson/item'))
+                  registerModel(app, require('./models/lesson/student'))
                   cb(null, require('./routes/lesson/Item'))
                 }, 'lesson-item')
               },

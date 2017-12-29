@@ -30,7 +30,7 @@ export default {
             } else {
               dispatch({ type: 'querySuccess', payload: { item: {}, type: 'create' } })
             }
-            dispatch({ type: 'querySource' })
+            // dispatch({ type: 'querySource' })
           }
         }
       })
@@ -41,11 +41,9 @@ export default {
     * query ({ payload }, { call, put }) {
       const { lessonid, type } = payload
       const { data, success } = yield call(query, { lessonid })
-      // const { data: students } = yield call()
 
       data.categoryid = 74
-      data.school_id = 2
-      data.classroomid = 1 // 200001
+      console.log('remember to delete it')
 
       if (success) {
         yield put({
@@ -56,6 +54,11 @@ export default {
           },
         })
       }
+
+      yield put({
+        type: 'lessonStudent/query',
+        payload: { lessonid },
+      })
     },
     * querySource ({ }, { call, put }) {
       const { data: schools } = yield call(querySchools)

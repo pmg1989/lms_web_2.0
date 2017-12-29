@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import classnames from 'classnames'
 import Search from './Search'
 import Calendar from './Calendar'
+import styles from './Calendar.less'
 
 const namespace = 'lessonCalendar'
 
@@ -32,7 +34,7 @@ function CalendarHome ({ dispatch, lessonCalendar, loading }) {
   }
 
   return (
-    <div className="content-inner">
+    <div className={classnames('content-inner', styles.inner_box)}>
       <Search {...searchProps} />
       <Calendar {...calendarProps} />
     </div>

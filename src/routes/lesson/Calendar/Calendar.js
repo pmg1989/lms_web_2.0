@@ -13,7 +13,7 @@ BigCalendar.momentLocalizer(moment) // or globalizeLocalizer
 
 const MonthEvent = ({ event }) => {
   return (
-    <Link to={`/lesson/update?lessonid=${event.id}`} className={styles.title_box}>
+    <Link to={`/lesson/detail?lessonid=${event.id}`} className={styles.title_box}>
       <span className={`icon ${event.category}-${event.iconType}`} />
       <span className={styles.title}>{event.title}</span>
     </Link>
@@ -26,7 +26,7 @@ MonthEvent.propTypes = {
 
 const AgendaEvent = ({ event }) => {
   return (
-    <Link to={`/lesson/update?lessonid=${event.id}`} className={classnames(styles.title_box, styles.dark)}>
+    <Link to={`/lesson/detail?lessonid=${event.id}`} className={classnames(styles.title_box, styles.dark)}>
       <span className={`icon ${event.category}-${event.iconType}`} />
       <span className={styles.title}>{`${event.teacher} - ${event.category_summary} - ${event.classroom}教室`}</span>
     </Link>
@@ -118,23 +118,25 @@ class Calendar extends Component {
 
     return (
       <Spin spinning={loading} size="large">
-        {!isPostBack &&
-          <BigCalendar
-            className={styles.calendar_box}
-            events={lessons}
-            views={allViews}
-            step={30}
-            defaultDate={new Date()}
-            onView={this.handleViews}
-            onNavigate={this.handleNavigate}
-            components={{
-              event: MonthEvent,
-              agenda: {
-                event: AgendaEvent,
-              },
-            }}
-          />
-        }
+        <div className={styles.calendar_container}>
+          {!isPostBack &&
+            <BigCalendar
+              className={styles.calendar_box}
+              events={lessons}
+              views={allViews}
+              step={30}
+              defaultDate={new Date()}
+              onView={this.handleViews}
+              onNavigate={this.handleNavigate}
+              components={{
+                event: MonthEvent,
+                agenda: {
+                  event: AgendaEvent,
+                },
+              }}
+            />
+          }
+        </div>
       </Spin>
     )
   }
