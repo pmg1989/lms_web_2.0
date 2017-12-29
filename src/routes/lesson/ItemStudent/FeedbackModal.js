@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Modal, Icon, Spin, Rate, Row, Col } from 'antd'
 import { getModalType } from 'utils/dictionary'
+import styles from './FeedbackModal.less'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -44,31 +45,31 @@ const ModalForm = ({
                     {getFieldDecorator('lesson_prepare_score', {
                       initialValue: curItem.lesson_prepare_score,
                     })(<Rate disabled count={4} />)}
-                    {<span>{starsText[curItem.lesson_prepare_score]}</span>}
+                    {<span className={styles.star_text}>{starsText[curItem.lesson_prepare_score]}</span>}
                   </FormItem>
                   <FormItem label="1.2 本课内容设计满意度">
                     {getFieldDecorator('lesson_content_score', {
                       initialValue: curItem.lesson_content_score,
                     })(<Rate disabled count={4} />)}
-                    {<span>{starsText[curItem.lesson_content_score]}</span>}
+                    {<span className={styles.star_text}>{starsText[curItem.lesson_content_score]}</span>}
                   </FormItem>
                   <FormItem label="1.3 老师课堂形象满意度">
                     {getFieldDecorator('teacher_appearance_score', {
                       initialValue: curItem.teacher_appearance_score,
                     })(<Rate disabled count={4} />)}
-                    {<span>{starsText[curItem.teacher_appearance_score]}</span>}
+                    {<span className={styles.star_text}>{starsText[curItem.teacher_appearance_score]}</span>}
                   </FormItem>
                   <FormItem label="1.4 与老师有良好的互动">
                     {getFieldDecorator('lesson_interaction_score', {
                       initialValue: curItem.lesson_interaction_score,
                     })(<Rate disabled count={4} />)}
-                    {<span>{starsText[curItem.lesson_interaction_score]}</span>}
+                    {<span className={styles.star_text}>{starsText[curItem.lesson_interaction_score]}</span>}
                   </FormItem>
                   <FormItem label="1.5 老师讲课表达能力">
                     {getFieldDecorator('teacher_expression_score', {
                       initialValue: curItem.teacher_expression_score,
                     })(<Rate disabled count={4} />)}
-                    {<span>{starsText[curItem.teacher_expression_score]}</span>}
+                    {<span className={styles.star_text}>{starsText[curItem.teacher_expression_score]}</span>}
                   </FormItem>
                 </Col>
               </Row>
