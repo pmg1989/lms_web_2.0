@@ -42,9 +42,11 @@ export default {
     * showCommentModal ({ payload }, { call, put }) {
       const { type, params } = payload
       yield put({ type: 'modal/showModal', payload: { type, id: 1 } })
-      const { data, success } = yield call(queryComment, params)
-      if (success) {
-        yield put({ type: 'modal/setItem', payload: { id: 1, curItem: { ...data.commenttext.suggestion, userid: params.userid } } })
+      if (type !== 'create') {
+        const { data, success } = yield call(queryComment, params)
+        if (success) {
+          yield put({ type: 'modal/setItem', payload: { id: 1, curItem: { ...data.commenttext.suggestion, userid: params.userid } } })
+        }
       }
     },
     * comment ({ payload }, { call, put }) {
