@@ -10,10 +10,16 @@ const page = {
   pageSize: 10,
 }
 
+const initParams = {
+  school: getSchool(),
+  available: moment().startOf('month').format('X'),
+  deadline: moment().endOf('month').format('X'),
+}
+
 export default {
   namespace: 'lessonList',
   state: {
-    searchQuery: {},
+    searchQuery: initParams,
     schools: [],
     categorys: [],
     teachersDic: {},
@@ -33,12 +39,7 @@ export default {
             dispatch({ type: 'querySearch' })
             dispatch({
               type: 'query',
-              payload: {
-                isPostBack: true,
-                school: getSchool(),
-                available: moment().startOf('month').format('X'),
-                deadline: moment().endOf('month').format('X'),
-              },
+              payload: { isPostBack: true },
             })
           }
         }

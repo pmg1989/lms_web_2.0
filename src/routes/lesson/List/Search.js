@@ -44,13 +44,6 @@ const Search = ({
     return (teachers.find(item => item.username === getUserInfo().uname) || {}).id
   }
 
-  const renderRangeDate = (available, deadline) => {
-    if (available && deadline) {
-      return [moment(moment.unix(available).format('YYYY-MM-DD')).startOf('month'), moment(moment.unix(deadline).format('YYYY-MM-DD')).endOf('month')]
-    }
-    return [moment().startOf('month'), moment().endOf('month')]
-  }
-
   const rangePickerProps = {
     ranges: {
       今天: [moment().startOf('day'), moment().endOf('day')],
@@ -77,7 +70,8 @@ const Search = ({
           </FormItem>
           <FormItem label="老师" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('userid', {
-              initialValue: searchQuery.userid || renderUserId() || '',
+              // initialValue: searchQuery.userid || renderUserId() || '',
+              initialValue: renderUserId() || '',
               onChange: handleChange,
             })(<Select style={{ width: 150 }} disabled={getUserInfo().rolename === 'teacher'}>
               <Option value="">全部</Option>
@@ -87,7 +81,7 @@ const Search = ({
           </FormItem>
           <FormItem label="开课时间" style={{ marginBottom: 20, marginRight: 50 }}>
             {getFieldDecorator('available', {
-              initialValue: renderRangeDate(searchQuery.available, searchQuery.deadline),
+              initialValue: [moment(moment.unix(searchQuery.available)), moment(moment.unix(searchQuery.deadline))],
               onChange: handleChange,
             })(<RangePicker style={{ width: 200 }} {...rangePickerProps} />)}
           </FormItem>
