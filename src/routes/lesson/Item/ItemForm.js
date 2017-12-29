@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Modal, Input, InputNumber, Select, Spin, Button, Row, Col, Checkbox, DatePicker, Tag, Icon } from 'antd'
 import moment from 'moment'
-import { Link } from 'dva/router'
+// import { Link } from 'dva/router'
 import { getSchool, getUserInfo } from 'utils'
 import { timeList } from 'utils/dictionary'
 import ItemStudent from '../ItemStudent'
@@ -513,9 +513,9 @@ class ItemForm extends Component {
             {updatePower && type === 'update' &&
               <Button className={styles.btn} onClick={this.handleUpdate} type="primary" size="large">修改</Button>
             }
-            {updatePower && type === 'detail' &&
+            {/* {updatePower && type === 'detail' &&
               <Link to={`/lesson/update?lessonid=${item.id}`}><Button className={styles.btn} type="primary" size="large">修改</Button></Link>
-            }
+            } */}
             <Button className={styles.btn} type="default" onClick={onGoBack} size="large">返回</Button>
           </FormItem>
         </Form>
