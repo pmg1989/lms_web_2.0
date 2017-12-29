@@ -83,7 +83,7 @@ const Search = ({
             {getFieldDecorator('available', {
               initialValue: [moment(moment.unix(searchQuery.available)), moment(moment.unix(searchQuery.deadline))],
               onChange: handleChange,
-            })(<RangePicker style={{ width: 200 }} {...rangePickerProps} />)}
+            })(<RangePicker allowClear={false} style={{ width: 200 }} {...rangePickerProps} />)}
           </FormItem>
           <FormItem label="科目" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('categoryid', {
