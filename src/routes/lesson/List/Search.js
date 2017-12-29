@@ -44,6 +44,13 @@ const Search = ({
     return (teachers.find(item => item.username === getUserInfo().uname) || {}).id
   }
 
+  const renderRangeDate = (available, deadline) => {
+    if (available && deadline) {
+      return [moment(moment.unix(available).format('YYYY-MM-DD')).startOf('month'), moment(moment.unix(deadline).format('YYYY-MM-DD')).endOf('month')]
+    }
+    return [moment().startOf('month'), moment().endOf('month')]
+  }
+
   const rangePickerProps = {
     ranges: {
       今天: [moment().startOf('day'), moment().endOf('day')],
@@ -60,7 +67,7 @@ const Search = ({
         <Form layout="inline">
           <FormItem label="校区" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('school', {
-              initialValue: getSchool(),
+              initialValue: searchQuery.school || getSchool(),
               onChange: handleSchoolChange,
             })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
               <Option value="">全部</Option>
@@ -70,7 +77,7 @@ const Search = ({
           </FormItem>
           <FormItem label="老师" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('userid', {
-              initialValue: renderUserId() || '',
+              initialValue: searchQuery.userid || renderUserId() || '',
               onChange: handleChange,
             })(<Select style={{ width: 150 }} disabled={getUserInfo().rolename === 'teacher'}>
               <Option value="">全部</Option>
@@ -80,13 +87,13 @@ const Search = ({
           </FormItem>
           <FormItem label="开课时间" style={{ marginBottom: 20, marginRight: 50 }}>
             {getFieldDecorator('available', {
-              initialValue: [moment().startOf('month'), moment().endOf('month')],
+              initialValue: renderRangeDate(searchQuery.available, searchQuery.deadline),
               onChange: handleChange,
             })(<RangePicker style={{ width: 200 }} {...rangePickerProps} />)}
           </FormItem>
           <FormItem label="科目" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('categoryid', {
-              initialValue: '',
+              initialValue: searchQuery.categoryid || '',
               onChange: handleChange,
             })(<Select style={{ width: 150 }}>
               <Option value="">全部</Option>
@@ -96,7 +103,7 @@ const Search = ({
           </FormItem>
           <FormItem label="精品课/VIP课" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('category_ext', {
-              initialValue: '',
+              initialValue: searchQuery.category_ext || '',
               onChange: handleChange,
             })(<Select style={{ width: 90 }}>
               <Option value="">全部</Option>

@@ -72,9 +72,9 @@ export default {
       const { searchQuery, pagination } = yield select(({ lessonList }) => lessonList)
       const { isPostBack, isSearch, current, pageSize, ...queryParams } = payload
       const querys = renderQuery(searchQuery, queryParams)
-      // console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
-      // console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
-      // console.log(querys)
+      console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
+      console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
+      console.log(querys)
       // 判断是否是首次加载页面，作为前端分页判断标识符
       if (isPostBack) {
         const { data, success } = yield call(query, querys)
