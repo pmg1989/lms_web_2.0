@@ -44,7 +44,7 @@ export default {
       yield put({ type: 'modal/showModal', payload: { type, id: 1 } })
       const { data, success } = yield call(queryComment, params)
       if (success) {
-        yield put({ type: 'modal/setItem', payload: { type, curItem: { ...data.commenttext.suggestion, userid: params.userid }, id: 1 } })
+        yield put({ type: 'modal/setItem', payload: { id: 1, curItem: { ...data.commenttext.suggestion, userid: params.userid } } })
       }
     },
     * comment ({ payload }, { call, put }) {
@@ -68,9 +68,10 @@ export default {
     },
     * showFeedbackModal ({ payload }, { call, put }) {
       const { type, params } = payload
+      yield put({ type: 'modal/showModal', payload: { type, id: 3 } })
       const { data, success } = yield call(queryFeedback, params)
       if (success) {
-        yield put({ type: 'modal/showModal', payload: { type, curItem: { ...data.onlinetext.weekly, userid: params.userid }, id: 3 } })
+        yield put({ type: 'modal/setItem', payload: { id: 3, curItem: { ...data.onlinetext.weekly, userid: params.userid } } })
       }
     },
   },

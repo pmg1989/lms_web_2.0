@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import List from './List'
 import CommentModal from './CommentModal'
+import FeedbackModal from './FeedbackModal'
 
 const namespace = 'lessonStudent'
 
@@ -61,10 +62,19 @@ const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId 
     },
   }
 
+  const feedbackModalProps = {
+    modal,
+    loading: loading.models.lessonStudent,
+    onCancel () {
+      dispatch({ type: 'modal/hideModal' })
+    },
+  }
+
   return (
     <div>
       <List {...listProps} />
       {modal.visible && modal.id === 1 && <CommentModal {...commentModalProps} />}
+      {modal.visible && modal.id === 3 && <FeedbackModal {...feedbackModalProps} />}
     </div>
   )
 }
