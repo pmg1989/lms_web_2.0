@@ -37,10 +37,7 @@ export default {
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             dispatch({ type: 'querySearch' })
-            dispatch({
-              type: 'query',
-              payload: { isPostBack: true },
-            })
+            dispatch({ type: 'query', payload: { isPostBack: true } })
           }
         }
       })

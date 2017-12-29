@@ -5,6 +5,12 @@ import { query as querySchools } from 'services/common/school'
 import { query as queryCategorys } from 'services/common/category'
 import { query as queryTeachers } from 'services/account/admin'
 
+const initParams = {
+  school: getSchool(),
+  available: moment().startOf('month').format('X'),
+  deadline: moment().endOf('month').format('X'),
+}
+
 function getCateIcon (lesson) {
   if (lesson.num_student === 0) {
     return 'e'
@@ -18,7 +24,7 @@ export default {
   namespace: 'lessonCalendar',
   state: {
     isPostBack: true, // 判断是否是首次加载页面，修复 + more bug
-    searchQuery: {},
+    searchQuery: initParams,
     schools: [],
     categorys: [],
     teachersDic: {},
@@ -32,14 +38,7 @@ export default {
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             dispatch({ type: 'querySearch' })
-            dispatch({
-              type: 'getLessons',
-              payload: {
-                school: getSchool(),
-                available: moment().startOf('month').format('X'),
-                deadline: moment().endOf('month').format('X'),
-              },
-            })
+            dispatch({ type: 'getLessons', payload: { isPostBack: true } })
           }
         }
       })
@@ -70,7 +69,8 @@ export default {
     },
     * getLessons ({ payload }, { select, call, put }) {
       const { searchQuery } = yield select(({ lessonCalendar }) => lessonCalendar)
-      const querys = renderQuery(searchQuery, payload)
+      const { isPostBack, ...queryParams } = payload
+      const querys = renderQuery(searchQuery, queryParams)
       console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
       console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
       console.log(querys)

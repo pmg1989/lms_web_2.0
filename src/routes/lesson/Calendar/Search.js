@@ -43,7 +43,7 @@ const Search = ({
         <Form layout="inline">
           <FormItem label="校区" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('school', {
-              initialValue: getSchool(),
+              initialValue: searchQuery.school || getSchool(),
               onChange: handleSchoolChange,
             })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
               {/* <Option value="">全部</Option> */}
@@ -53,6 +53,7 @@ const Search = ({
           </FormItem>
           <FormItem label="老师" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('userid', {
+              // initialValue: searchQuery.userid || renderUserId() || '',
               initialValue: renderUserId() || '',
               onChange: handleChange,
             })(<Select style={{ width: 150 }} disabled={getUserInfo().rolename === 'teacher'}>
@@ -63,7 +64,7 @@ const Search = ({
           </FormItem>
           <FormItem label="科目" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('categoryid', {
-              initialValue: '',
+              initialValue: searchQuery.categoryid || '',
               onChange: handleChange,
             })(<Select className={styles.subject_box} style={{ width: 150 }}>
               <Option value=""><div className={classnames(styles.item, styles.all)}>全部</div></Option>
@@ -73,7 +74,7 @@ const Search = ({
           </FormItem>
           <FormItem label="精品课/VIP课" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('category_ext', {
-              initialValue: '',
+              initialValue: searchQuery.category_ext || '',
               onChange: handleChange,
             })(<Select style={{ width: 90 }}>
               <Option value="">全部</Option>
