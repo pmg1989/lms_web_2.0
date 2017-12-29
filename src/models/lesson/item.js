@@ -30,7 +30,7 @@ export default {
             } else {
               dispatch({ type: 'querySuccess', payload: { item: {}, type: 'create' } })
             }
-            // dispatch({ type: 'querySource' })
+            dispatch({ type: 'querySource' })
           }
         }
       })
@@ -41,10 +41,6 @@ export default {
     * query ({ payload }, { call, put }) {
       const { lessonid, type } = payload
       const { data, success } = yield call(query, { lessonid })
-
-      data.categoryid = 74
-      console.log('remember to delete it')
-
       if (success) {
         yield put({
           type: 'querySuccess',

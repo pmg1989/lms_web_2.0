@@ -345,8 +345,7 @@ class ItemForm extends Component {
         <Form className={styles.form_box}>
           <FormItem label="课程类型" hasFeedback {...formItemLayout} extra="支持输入关键字筛选">
             {getFieldDecorator('categoryid', {
-              initialValue: item.categoryid && item.categoryid.toString(),
-              // initialValue: courseCategorys[0] && courseCategorys[0].id,
+              initialValue: item.category_summary,
               onChange: this.handleCategoryChange,
               rules: [
                 {
