@@ -114,7 +114,7 @@ class Calendar extends Component {
   }
 
   render () {
-    const { lessonCalendar: { lessons, isPostBack }, loading } = this.props
+    const { lessonCalendar: { lessons, searchQuery, isPostBack }, loading } = this.props
 
     return (
       <Spin spinning={loading} size="large">
@@ -125,7 +125,7 @@ class Calendar extends Component {
               events={lessons}
               views={allViews}
               step={30}
-              defaultDate={new Date()}
+              defaultDate={new Date(searchQuery.available * 1000)}
               onView={this.handleViews}
               onNavigate={this.handleNavigate}
               components={{
