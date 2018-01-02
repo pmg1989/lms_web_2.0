@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Modal, Upload, Button, Icon, Row, Col } from 'antd'
 import { getModalType } from 'utils/dictionary'
-import { uploadRecord } from 'services/lesson/student'
+import { uploadRecord, removeUploadRecord } from 'services/lesson/student'
 
+const confirm = Modal.confirm
 const FormItem = Form.Item
 
 class UploadRecord extends Component {
@@ -34,8 +35,20 @@ class UploadRecord extends Component {
     this.setState({ uploading: true })
 
     const onChange = this.props.onChange
-    onChange && onChange(file, () => {
-      this.setState({ uploading: false })
+    onChange && onChange(file, ({ status, data }) => {
+      if (status !== 10000) {
+        this.setState({ uploading: false })
+      } else {
+        this.setState({
+          uploading: false,
+          file: {
+            uid: data.key,
+            name: data.name,
+            status: 'done',
+            url: data.url,
+          },
+        })
+      }
     })
   }
 
@@ -43,8 +56,19 @@ class UploadRecord extends Component {
     const { uploading } = this.state
 
     const props = {
-      onRemove: () => {
-        this.setState({ file: null })
+      onRemove: (file) => {
+        if (!file.lastModified) {
+          confirm({
+            title: '您确定要删除上传的录音文件吗?',
+            onOk: () => {
+              removeUploadRecord({ key: this.state.file.uid }).then(() => {
+                this.setState({ file: null })
+              })
+            },
+          })
+        } else {
+          this.setState({ file: null })
+        }
       },
       beforeUpload: (file) => {
         this.setState({ file })
@@ -109,6 +133,7 @@ const ModalForm = ({
   const { name, icon } = getModalType(type)
   const modalFormOpts = {
     title: <div><Icon type={icon} /> {name} - 录音信息</div>,
+    maskClosable: false,
     visible,
     wrapClassName: 'vertical-center-modal',
     confirmLoading: loading,
@@ -121,7 +146,7 @@ const ModalForm = ({
       lessonid: curItem.lessonid,
       studentid: curItem.id,
       file,
-    }).then(() => cb())
+    }).then(res => cb(res))
   }
 
   return (

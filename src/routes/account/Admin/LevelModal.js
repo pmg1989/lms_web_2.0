@@ -50,6 +50,7 @@ const ModalForm = ({
 
   const modalFormOpts = {
     title: <div><Icon type={icon} />申请请假</div>,
+    maskClosable: false,
     visible,
     wrapClassName: 'vertical-center-modal',
     confirmLoading: loading,

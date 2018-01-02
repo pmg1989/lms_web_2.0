@@ -23,3 +23,7 @@ export async function queryFeedback (params) {
 export async function uploadRecord (params) {
   return request({ wsfunction: 'mod_frontservice_upload_student_recording', ...params })
 }
+
+export async function removeUploadRecord (params) {
+  return request({ wsfunction: 'mod_frontservice_delete_file', ...params })
+}

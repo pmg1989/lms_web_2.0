@@ -137,8 +137,8 @@ class ModalForm extends Component {
 
     const modalFormOpts = {
       title: <div><Icon type={icon} /> {name} - 工作人员</div>,
-      visible,
       maskClosable: false,
+      visible,
       wrapClassName: 'vertical-center-modal',
       confirmLoading: loading,
       onOk: this.handleOk,

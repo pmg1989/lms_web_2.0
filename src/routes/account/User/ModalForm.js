@@ -28,8 +28,8 @@ const ModalForm = ({
   const { name, icon } = getModalType(type)
   const modalFormOpts = {
     title: <div><Icon type={icon} /> {name} - 学员</div>,
-    visible,
     maskClosable: false,
+    visible,
     width: 800,
     wrapClassName: 'vertical-center-modal',
     onCancel,
