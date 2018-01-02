@@ -33,7 +33,7 @@ TitleBanner.propTypes = {
   image: PropTypes.string.isRequired,
 }
 
-const Contract = ({ type, status, item, onShowTeacherModal, onShowHistoryListModal, setTeacherPower, getHistoryPower }) => {
+const Contract = ({ type, status, item, onShowTeacherModal, onShowHistoryListModal, onShowContractLessonModal, setTeacherPower, getHistoryPower }) => {
   const isProfession = type === 'profession'
   const currentAvailable = item.current_lesson_available
   const hasNext = !!currentAvailable
@@ -56,7 +56,7 @@ const Contract = ({ type, status, item, onShowTeacherModal, onShowHistoryListMod
         </span>
       </div>
       <div className={styles.right}>
-        <span>已完成 · {item.attended_lesson_cnt} / {item.constract_lesson_cnt}</span>
+        <span>已完成 · <span onClick={() => onShowContractLessonModal(item)}>{item.attended_lesson_cnt}</span> / {item.constract_lesson_cnt}</span>
         {isProfession && status === 1 &&
         <span>
           {setTeacherPower && <Button ghost type="primary" onClick={() => onShowTeacherModal(item)}>设置老师</Button>}
@@ -73,6 +73,7 @@ Contract.propTypes = {
   item: PropTypes.object.isRequired,
   onShowTeacherModal: PropTypes.func.isRequired,
   onShowHistoryListModal: PropTypes.func.isRequired,
+  onShowContractLessonModal: PropTypes.func.isRequired,
   setTeacherPower: PropTypes.bool.isRequired,
   getHistoryPower: PropTypes.bool.isRequired,
 }

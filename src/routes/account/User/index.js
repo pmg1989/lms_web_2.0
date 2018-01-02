@@ -8,6 +8,7 @@ import Search from './Search'
 import Modal from './ModalForm'
 import TeacherModal from './TeacherModal'
 import HistoryListModal from './HistoryListModal'
+import LessonsModal from './LessonsModal'
 
 const namespace = 'accountUser'
 
@@ -80,6 +81,16 @@ function User ({ curPowers, dispatch, accountUser, modal, loading }) {
         },
       })
     },
+    onShowContractLessonModal (item) {
+      dispatch({
+        type: `${namespace}/showContractLessonModal`,
+        payload: {
+          type: 'detail',
+          id: 4,
+          contract: item,
+        },
+      })
+    },
   }
 
   const teacherModalProps = {
@@ -104,6 +115,14 @@ function User ({ curPowers, dispatch, accountUser, modal, loading }) {
     },
   }
 
+  const lessonsModalProps = {
+    modal,
+    loading: loading.models.accountUser,
+    onCancel () {
+      dispatch({ type: 'modal/hideModal', payload: { showParent: true } })
+    },
+  }
+
   return (
     <div className="content-inner">
       <Search {...searchProps} />
@@ -111,6 +130,7 @@ function User ({ curPowers, dispatch, accountUser, modal, loading }) {
       {modal.visible && modal.id >= 1 && <Modal {...modalProps} />}
       {modal.visible && modal.id === 2 && <TeacherModal {...teacherModalProps} />}
       {modal.visible && modal.id === 3 && <HistoryListModal {...historyListModalProps} />}
+      {modal.visible && modal.id === 4 && <LessonsModal {...lessonsModalProps} />}
     </div>
   )
 }
