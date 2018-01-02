@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu, Modal, Radio, Row, Col, Tag } from 'antd'
 import { DataTable, DropMenu } from 'components'
+import AudioPlayer from 'components/MediaPlayer/AudioPlayer'
 import { ADD, UPDATE, DETAIL, DELETE } from 'constants/options'
 import styles from './List.less'
 
@@ -117,9 +118,7 @@ function List ({
             </Row>
             <Row>
               <Col span={24}>
-                <audio controls src={record.jl_recording.url}>
-                  <track kind="captions" />
-                </audio>
+                <AudioPlayer src={record.jl_recording.url} autoPlay={false} />
               </Col>
             </Row>
           </div>

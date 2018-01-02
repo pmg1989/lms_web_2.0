@@ -33,7 +33,7 @@ class MuteUnmute extends Component {
     const { media: { volume }, className } = this.props
     return (
       <svg width="36px" height="36px" viewBox="0 0 36 36" className={className} onClick={this._handleMuteUnmute}>
-        <circle fill="#373D3F" cx="18" cy="18" r="18" />
+        <circle fill="#666" cx="18" cy="18" r="18" />
         <polygon fill="#CDD7DB" points="11,14.844 11,21.442 14.202,21.442 17.656,25 17.656,11 14.074,14.844" />
         <Scale>
           { volume >= 0.5 &&

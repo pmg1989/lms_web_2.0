@@ -41,7 +41,7 @@ class PlayPause extends Component {
         className={className}
         onClick={this._handlePlayPause}
       >
-        <circle fill="#373D3F" cx="18" cy="18" r="18" />
+        <circle fill="#666" cx="18" cy="18" r="18" />
         <ScaleX>
           { isPlaying &&
           <g key="pause" style={{ transformOrigin: '0% 50%' }}>
