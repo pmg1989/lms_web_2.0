@@ -19,3 +19,7 @@ export async function comment (params) {
 export async function queryFeedback (params) {
   return request({ wsfunction: 'mod_frontservice_getsubmission', ...params })
 }
+
+export async function uploadRecord (params) {
+  return request({ wsfunction: 'mod_frontservice_upload_student_recording', ...params })
+}

@@ -1,9 +1,80 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, Icon } from 'antd'
+import { Form, Input, Modal, Upload, Button, Icon, Row, Col } from 'antd'
 import { getModalType } from 'utils/dictionary'
+import { uploadRecord } from 'services/lesson/student'
 
 const FormItem = Form.Item
+
+class UploadRecord extends Component {
+  static propTypes = {
+    value: PropTypes.object,
+    placeholder: PropTypes.string,
+    disabled: PropTypes.bool,
+    onChange: PropTypes.func,
+  }
+
+  constructor (props) {
+    super(props)
+
+    const file = this.props.value || {}
+    this.state = {
+      file: !!file.name.length && {
+        uid: file.key,
+        name: file.name,
+        status: 'init',
+        url: file.url,
+      },
+      uploading: false,
+    }
+  }
+
+  handleUpload = () => {
+    const { file } = this.state
+    this.setState({ uploading: true })
+
+    const onChange = this.props.onChange
+    onChange && onChange(file, () => {
+      this.setState({ uploading: false })
+    })
+  }
+
+  render () {
+    const { uploading } = this.state
+
+    const props = {
+      onRemove: () => {
+        this.setState({ file: null })
+      },
+      beforeUpload: (file) => {
+        this.setState({ file })
+        return false
+      },
+      fileList: this.state.file ? [this.state.file] : [],
+    }
+
+    return (
+      <Row>
+        <Col span={18}>
+          <Upload {...props}>
+            <Button><Icon type="upload" /> 请选择录音文件</Button>
+          </Upload>
+        </Col>
+        <Col span={6}>
+          <Button
+            size="large"
+            type="primary"
+            onClick={this.handleUpload}
+            disabled={!this.state.file || this.state.file.status === 'init'}
+            loading={uploading}
+          >
+            {uploading ? '上传中' : '开始上传'}
+          </Button>
+        </Col>
+      </Row>
+    )
+  }
+}
 
 const formItemLayout = {
   labelCol: {
@@ -45,6 +116,14 @@ const ModalForm = ({
     onCancel,
   }
 
+  const handleUpload = (file, cb) => {
+    uploadRecord({
+      lessonid: curItem.lessonid,
+      studentid: curItem.id,
+      file,
+    }).then(() => cb())
+  }
+
   return (
     <Modal {...modalFormOpts}>
       <Form>
@@ -69,6 +148,12 @@ const ModalForm = ({
               },
             ],
           })(<Input placeholder="请输入原唱" />)}
+        </FormItem>
+        <FormItem label="上传文件" {...formItemLayout}>
+          {getFieldDecorator('file', {
+            initialValue: curItem.jl_recording,
+            onChange: handleUpload,
+          })(<UploadRecord />)}
         </FormItem>
       </Form>
     </Modal>
