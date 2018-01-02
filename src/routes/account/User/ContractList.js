@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button } from 'antd'
+import { Button, Tooltip } from 'antd'
 import moment from 'moment'
 import classnames from 'classnames'
 import { getCategory } from 'utils/dictionary'
@@ -56,7 +56,11 @@ const Contract = ({ type, status, item, onShowTeacherModal, onShowHistoryListMod
         </span>
       </div>
       <div className={styles.right}>
-        <span>已完成 · <span onClick={() => onShowContractLessonModal(item)}>{item.attended_lesson_cnt}</span> / {item.constract_lesson_cnt}</span>
+        <span>
+          已完成 · <Tooltip title="查看课程记录">
+            <span className={styles.link} onClick={() => onShowContractLessonModal(item)}>{item.attended_lesson_cnt}</span>
+          </Tooltip>
+           / {item.constract_lesson_cnt}</span>
         {isProfession && status === 1 &&
         <span>
           {setTeacherPower && <Button ghost type="primary" onClick={() => onShowTeacherModal(item)}>设置老师</Button>}
