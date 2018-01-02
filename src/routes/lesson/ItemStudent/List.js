@@ -40,7 +40,7 @@ function List ({
     return {
       [DELETE]: handleDeleteItem,
       [UPDATE]: () => onShowModal({ modalId: 1, userid: record.id, type: record.gradetime ? 'update' : 'create' }),
-      [ADD]: () => onShowModal({ modalId: 2, userid: record.id, type: 'create' }),
+      [ADD]: () => onShowModal({ modalId: 2, userid: record.id, type: 'create', curItem: record }),
       [DETAIL]: () => onShowModal({ modalId: 3, userid: record.id, type: 'detail' }),
     }[key](record)
   }

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import List from './List'
 import CommentModal from './CommentModal'
+import RecordModal from './RecordModal'
 import FeedbackModal from './FeedbackModal'
 
 const namespace = 'lessonStudent'
@@ -26,7 +27,7 @@ const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId 
         payload: { params: { ...item, lessonid } },
       })
     },
-    onShowModal ({ modalId, type, userid }) {
+    onShowModal ({ modalId, type, userid, curItem }) {
       if (modalId === 1) {
         dispatch({
           type: `${namespace}/showCommentModal`,
@@ -35,7 +36,7 @@ const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId 
       } else if (modalId === 2) {
         dispatch({
           type: `${namespace}/showRecordModal`,
-          payload: { type, params: { userid, lessonid } },
+          payload: { type, curItem: { ...curItem, lessonid } },
         })
       } else {
         dispatch({
@@ -70,10 +71,27 @@ const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId 
     },
   }
 
+  const recordModalProps = {
+    modal,
+    loading: loading.models.lessonStudent,
+    onOk (data) {
+      dispatch({
+        type: `${namespace}/record`,
+        payload: {
+          params: { ...data, lessonid },
+        },
+      })
+    },
+    onCancel () {
+      dispatch({ type: 'modal/hideModal' })
+    },
+  }
+
   return (
     <div>
       <List {...listProps} />
       {modal.visible && modal.id === 1 && <CommentModal {...commentModalProps} />}
+      {modal.visible && modal.id === 2 && <RecordModal {...recordModalProps} />}
       {modal.visible && modal.id === 3 && <FeedbackModal {...feedbackModalProps} />}
     </div>
   )

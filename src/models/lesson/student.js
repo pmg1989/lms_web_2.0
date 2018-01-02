@@ -61,12 +61,13 @@ export default {
         yield put({ type: 'modal/hideModal' })
       }
     },
-    * showRecordModal ({ payload }, { call, put }) {
-      const { type, params } = payload
-      const { data, success } = yield call(queryComment, params)
-      if (success) {
-        yield put({ type: 'modal/showModal', payload: { type, curItem: data, id: 2 } })
-      }
+    * showRecordModal ({ payload }, { put }) {
+      const { type, curItem } = payload
+      yield put({ type: 'modal/showModal', payload: { type, curItem, id: 2 } })
+    },
+    * record ({ payload }, { put }) {
+      console.log(payload)
+      yield put({ type: 'modal/hideModal' })
     },
     * showFeedbackModal ({ payload }, { call, put }) {
       const { type, params } = payload
