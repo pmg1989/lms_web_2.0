@@ -37,7 +37,7 @@ const LessonItem = ({ dispatch, curPowers, lessonItem, loading }) => {
     },
     onResetStudents () {
       dispatch({
-        type: `${namespace}/resetStudents`
+        type: `${namespace}/resetStudents`,
       })
     },
     onSubmit (params) {

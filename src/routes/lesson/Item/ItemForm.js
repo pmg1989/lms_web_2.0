@@ -440,7 +440,7 @@ class ItemForm extends Component {
               </FormItem>
             </Col>
           </FormItem>
-          {type === 'create' && showStudentForm && 
+          {type === 'create' && showStudentForm &&
           <FormItem label="添加学员" hasFeedback {...formItemLayout} >
             {getFieldDecorator('studentid', {
             })(<Select
