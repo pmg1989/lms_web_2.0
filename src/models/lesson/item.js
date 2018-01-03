@@ -142,5 +142,8 @@ export default {
     queryStudentsSuccess (state, action) {
       return { ...state, ...action.payload }
     },
+    resetStudents (state) {
+      return { ...state, studentList: [] }
+    },
   },
 }
