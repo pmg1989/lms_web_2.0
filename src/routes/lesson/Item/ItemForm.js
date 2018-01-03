@@ -127,17 +127,20 @@ class ItemForm extends Component {
     }
 
     const queryStudentList = (phone2) => {
-      const { school_id, available } = getFieldsValue(['school_id', 'available'])
-      const params = getFieldsValue(['categoryid', 'teacherid', 'startdate', 'numsections', 'openweekday'])
+      const { school_id } = getFieldsValue(['school_id'])
+      const params = getFieldsValue(['categoryid', 'teacherid', 'classroomid', 'openweekday', 'numsections', 'startdate', 'available', 'deadline'])
 
-      if (params.categoryid && params.teacherid && params.startdate && available && params.numsections && params.openweekday.length) {
+      if (params.categoryid && params.teacherid && params.classroomid && params.openweekday.length && params.numsections && params.startdate && params.available && params.deadline) {
         if (!(/^1(3|4|5|7|8)\d{9}$/.test(phone2))) {
           return false
         }
 
         this.setState({ fetching: true })
-        params.startdate = moment(`${params.startdate.format('YYYY-MM-DD')} ${available}`).format('X')
+        const stateDate = params.startdate
+        params.startdate = stateDate.startOf('day').format('X')
         params.openweekday = params.openweekday.sort().join(',')
+        params.available = moment(`${stateDate.format('YYYY-MM-DD')} ${params.available}`).format('X')
+        params.deadline = moment(`${stateDate.format('YYYY-MM-DD')} ${params.deadline}`).format('X')
         console.log(school_id, params)
         // this.props.onQueryStudentList(params)
         onQueryStudentList({ phone2, school: '' })
@@ -246,6 +249,7 @@ class ItemForm extends Component {
           delete values.studentid
         }
         delete values.school_id
+
         onSubmit(values)
       }
     })
