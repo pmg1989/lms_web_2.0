@@ -45,6 +45,7 @@ const ModalForm = ({
   }
   const modalFormOpts = {
     title: type === 'create' ? <div><Icon type="plus-circle-o" /> 新建角色</div> : <div><Icon type="edit" /> 修改角色</div>,
+    maskClosable: false,
     visible,
     wrapClassName: 'vertical-center-modal',
     className: styles.modalWidth,

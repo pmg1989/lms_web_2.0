@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Icon, Table } from 'antd'
 import moment from 'moment'
+import CirclePlayer from 'components/MediaPlayer/CirclePlayer'
 import { getModalType } from 'utils/dictionary'
 
 const ModalForm = ({
@@ -11,7 +12,7 @@ const ModalForm = ({
 }) => {
   const { name, icon } = getModalType(type)
   const modalFormOpts = {
-    title: <div><Icon type={icon} /> {name} - 修改历史记录</div>,
+    title: <div><Icon type={icon} /> {name} - 课程记录</div>,
     maskClosable: false,
     visible,
     width: 900,
@@ -22,33 +23,30 @@ const ModalForm = ({
 
   const columns = [
     {
-      title: '修改人',
-      dataIndex: 'modify_caller',
-      key: 'modify_caller',
+      title: '课程名称',
+      dataIndex: 'category_summary',
+      key: 'category_summary',
     }, {
-      title: '修改时间',
-      dataIndex: 'modify_time',
-      key: 'modify_time',
-      render (modifyTime) {
-        return <span>{moment.unix(modifyTime).format('YYYY-MM-DD HH:mm:ss')}</span>
-      },
-    },
-    {
       title: '任课老师',
-      dataIndex: 'teachername',
-      key: 'teachername',
-    },
-    {
-      title: '备注信息',
-      dataIndex: 'modify_note',
-      key: 'modify_note',
-    },
-    {
-      title: '合同起止时间',
+      dataIndex: 'teacher',
+      key: 'teacher',
+    }, {
+      title: '上课时间',
       dataIndex: 'available',
       key: 'available',
       render (available, record) {
-        return <span>{record.available && moment.unix(record.available).format('YYYY-MM-DD')} ~ {record.deadline && moment.unix(record.deadline).format('YYYY-MM-DD')}</span>
+        return <span>{moment.unix(available).format('YYYY-MM-DD HH:mm')} ~ {moment.unix(record.deadline).format('HH:mm')}</span>
+      },
+    }, {
+      title: '教室',
+      dataIndex: 'classroom',
+      key: 'classroom',
+    }, {
+      title: '录音',
+      dataIndex: 'jl_recording_url',
+      key: 'jl_recording_url',
+      render (url) {
+        return <span>{url ? <CirclePlayer src={url} autoPlay={false} /> : '无'}</span>
       },
     },
   ]
@@ -57,9 +55,9 @@ const ModalForm = ({
     <Modal {...modalFormOpts}>
       <Table
         columns={columns}
-        dataSource={curItem.historyList}
+        dataSource={curItem.lessons}
         loading={loading}
-        rowKey={record => record.modify_time}
+        rowKey={record => record.id}
       />
     </Modal>
   )

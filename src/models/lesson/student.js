@@ -1,5 +1,5 @@
 import { message } from 'antd'
-import { query, attendance, queryComment, comment, queryFeedback } from 'services/lesson/student'
+import { query, attendance, queryComment, comment, queryFeedback, uploadRecord } from 'services/lesson/student'
 import { unenrollesson } from 'services/lesson/item'
 
 export default {
@@ -61,11 +61,26 @@ export default {
         yield put({ type: 'modal/hideModal' })
       }
     },
-    * showRecordModal ({ payload }, { call, put }) {
-      const { type, params } = payload
-      const { data, success } = yield call(queryComment, params)
+    * showRecordModal ({ payload }, { put }) {
+      const { type, curItem } = payload
+      yield put({ type: 'modal/showModal', payload: { type, curItem, id: 2 } })
+    },
+    * record ({ payload }, { put }) {
+      console.log(payload)
+      yield put({ type: 'modal/hideModal' })
+    },
+    * upload ({ payload }, { call, put }) {
+      const { params } = payload
+      const { data, success } = yield call(uploadRecord, params)
       if (success) {
-        yield put({ type: 'modal/showModal', payload: { type, curItem: data, id: 2 } })
+        yield put({
+          type: 'uploadSuccess',
+          payload: {
+            jlRecording: data,
+            id: params.studentid,
+          },
+        })
+        yield put({ type: 'modal/hideModal' })
       }
     },
     * showFeedbackModal ({ payload }, { call, put }) {
@@ -88,6 +103,11 @@ export default {
     },
     commentSuccess (state, action) {
       const list = state.list.map(item => (item.id === action.payload.id ? ({ ...item, gradetime: new Date().getTime() }) : item))
+      return { ...state, list }
+    },
+    uploadSuccess (state, action) {
+      const { jlRecording, id } = action.payload
+      const list = state.list.map(item => (item.id === id ? { ...item, jl_recording: jlRecording } : item))
       return { ...state, list }
     },
   },

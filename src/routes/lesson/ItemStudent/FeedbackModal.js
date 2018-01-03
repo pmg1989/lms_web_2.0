@@ -26,6 +26,7 @@ const ModalForm = ({
   const { name, icon } = getModalType(type)
   const modalFormOpts = {
     title: <div><Icon type={icon} /> {name} - 课程反馈</div>,
+    maskClosable: false,
     visible,
     wrapClassName: 'vertical-center-modal',
     onCancel,

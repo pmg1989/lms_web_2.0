@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu, Modal, Radio, Row, Col, Tag } from 'antd'
 import { DataTable, DropMenu } from 'components'
+import AudioPlayer from 'components/MediaPlayer/AudioPlayer'
 import { ADD, UPDATE, DETAIL, DELETE } from 'constants/options'
 import styles from './List.less'
 
@@ -39,7 +40,7 @@ function List ({
     return {
       [DELETE]: handleDeleteItem,
       [UPDATE]: () => onShowModal({ modalId: 1, userid: record.id, type: record.gradetime ? 'update' : 'create' }),
-      [ADD]: () => onShowModal({ modalId: 2, userid: record.id, type: 'create' }),
+      [ADD]: () => onShowModal({ modalId: 2, userid: record.id, type: 'create', curItem: record }),
       [DETAIL]: () => onShowModal({ modalId: 3, userid: record.id, type: 'detail' }),
     }[key](record)
   }
@@ -113,15 +114,15 @@ function List ({
               <Col span={8}>{backSource === 2 && '不'}自带伴奏</Col>
             </Row>
             <Row>
-              <Col span={24}>文件名：{record.jl_recording.name}</Col>
+              <Col>文件名：{record.jl_recording.name || '未上传'}</Col>
             </Row>
-            <Row>
-              <Col span={24}>
-                <audio controls src={record.jl_recording.url}>
-                  <track kind="captions" />
-                </audio>
-              </Col>
-            </Row>
+            {record.jl_recording.url &&
+              <Row>
+                <Col>
+                  <AudioPlayer src={record.jl_recording.url} autoPlay={false} />
+                </Col>
+              </Row>
+            }
           </div>
         )
       }

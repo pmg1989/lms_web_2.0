@@ -1,6 +1,6 @@
 import { getCurPowers, renderQuery, getSchool } from 'utils'
 import { query, queryItem, update } from 'services/account/admin'
-import { queryContractList, updateTeacher, queryHistoryList } from 'services/account/user'
+import { queryContractList, updateTeacher, queryHistoryList, queryContractLesson } from 'services/account/user'
 import { query as querySchools } from 'services/common/school'
 
 const page = {
@@ -135,6 +135,15 @@ export default {
       const { data, success } = yield call(queryHistoryList, { contractid: contract.contractid })
       if (success) {
         yield put({ type: 'modal/setSubItem', payload: { historyList: data } })
+      }
+    },
+    * showContractLessonModal ({ payload }, { call, put }) {
+      const { type, id, contract } = payload
+      yield put({ type: 'modal/showModal', payload: { type, id } })
+
+      const { data, success } = yield call(queryContractLesson, { ccid: contract.contractid, category_idnumber: contract.category_idnumber })
+      if (success) {
+        yield put({ type: 'modal/setSubItem', payload: { lessons: data.lessons } })
       }
     },
   },

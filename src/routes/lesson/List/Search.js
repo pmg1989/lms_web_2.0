@@ -60,7 +60,7 @@ const Search = ({
         <Form layout="inline">
           <FormItem label="校区" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('school', {
-              initialValue: getSchool(),
+              initialValue: searchQuery.school || getSchool(),
               onChange: handleSchoolChange,
             })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
               <Option value="">全部</Option>
@@ -70,6 +70,7 @@ const Search = ({
           </FormItem>
           <FormItem label="老师" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('userid', {
+              // initialValue: searchQuery.userid || renderUserId() || '',
               initialValue: renderUserId() || '',
               onChange: handleChange,
             })(<Select style={{ width: 150 }} disabled={getUserInfo().rolename === 'teacher'}>
@@ -80,13 +81,13 @@ const Search = ({
           </FormItem>
           <FormItem label="开课时间" style={{ marginBottom: 20, marginRight: 50 }}>
             {getFieldDecorator('available', {
-              initialValue: [moment().startOf('month'), moment().endOf('month')],
+              initialValue: [moment(moment.unix(searchQuery.available)), moment(moment.unix(searchQuery.deadline))],
               onChange: handleChange,
-            })(<RangePicker style={{ width: 200 }} {...rangePickerProps} />)}
+            })(<RangePicker allowClear={false} style={{ width: 200 }} {...rangePickerProps} />)}
           </FormItem>
           <FormItem label="科目" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('categoryid', {
-              initialValue: '',
+              initialValue: searchQuery.categoryid || '',
               onChange: handleChange,
             })(<Select style={{ width: 150 }}>
               <Option value="">全部</Option>
@@ -96,7 +97,7 @@ const Search = ({
           </FormItem>
           <FormItem label="精品课/VIP课" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('category_ext', {
-              initialValue: '',
+              initialValue: searchQuery.category_ext || '',
               onChange: handleChange,
             })(<Select style={{ width: 90 }}>
               <Option value="">全部</Option>

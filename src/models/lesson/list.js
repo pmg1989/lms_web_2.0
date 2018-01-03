@@ -10,10 +10,16 @@ const page = {
   pageSize: 10,
 }
 
+const initParams = {
+  school: getSchool(),
+  available: moment().startOf('month').format('X'),
+  deadline: moment().endOf('month').format('X'),
+}
+
 export default {
   namespace: 'lessonList',
   state: {
-    searchQuery: {},
+    searchQuery: initParams,
     schools: [],
     categorys: [],
     teachersDic: {},
@@ -31,15 +37,7 @@ export default {
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             dispatch({ type: 'querySearch' })
-            dispatch({
-              type: 'query',
-              payload: {
-                isPostBack: true,
-                school: getSchool(),
-                available: moment().startOf('month').format('X'),
-                deadline: moment().endOf('month').format('X'),
-              },
-            })
+            dispatch({ type: 'query', payload: { isPostBack: true } })
           }
         }
       })
@@ -72,9 +70,9 @@ export default {
       const { searchQuery, pagination } = yield select(({ lessonList }) => lessonList)
       const { isPostBack, isSearch, current, pageSize, ...queryParams } = payload
       const querys = renderQuery(searchQuery, queryParams)
-      // console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
-      // console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
-      // console.log(querys)
+      console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
+      console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
+      console.log(querys)
       // 判断是否是首次加载页面，作为前端分页判断标识符
       if (isPostBack) {
         const { data, success } = yield call(query, querys)
