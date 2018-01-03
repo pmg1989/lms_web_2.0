@@ -73,7 +73,17 @@ const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId 
 
   const recordModalProps = {
     modal,
-    loading: loading.models.lessonStudent,
+    loading: {
+      record: loading.effects[`${namespace}/record`],
+      upload: loading.effects[`${namespace}/upload`],
+      removeUpload: loading.effects[`${namespace}/removeUpload`],
+    },
+    onUpload (params) {
+      dispatch({
+        type: `${namespace}/upload`,
+        payload: { params },
+      })
+    },
     onOk (data) {
       dispatch({
         type: `${namespace}/record`,

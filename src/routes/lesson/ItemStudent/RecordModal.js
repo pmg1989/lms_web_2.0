@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Modal, Upload, Button, Icon, Row, Col } from 'antd'
 import { getModalType } from 'utils/dictionary'
-import { uploadRecord, removeUploadRecord } from 'services/lesson/student'
+import { removeUploadRecord } from 'services/lesson/student'
 
 const confirm = Modal.confirm
 const FormItem = Form.Item
@@ -12,7 +12,12 @@ class UploadRecord extends Component {
     value: PropTypes.object,
     placeholder: PropTypes.string,
     disabled: PropTypes.bool,
+    uploading: PropTypes.bool,
     onChange: PropTypes.func,
+  }
+
+  static defaultProps = {
+    uploading: false,
   }
 
   constructor (props) {
@@ -26,7 +31,7 @@ class UploadRecord extends Component {
         status: 'init',
         url: file.url,
       },
-      uploading: false,
+      removing: false,
     }
   }
 
@@ -35,25 +40,12 @@ class UploadRecord extends Component {
     this.setState({ uploading: true })
 
     const onChange = this.props.onChange
-    onChange && onChange(file, ({ status, data }) => {
-      if (status !== 10000) {
-        this.setState({ uploading: false })
-      } else {
-        this.setState({
-          uploading: false,
-          file: {
-            uid: data.key,
-            name: data.name,
-            status: 'done',
-            url: data.url,
-          },
-        })
-      }
-    })
+    onChange && onChange(file)
   }
 
   render () {
-    const { uploading } = this.state
+    const { uploading } = this.props
+    const { removing } = this.state
 
     const props = {
       onRemove: (file) => {
@@ -61,8 +53,9 @@ class UploadRecord extends Component {
           confirm({
             title: '您确定要删除上传的录音文件吗?',
             onOk: () => {
+              this.setState({ removing: true })
               removeUploadRecord({ key: this.state.file.uid }).then(() => {
-                this.setState({ file: null })
+                this.setState({ file: null, removing: false })
               })
             },
           })
@@ -78,24 +71,30 @@ class UploadRecord extends Component {
     }
 
     return (
-      <Row>
-        <Col span={18}>
-          <Upload {...props}>
-            <Button><Icon type="upload" /> 请选择录音文件</Button>
-          </Upload>
-        </Col>
-        <Col span={6}>
-          <Button
-            size="large"
-            type="primary"
-            onClick={this.handleUpload}
-            disabled={!this.state.file || this.state.file.status === 'init'}
-            loading={uploading}
-          >
-            {uploading ? '上传中' : '开始上传'}
-          </Button>
-        </Col>
-      </Row>
+      <div>
+        <Row>
+          <Col span={18}>
+            <Upload {...props}>
+              <Button><Icon type="upload" /> 请选择录音文件</Button>
+            </Upload>
+          </Col>
+          <Col span={6}>
+            <Button
+              size="large"
+              type="primary"
+              onClick={this.handleUpload}
+              disabled={!this.state.file || this.state.file.status === 'init'}
+              loading={uploading}
+            >
+              {uploading ? '上传中' : '开始上传'}
+            </Button>
+          </Col>
+        </Row>
+        {removing &&
+        <Row>
+          <Col>录音删除中...</Col>
+        </Row>}
+      </div>
     )
   }
 }
@@ -116,6 +115,7 @@ const ModalForm = ({
     getFieldDecorator,
     validateFields,
   },
+  onUpload,
   onOk,
   onCancel,
 }) => {
@@ -136,17 +136,17 @@ const ModalForm = ({
     maskClosable: false,
     visible,
     wrapClassName: 'vertical-center-modal',
-    confirmLoading: loading,
+    confirmLoading: loading.record,
     onOk: handleOk,
     onCancel,
   }
 
-  const handleUpload = (file, cb) => {
-    uploadRecord({
+  const handleUpload = (file) => {
+    onUpload({
       lessonid: curItem.lessonid,
       studentid: curItem.id,
       file,
-    }).then(res => cb(res))
+    })
   }
 
   return (
@@ -178,7 +178,7 @@ const ModalForm = ({
           {getFieldDecorator('file', {
             initialValue: curItem.jl_recording,
             onChange: handleUpload,
-          })(<UploadRecord />)}
+          })(<UploadRecord uploading={loading.upload} />)}
         </FormItem>
       </Form>
     </Modal>
@@ -188,7 +188,8 @@ const ModalForm = ({
 ModalForm.propTypes = {
   modal: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
-  loading: PropTypes.bool.isRequired,
+  loading: PropTypes.object.isRequired,
+  onUpload: PropTypes.func.isRequired,
   onOk: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
 }

@@ -114,13 +114,15 @@ function List ({
               <Col span={8}>{backSource === 2 && '不'}自带伴奏</Col>
             </Row>
             <Row>
-              <Col span={24}>文件名：{record.jl_recording.name}</Col>
+              <Col>文件名：{record.jl_recording.name || '未上传'}</Col>
             </Row>
-            <Row>
-              <Col span={24}>
-                <AudioPlayer src={record.jl_recording.url} autoPlay={false} />
-              </Col>
-            </Row>
+            {record.jl_recording.url &&
+              <Row>
+                <Col>
+                  <AudioPlayer src={record.jl_recording.url} autoPlay={false} />
+                </Col>
+              </Row>
+            }
           </div>
         )
       }
