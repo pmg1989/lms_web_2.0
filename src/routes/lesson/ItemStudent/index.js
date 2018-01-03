@@ -10,7 +10,7 @@ const namespace = 'lessonStudent'
 
 const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId }, addDeletePower, otherPower, lessonStudent, loading, modal }) => {
   const listProps = {
-    loading: loading.effects['lessonStudent/query'],
+    loading: loading.models.lessonStudent,
     addDeletePower,
     otherPower,
     uploadRecordStatus: categoryId.includes('jl-') && user.teacher_category === 'jl',
