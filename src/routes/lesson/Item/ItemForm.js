@@ -388,7 +388,7 @@ class ItemForm extends Component {
                   message: '请选择教室',
                 },
               ],
-            })(<Select disabled={disabled || disabledEdit} placeholder="--请选择教室--">
+            })(<Select disabled={disabled} placeholder="--请选择教室--">
               {classrooms.map(classroom => <Option key={classroom.id} value={classroom.id.toString()}>{classroom.name}</Option>)}
             </Select>)
             }
