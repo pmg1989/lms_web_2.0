@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Modal, Input, InputNumber, Select, Spin, Button, Row, Col, Checkbox, DatePicker, Tag, Icon } from 'antd'
+import { Form, Modal, Input, InputNumber, Select, Spin, Button, Row, Col, Checkbox, DatePicker, Tag } from 'antd'
 import moment from 'moment'
 // import { Link } from 'dva/router'
 import { getSchool, getUserInfo } from 'utils'
@@ -115,7 +115,7 @@ class ItemForm extends Component {
             }
           </Col>
           <Col span={8} className={styles.text_right}>
-            <Button size="large" type="danger" onClick={handleDeleteDaiTeacher} disabled={disabled || !addDaiTeacherPower}><Icon type="close-circle-o" />删除代课老师</Button>
+            <Button size="large" type="danger" onClick={handleDeleteDaiTeacher} disabled={disabled || !addDaiTeacherPower} icon="close-circle-o">删除代课老师</Button>
           </Col>
         </Row>
       </FormItem>
@@ -520,7 +520,7 @@ class ItemForm extends Component {
                 </Select>
               </Col>
               <Col span={8} className={styles.text_right}>
-                <Button onClick={this.handleAddStudent} disabled={addDisabled} type="primary" size="large">添加</Button>
+                <Button onClick={this.handleAddStudent} disabled={addDisabled} type="primary" size="large" icon="plus-circle-o">添加</Button>
               </Col>
             </Row>)}
             <ItemStudent lessonInfo={{ lessonid: item.id, categoryId: item.category_idnumber }} addDeletePower={addDeleteStudentPower} otherPower={otherStudentPower} />
