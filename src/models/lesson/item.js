@@ -26,12 +26,11 @@ export default {
           const curPowers = getCurPowers(pathname)
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
-            if (pathname === '/lesson/update' || pathname === '/lesson/detail') {
-              dispatch({ type: 'query', payload: { lessonid, type: pathname === '/lesson/update' ? 'update' : 'detail' } })
-            } else {
+            if (pathname === '/lesson/detail') {
+              // 清除修改时留下的数据
               dispatch({ type: 'querySuccess', payload: { item: {}, type: 'create' } })
             }
-            dispatch({ type: 'querySource' })
+            dispatch({ type: 'querySource', payload: { lessonid, type: pathname === '/lesson/update' ? 'update' : 'detail' } })
           }
         }
       })
@@ -57,7 +56,7 @@ export default {
         payload: { lessonid },
       })
     },
-    * querySource ({ }, { call, put }) {
+    * querySource ({ payload }, { call, put }) {
       const { data: schools } = yield call(querySchools)
       const { data: classrooms } = yield call(queryClassRooms, { school_id: 0 })
       const { data: courseCategorys } = yield call(queryCourseCategory)
@@ -91,6 +90,8 @@ export default {
           teachersDic,
         },
       })
+
+      yield put({ type: 'query', payload })
     },
     * queryStudents ({ payload }, { call, put }) {
       const { data, success } = yield call(queryUsers, { rolename: 'student', ...payload })
