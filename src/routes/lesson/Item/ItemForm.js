@@ -324,6 +324,7 @@ class ItemForm extends Component {
     }
 
     const teacherId = teachers.length && item.teacher && teachers.find(cur => cur.firstname === item.teacher).id
+    const ItemStudentGen = () => <ItemStudent lessonInfo={{ lessonid: item.id, categoryId: item.category_idnumber }} addDeletePower={addDeleteStudentPower} otherPower={otherStudentPower} />
 
     return (
       <Spin spinning={loading} size="large">
@@ -523,7 +524,7 @@ class ItemForm extends Component {
                 <Button onClick={this.handleAddStudent} disabled={addDisabled} type="primary" size="large" icon="plus-circle-o">添加</Button>
               </Col>
             </Row>)}
-            <ItemStudent lessonInfo={{ lessonid: item.id, categoryId: item.category_idnumber }} addDeletePower={addDeleteStudentPower} otherPower={otherStudentPower} />
+            <ItemStudentGen />
           </FormItem>}
           <FormItem wrapperCol={{ span: 17, offset: 4 }}>
             {addPower &&
