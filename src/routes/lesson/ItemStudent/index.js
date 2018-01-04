@@ -97,9 +97,11 @@ const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId 
     },
   }
 
+  const ListGen = () => <List {...listProps} />
+
   return (
     <div>
-      <List {...listProps} />
+      <ListGen />
       {modal.visible && modal.id === 1 && <CommentModal {...commentModalProps} />}
       {modal.visible && modal.id === 2 && <RecordModal {...recordModalProps} />}
       {modal.visible && modal.id === 3 && <FeedbackModal {...feedbackModalProps} />}
