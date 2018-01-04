@@ -1,6 +1,6 @@
 import { message } from 'antd'
 import { query, attendance, queryComment, comment, queryFeedback, uploadRecord } from 'services/lesson/student'
-import { unenrollesson } from 'services/lesson/item'
+import { enrollesson, unenrollesson } from 'services/lesson/item'
 
 export default {
   namespace: 'lessonStudent',
@@ -27,6 +27,16 @@ export default {
       const { success } = yield call(attendance, params)
       if (!success) {
         message.error('对不起，考勤失败！')
+      }
+    },
+    * addStudent ({ payload }, { call, put }) {
+      const { params } = payload
+      const { success } = yield call(enrollesson, { ...params, rolename: 'student' })
+      if (success) {
+        yield put({
+          type: 'query',
+          payload: { lessonid: params.userid },
+        })
       }
     },
     * remove ({ payload }, { call, put }) {

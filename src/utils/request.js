@@ -23,8 +23,8 @@ function checkStatus (res) {
 
 function handelData (res) {
   NProgress.done()
-  if (res.status !== 10000 && res.message && !!res.message.length) {
-    message.error(res.message)
+  if (res.status !== 10000 && (res.debuginfo || res.message)) {
+    message.error(res.debuginfo || res.message)
   }
   return { ...res, success: res.status === 10000 }
 }

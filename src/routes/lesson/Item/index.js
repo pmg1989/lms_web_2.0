@@ -35,6 +35,12 @@ const LessonItem = ({ dispatch, curPowers, lessonItem, loading }) => {
         payload: params,
       })
     },
+    onAddStudent (params) {
+      dispatch({
+        type: 'lessonStudent/addStudent',
+        payload: { params },
+      })
+    },
     onResetStudents () {
       dispatch({
         type: `${namespace}/resetStudents`,

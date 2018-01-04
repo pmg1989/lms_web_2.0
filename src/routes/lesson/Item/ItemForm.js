@@ -39,6 +39,7 @@ class ItemForm extends Component {
     onChangeDaiTeacher: PropTypes.func.isRequired,
     onQueryStudentList: PropTypes.func.isRequired,
     onResetStudents: PropTypes.func.isRequired,
+    onAddStudent: PropTypes.func.isRequired,
   }
 
   state = {
@@ -257,8 +258,9 @@ class ItemForm extends Component {
   }
 
   handleAddStudent = () => {
-    console.log(this.state.studentid)
+    const { lessonItem: { item }, onAddStudent } = this.props
     this.setState({ addDisabled: true, studentid: null })
+    onAddStudent({ lessonid: item.id, userid: this.state.studentid })
   }
 
   handleAdd = (e) => {
@@ -501,7 +503,8 @@ class ItemForm extends Component {
           </FormItem>}
           {type !== 'create' &&
           <FormItem label="添加学员" {...formItemLayout}>
-            <Row style={{ marginBottom: '24px' }}>
+            {getFieldDecorator('studentInfo', {
+            })(<Row style={{ marginBottom: '24px' }}>
               <Col span={16}>
                 <Select
                   size="large"
@@ -519,7 +522,7 @@ class ItemForm extends Component {
               <Col span={8} className={styles.text_right}>
                 <Button onClick={this.handleAddStudent} disabled={addDisabled} type="primary" size="large">添加</Button>
               </Col>
-            </Row>
+            </Row>)}
             <ItemStudent lessonInfo={{ lessonid: item.id, categoryId: item.category_idnumber }} addDeletePower={addDeleteStudentPower} otherPower={otherStudentPower} />
           </FormItem>}
           <FormItem wrapperCol={{ span: 17, offset: 4 }}>
