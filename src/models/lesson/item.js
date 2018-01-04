@@ -16,6 +16,7 @@ export default {
     courseCategorys: [],
     teachersDic: {},
     studentList: [],
+    resultList: {},
   },
 
   subscriptions: {
@@ -106,8 +107,15 @@ export default {
       const { data, success } = yield call(create, payload.params)
       if (success) {
         console.log(data)
-        yield put(routerRedux.goBack())
+        yield put({
+          type: 'showResultListModal',
+          payload: { resultList: data },
+        })
       }
+    },
+    * showResultListModal ({ payload }, { put }) {
+      const { resultList } = payload
+      yield put({ type: 'modal/showModal', payload: { type: 'detail', curItem: resultList, id: 4 } })
     },
     * update ({ payload }, { call, put }) {
       const { success } = yield call(update, payload.params)
