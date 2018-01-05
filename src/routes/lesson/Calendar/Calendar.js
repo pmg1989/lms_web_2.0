@@ -54,6 +54,7 @@ class Calendar extends Component {
     lessonCalendar: PropTypes.object.isRequired,
     loading: PropTypes.bool,
     onNavigate: PropTypes.func.isRequired,
+    onResetLessons: PropTypes.func.isRequired,
   }
 
   state = {
@@ -61,6 +62,10 @@ class Calendar extends Component {
     dicMonth: {
       [moment(this.props.lessonCalendar.searchQuery.available * 1000).format('YYYY-MM')]: true,
     }, // 缓存获取过的月份数据
+  }
+
+  componentWillUnmount () {
+    this.props.onResetLessons()
   }
 
   handleCatchMonth = (momentDate) => {

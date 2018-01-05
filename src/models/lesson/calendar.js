@@ -112,5 +112,8 @@ export default {
       const { lessons, ...newState } = action.payload
       return { ...state, ...newState, lessons: [...state.lessons, ...lessons] }
     },
+    resetLessons (state) {
+      return { ...state, lessons: [] }
+    },
   },
 }
