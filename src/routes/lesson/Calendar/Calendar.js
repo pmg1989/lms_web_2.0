@@ -68,8 +68,12 @@ class Calendar extends Component {
     this.props.onResetLessons()
   }
 
-  handleCachMonth = (momentDate) => {
+  handleCacheMonth = (momentDate) => {
     this.setState(({ dicMonth }) => ({ dicMonth: { ...dicMonth, [momentDate.format('YYYY-MM')]: true } }))
+  }
+
+  checkCacheMonth = (momentDate) => {
+    return !this.state.dicMonth[momentDate.format('YYYY-MM')]
   }
 
   handleViews = (view) => {
@@ -79,26 +83,18 @@ class Calendar extends Component {
       const daysInMonth = momentDate.daysInMonth()
       const curDate = momentDate.date()
       this.setState({ weekClicked: true })
-      if (curDate < 7) {
-        if (this.state.dicMonth[moment(available * 1000).subtract(1, 'month').format('YYYY-MM')]) {
-          // 已经请求过数据，不再请求
-          return
-        }
+      if (curDate < 7 && this.checkCacheMonth(moment(available * 1000).subtract(1, 'month'))) {
         this.props.onNavigate({
           available: moment(available * 1000).subtract(1, 'month').startOf('month').format('X'),
           deadline: moment(available * 1000).subtract(1, 'month').endOf('month').format('X'),
         })
-        this.handleCachMonth(moment(available * 1000).subtract(1, 'month'))
-      } else if (daysInMonth - curDate < 7) {
-        if (this.state.dicMonth[moment(available * 1000).add(1, 'month').format('YYYY-MM')]) {
-          // 已经请求过数据，不再请求
-          return
-        }
+        this.handleCacheMonth(moment(available * 1000).subtract(1, 'month'))
+      } else if (daysInMonth - curDate < 7 && this.checkCacheMonth(moment(available * 1000).add(1, 'month'))) {
         this.props.onNavigate({
           available: moment(available * 1000).add(1, 'month').startOf('month').format('X'),
           deadline: moment(available * 1000).add(1, 'month').endOf('month').format('X'),
         })
-        this.handleCachMonth(moment(available * 1000).add(1, 'month'))
+        this.handleCacheMonth(moment(available * 1000).add(1, 'month'))
       }
     }
   }
@@ -110,42 +106,37 @@ class Calendar extends Component {
       // 点击 + more 按钮时，不做任何请求 
       return
     }
-    if (this.state.dicMonth[momentDate.format('YYYY-MM')]) {
-      // 已经请求过数据，不再请求
-      return
-    }
-
-    if (curView === 'month' || curView === 'agenda') {
+    if ((curView === 'month' || curView === 'agenda') && this.checkCacheMonth(momentDate)) {
       // 加载当前月的数据
       onNavigate({
         available: momentDate.startOf('month').format('X'),
         deadline: momentDate.endOf('month').format('X'),
       })
-      this.handleCachMonth(momentDate)
-    } else if (curView === 'day') {
+      this.handleCacheMonth(momentDate)
+    } else if (curView === 'day' && this.checkCacheMonth(momentDate)) {
       if ((momentDate.date() === 1 && curNavigate === 'NEXT') // 加载后一个月的数据
         || (momentDate.date() === momentDate.daysInMonth() && curNavigate === 'PREV')) { // 加载前一个月的数据
         onNavigate({
           available: momentDate.startOf('month').format('X'),
           deadline: momentDate.endOf('month').format('X'),
         })
-        this.handleCachMonth(momentDate)
+        this.handleCacheMonth(momentDate)
       }
     } else if (curView === 'week') {
       const daysInMonth = momentDate.daysInMonth()
       const curDate = momentDate.date()
-      if (curNavigate === 'PREV' && curDate < 7) {
+      if (curNavigate === 'PREV' && curDate < 7 && this.checkCacheMonth(moment(date).subtract(1, 'month'))) {
         onNavigate({
           available: moment(date).subtract(1, 'month').startOf('month').format('X'),
           deadline: moment(date).subtract(1, 'month').endOf('month').format('X'),
         })
-        this.handleCachMonth(moment(date).subtract(1, 'month'))
-      } else if (curNavigate === 'NEXT' && daysInMonth - curDate < 7) {
+        this.handleCacheMonth(moment(date).subtract(1, 'month'))
+      } else if (curNavigate === 'NEXT' && daysInMonth - curDate < 7 && this.checkCacheMonth(moment(date).add(1, 'month'))) {
         onNavigate({
           available: moment(date).add(1, 'month').startOf('month').format('X'),
           deadline: moment(date).add(1, 'month').endOf('month').format('X'),
         })
-        this.handleCachMonth(moment(date).add(1, 'month'))
+        this.handleCacheMonth(moment(date).add(1, 'month'))
       }
     }
   }
