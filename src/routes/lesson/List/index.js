@@ -30,7 +30,7 @@ function ListHome ({ curPowers, dispatch, lessonList, loading }) {
 
   const listProps = {
     lessonList,
-    loading: loading.models.lessonList,
+    loading: loading.effects[`${namespace}/query`] || loading.models.lessonList,
     detailPower,
     updatePower,
     deletePower,

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import BigCalendar from 'react-big-calendar'
-import { Spin } from 'antd'
+import { Spin, Tooltip } from 'antd'
 import { Link } from 'dva/router'
 import moment from 'moment'
 import classnames from 'classnames'
@@ -12,11 +12,20 @@ moment.locale('zh_CN')
 BigCalendar.momentLocalizer(moment) // or globalizeLocalizer
 
 const MonthEvent = ({ event }) => {
+  const Title = (
+    <div>
+      {moment.unix(event.available).format('HH:mm')} -- {moment.unix(event.deadline).format('HH:mm')}<br />
+      {event.category_summary}<br />老师: {event.teacher}<br />教室: {event.classroom}
+    </div>
+  )
+
   return (
-    <Link to={`/lesson/update?lessonid=${event.id}`} className={styles.title_box}>
-      <span className={`icon ${event.category}-${event.iconType}`} />
-      <span className={styles.title}>{event.title}</span>
-    </Link>
+    <Tooltip title={Title} mouseLeaveDelay={0}>
+      <Link to={`/lesson/update?lessonid=${event.id}`} className={styles.title_box}>
+        <span className={`icon ${event.category}-${event.iconType}`} />
+        <span className={styles.title}>{event.text}</span>
+      </Link>
+    </Tooltip>
   )
 }
 
@@ -45,31 +54,49 @@ class Calendar extends Component {
     lessonCalendar: PropTypes.object.isRequired,
     loading: PropTypes.bool,
     onNavigate: PropTypes.func.isRequired,
+    onResetLessons: PropTypes.func.isRequired,
   }
 
   state = {
     weekClicked: false, // 首次查看week信息时需要验证当前时间是否需要上个月/下个月的获取
     dicMonth: {
-      [moment().format('YYYY-MM')]: true,
+      [moment(this.props.lessonCalendar.searchQuery.available * 1000).format('YYYY-MM')]: true,
     }, // 缓存获取过的月份数据
+  }
+
+  componentWillUnmount () {
+    this.props.onResetLessons()
+  }
+
+  handleCacheMonth = (momentDate) => {
+    this.setState(({ dicMonth }) => ({ dicMonth: { ...dicMonth, [momentDate.format('YYYY-MM')]: true } }))
+  }
+
+  checkCacheMonth = (momentDate) => {
+    return !this.state.dicMonth[momentDate.format('YYYY-MM')]
   }
 
   handleViews = (view) => {
     if (view === 'week' && !this.state.weekClicked) {
-      this.setState({ weekClicked: true })
-      const momentDate = moment()
+      const { lessonCalendar: { searchQuery: { available } } } = this.props
+      const momentDate = moment(available * 1000)
       const daysInMonth = momentDate.daysInMonth()
       const curDate = momentDate.date()
-      if (curDate < 7) {
+      const prevMomentDate = moment(available * 1000).subtract(1, 'month')
+      const nextMomentDate = moment(available * 1000).add(1, 'month')
+      this.setState({ weekClicked: true })
+      if (curDate < 7 && this.checkCacheMonth(prevMomentDate)) {
         this.props.onNavigate({
-          available: momentDate.subtract(1, 'month').startOf('month').format('X'),
-          deadline: momentDate.subtract(1, 'month').endOf('month').format('X'),
+          available: prevMomentDate.startOf('month').format('X'),
+          deadline: prevMomentDate.endOf('month').format('X'),
         })
-      } else if (daysInMonth - curDate < 7) {
+        this.handleCacheMonth(prevMomentDate)
+      } else if (daysInMonth - curDate < 7 && this.checkCacheMonth(nextMomentDate)) {
         this.props.onNavigate({
-          available: momentDate.add(1, 'month').startOf('month').format('X'),
-          deadline: momentDate.add(1, 'month').endOf('month').format('X'),
+          available: nextMomentDate.startOf('month').format('X'),
+          deadline: nextMomentDate.endOf('month').format('X'),
         })
+        this.handleCacheMonth(nextMomentDate)
       }
     }
   }
@@ -81,41 +108,46 @@ class Calendar extends Component {
       // 点击 + more 按钮时，不做任何请求 
       return
     }
-
-    if (curView === 'month' || curView === 'agenda') {
+    if ((curView === 'month' || curView === 'agenda') && this.checkCacheMonth(momentDate)) {
       // 加载当前月的数据
       onNavigate({
         available: momentDate.startOf('month').format('X'),
         deadline: momentDate.endOf('month').format('X'),
       })
-    } else if (curView === 'day') {
+      this.handleCacheMonth(momentDate)
+    } else if (curView === 'day' && this.checkCacheMonth(momentDate)) {
       if ((momentDate.date() === 1 && curNavigate === 'NEXT') // 加载后一个月的数据
         || (momentDate.date() === momentDate.daysInMonth() && curNavigate === 'PREV')) { // 加载前一个月的数据
         onNavigate({
           available: momentDate.startOf('month').format('X'),
           deadline: momentDate.endOf('month').format('X'),
         })
+        this.handleCacheMonth(momentDate)
       }
     } else if (curView === 'week') {
       const daysInMonth = momentDate.daysInMonth()
       const curDate = momentDate.date()
-      if (curNavigate === 'PREV' && curDate < 7) {
+      const prevMomentDate = moment(date).subtract(1, 'month')
+      const nextMomentDate = moment(date).add(1, 'month')
+      if (curNavigate === 'PREV' && curDate < 7 && this.checkCacheMonth(prevMomentDate)) {
         onNavigate({
-          available: momentDate.subtract(1, 'month').startOf('month').format('X'),
-          deadline: momentDate.subtract(1, 'month').endOf('month').format('X'),
+          available: prevMomentDate.startOf('month').format('X'),
+          deadline: prevMomentDate.endOf('month').format('X'),
         })
-      } else if (curNavigate === 'NEXT' && daysInMonth - curDate < 7) {
+        this.handleCacheMonth(prevMomentDate)
+      } else if (curNavigate === 'NEXT' && daysInMonth - curDate < 7 && this.checkCacheMonth(nextMomentDate)) {
         onNavigate({
-          available: momentDate.add(1, 'month').startOf('month').format('X'),
-          deadline: momentDate.add(1, 'month').endOf('month').format('X'),
+          available: nextMomentDate.startOf('month').format('X'),
+          deadline: nextMomentDate.endOf('month').format('X'),
         })
+        this.handleCacheMonth(nextMomentDate)
       }
     }
   }
 
   render () {
     const { lessonCalendar: { lessons, searchQuery, isPostBack }, loading } = this.props
-
+    console.log(this.state.dicMonth)
     return (
       <Spin spinning={loading} size="large">
         <div className={styles.calendar_container}>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Modal, Input, InputNumber, Select, Spin, Button, Row, Col, Checkbox, DatePicker, Tag, Icon } from 'antd'
+import { Form, Modal, Input, InputNumber, Select, Spin, Button, Row, Col, Checkbox, DatePicker, Tag } from 'antd'
 import moment from 'moment'
 // import { Link } from 'dva/router'
 import { getSchool, getUserInfo } from 'utils'
@@ -38,6 +38,8 @@ class ItemForm extends Component {
     onGoBack: PropTypes.func.isRequired,
     onChangeDaiTeacher: PropTypes.func.isRequired,
     onQueryStudentList: PropTypes.func.isRequired,
+    onResetStudents: PropTypes.func.isRequired,
+    onAddStudent: PropTypes.func.isRequired,
   }
 
   state = {
@@ -48,6 +50,8 @@ class ItemForm extends Component {
     teachers: [],
     fetching: false,
     errorMsg: '没有匹配的学员数据',
+    addDisabled: true,
+    studentid: null,
   }
 
   componentWillReceiveProps (nextProps) {
@@ -101,7 +105,7 @@ class ItemForm extends Component {
     return (
       <FormItem label="代课老师" hasFeedbac {...formItemLayout} extra="操作代课老师下拉框即可快速修改代课老师啦">
         <Row gutter={24}>
-          <Col span={18}>
+          <Col span={16}>
             {getFieldDecorator('teacher_substitute', {
               initialValue: teacherDaiId || undefined,
               onChange: handleDaiTeacherChange,
@@ -110,59 +114,10 @@ class ItemForm extends Component {
             </Select>)
             }
           </Col>
-          <Col span={6}>
-            <Button size="large" type="danger" onClick={handleDeleteDaiTeacher} disabled={disabled || !addDaiTeacherPower}><Icon type="close-circle-o" />删除代课老师&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </Button>
+          <Col span={8} className={styles.text_right}>
+            <Button size="large" type="danger" onClick={handleDeleteDaiTeacher} disabled={disabled || !addDaiTeacherPower} icon="close-circle-o">删除代课老师</Button>
           </Col>
         </Row>
-      </FormItem>
-    )
-  }
-
-  AddStudentFormItem = ({ disabled }) => {
-    const { form: { getFieldDecorator, getFieldsValue }, lessonItem: { studentList }, onQueryStudentList } = this.props
-    const { fetching, errorMsg } = this.state
-
-    const handleMultipleChange = () => {
-      this.setState({ fetching: false })
-    }
-
-    const queryStudentList = (phone2) => {
-      const { school_id, available } = getFieldsValue(['school_id', 'available'])
-      const params = getFieldsValue(['categoryid', 'teacherid', 'startdate', 'numsections', 'openweekday'])
-
-      if (params.categoryid && params.teacherid && params.startdate && available && params.numsections && params.openweekday.length) {
-        if (!(/^1(3|4|5|7|8)\d{9}$/.test(phone2))) {
-          return false
-        }
-
-        this.setState({ fetching: true })
-        params.startdate = moment(`${params.startdate.format('YYYY-MM-DD')} ${available}`).format('X')
-        params.openweekday = params.openweekday.sort().join(',')
-        console.log(school_id, params)
-        // this.props.onQueryStudentList(params)
-        onQueryStudentList({ phone2, school: '' })
-      } else {
-        console.log('error')
-        this.setState({ fetching: false, errorMsg: '请先完善表单数据！' })
-      }
-      return true
-    }
-
-    return (
-      <FormItem label="添加学员" hasFeedback {...formItemLayout} >
-        {getFieldDecorator('studentid', {
-        })(<Select
-          disabled={disabled}
-          mode="multiple"
-          labelInValue
-          placeholder="请逐个输入学员手机号码进行验证"
-          notFoundContent={fetching ? <Spin size="small" /> : <Tag color="red">{errorMsg}</Tag>}
-          filterOption={false}
-          onChange={handleMultipleChange}
-          onSearch={queryStudentList}
-        >
-          {studentList.map(d => <Option key={d.id} value={d.id}>{d.firstname}</Option>)}
-        </Select>)}
       </FormItem>
     )
   }
@@ -230,6 +185,84 @@ class ItemForm extends Component {
     }
   }
 
+  handleMultipleChange = () => {
+    this.setState({ fetching: false })
+  }
+
+  queryStudentList = (phone2) => {
+    const { form: { getFieldsValue }, lessonItem: { studentList }, onQueryStudentList, onResetStudents } = this.props
+    const { school_id } = getFieldsValue(['school_id'])
+    const params = getFieldsValue(['categoryid', 'teacherid', 'classroomid', 'openweekday', 'numsections', 'startdate', 'available', 'deadline'])
+
+    if (params.categoryid && params.teacherid && params.classroomid && params.openweekday && params.openweekday.length && params.numsections && params.startdate && params.available && params.deadline) {
+      if (phone2.length < 11) {
+        studentList.length && onResetStudents()
+        this.setState({ fetching: false, errorMsg: '请继续输入手机号码！' })
+        return false
+      }
+      if (!(/^1(3|4|5|7|8)\d{9}$/.test(phone2))) {
+        this.setState({ fetching: false, errorMsg: '手机号码格式有误！' })
+        return false
+      }
+
+      this.setState({ fetching: true })
+      const stateDate = params.startdate
+      params.startdate = stateDate.startOf('day').format('X')
+      params.openweekday = params.openweekday.sort().join(',')
+      params.available = moment(`${stateDate.format('YYYY-MM-DD')} ${params.available}`).format('X')
+      params.deadline = moment(`${stateDate.format('YYYY-MM-DD')} ${params.deadline}`).format('X')
+      console.log(school_id, params)
+      // this.props.onQueryStudentList(params)
+      onQueryStudentList({ phone2, school: '' })
+    } else {
+      console.log('error')
+      this.setState({ fetching: false, errorMsg: '请先完善表单数据！' })
+    }
+    return true
+  }
+
+  queryStudentList2 = (phone2) => {
+    console.log(phone2)
+    const { form: { getFieldsValue }, lessonItem: { studentList }, onQueryStudentList, onResetStudents } = this.props
+    const params = getFieldsValue(['categoryid', 'teacherid', 'startdate', 'available'])
+
+    if (params.categoryid && params.teacherid && params.startdate && params.available) {
+      if (phone2.length < 11) {
+        studentList.length && onResetStudents()
+        this.setState({ fetching: false, errorMsg: '请继续输入手机号码！' })
+        return false
+      }
+      if (!(/^1(3|4|5|7|8)\d{9}$/.test(phone2))) {
+        this.setState({ fetching: false, errorMsg: '手机号码格式有误！' })
+        return false
+      }
+
+      this.setState({ fetching: true })
+      params.available = moment(`${params.startdate.format('YYYY-MM-DD')} ${params.available}`).format('X')
+      delete params.startdate
+      console.log(params)
+      // this.props.onQueryStudentList(params)
+      onQueryStudentList({ phone2, school: '' })
+    } else {
+      console.log('error')
+      this.setState({ fetching: false, errorMsg: '请先完善表单数据！' })
+    }
+    return true
+  }
+
+  handleSelectStudent = (labelName) => {
+    const { lessonItem: { studentList } } = this.props
+    const [firstname, phone2] = labelName.split('-')
+    const student = studentList.find(cur => (cur.firstname === firstname && cur.phone2 === phone2))
+    this.setState({ addDisabled: false, studentid: student.id })
+  }
+
+  handleAddStudent = () => {
+    const { lessonItem: { item }, onAddStudent } = this.props
+    this.setState({ addDisabled: true, studentid: null })
+    onAddStudent({ lessonid: item.id, userid: this.state.studentid })
+  }
+
   handleAdd = (e) => {
     const { form: { validateFieldsAndScroll }, onSubmit } = this.props
     e.preventDefault()
@@ -245,7 +278,9 @@ class ItemForm extends Component {
         } else {
           delete values.studentid
         }
+        delete values.studentid2
         delete values.school_id
+
         onSubmit(values)
       }
     })
@@ -270,12 +305,12 @@ class ItemForm extends Component {
 
   render () {
     const {
-      lessonItem: { type, item, courseCategorys, schools, classroomsDic },
+      lessonItem: { type, item, courseCategorys, schools, classroomsDic, studentList },
       addPower, updatePower, addDeleteStudentPower, otherStudentPower,
       loading, onGoBack,
       form: { getFieldDecorator },
     } = this.props
-    const { schoolId, showStudentForm, teachers, timeStarts, timeEnds } = this.state
+    const { schoolId, showStudentForm, teachers, timeStarts, timeEnds, fetching, errorMsg, addDisabled } = this.state
 
     const disabled = type === 'detail'
     const disabledEdit = type === 'update'
@@ -289,7 +324,6 @@ class ItemForm extends Component {
     }
 
     const teacherId = teachers.length && item.teacher && teachers.find(cur => cur.firstname === item.teacher).id
-    // const ItemStudentGen = () => <ItemStudent lessonInfo={{ lessonid: item.id, categoryId: item.category_idnumber }} addDeletePower={addDeleteStudentPower} otherPower={otherStudentPower} />
 
     return (
       <Spin spinning={loading} size="large">
@@ -354,7 +388,7 @@ class ItemForm extends Component {
                   message: '请选择教室',
                 },
               ],
-            })(<Select disabled={disabled || disabledEdit} placeholder="--请选择教室--">
+            })(<Select disabled={disabled} placeholder="--请选择教室--">
               {classrooms.map(classroom => <Option key={classroom.id} value={classroom.id.toString()}>{classroom.name}</Option>)}
             </Select>)
             }
@@ -451,10 +485,44 @@ class ItemForm extends Component {
               </FormItem>
             </Col>
           </FormItem>
-          {type === 'create' && showStudentForm && <this.AddStudentFormItem disabled={disabled} />}
+          {type === 'create' && showStudentForm &&
+          <FormItem label="添加学员" hasFeedback {...formItemLayout} >
+            {getFieldDecorator('studentid', {
+            })(<Select
+              disabled={disabled}
+              mode="multiple"
+              labelInValue
+              placeholder="请逐个输入学员手机号码进行验证"
+              notFoundContent={fetching ? <Spin size="small" /> : <Tag color="red">{errorMsg}</Tag>}
+              filterOption={false}
+              onChange={this.handleMultipleChange}
+              onSearch={this.queryStudentList}
+            >
+              {studentList.map(d => <Option key={d.id} value={d.id}>{d.firstname}</Option>)}
+            </Select>)}
+          </FormItem>}
           {type !== 'create' &&
-          <FormItem label="修改学员" hasFeedback {...formItemLayout}>
-            {/* <ItemStudentGen /> */}
+          <FormItem label="添加学员" {...formItemLayout}>
+            {getFieldDecorator('studentInfo', {
+            })(<Row style={{ marginBottom: '24px' }}>
+              <Col span={16}>
+                <Select
+                  size="large"
+                  disabled={disabled}
+                  mode="combobox"
+                  placeholder="请逐个输入学员手机号码进行验证"
+                  notFoundContent={fetching ? <Spin size="small" /> : <Tag color="red">{errorMsg}</Tag>}
+                  filterOption={false}
+                  onSelect={this.handleSelectStudent}
+                  onChange={this.queryStudentList2}
+                >
+                  {studentList.map((d, key) => <Option key={key} value={`${d.firstname}-${d.phone2}`}>{`${d.firstname}-${d.phone2}`}</Option>)}
+                </Select>
+              </Col>
+              <Col span={8} className={styles.text_right}>
+                <Button onClick={this.handleAddStudent} disabled={addDisabled} type="primary" size="large" icon="plus-circle-o">添加</Button>
+              </Col>
+            </Row>)}
             <ItemStudent lessonInfo={{ lessonid: item.id, categoryId: item.category_idnumber }} addDeletePower={addDeleteStudentPower} otherPower={otherStudentPower} />
           </FormItem>}
           <FormItem wrapperCol={{ span: 17, offset: 4 }}>

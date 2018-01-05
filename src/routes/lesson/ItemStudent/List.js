@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Modal, Radio, Row, Col, Tag } from 'antd'
-import { DataTable, DropMenu } from 'components'
+import { Menu, Modal, Radio, Row, Col, Tag, Table } from 'antd'
+import { DropMenu } from 'components'
 import AudioPlayer from 'components/MediaPlayer/AudioPlayer'
 import { ADD, UPDATE, DETAIL, DELETE } from 'constants/options'
 import styles from './List.less'
@@ -89,7 +89,8 @@ function List ({
     },
   ]
 
-  const dataTableProps = {
+  const tableProps = {
+    className: styles.table_list,
     loading,
     columns,
     scroll: { x: 706 },
@@ -102,8 +103,8 @@ function List ({
 
   const needExpanded = list.some(item => item.jl_song.song && item.jl_song.original_singer)
   if (needExpanded) {
-    dataTableProps.defaultExpandAllRows = true
-    dataTableProps.expandedRowRender = (record) => {
+    tableProps.defaultExpandAllRows = true
+    tableProps.expandedRowRender = (record) => {
       const { jl_song: { song, original_singer: originalSinger, back_source: backSource } } = record
       if (song && originalSinger) {
         return (
@@ -131,7 +132,7 @@ function List ({
   }
 
   return (
-    <DataTable {...dataTableProps} />
+    <Table {...tableProps} />
   )
 }
 

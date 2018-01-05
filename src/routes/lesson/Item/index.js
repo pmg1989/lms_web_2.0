@@ -5,10 +5,11 @@ import { routerRedux } from 'dva/router'
 import { checkPower } from 'utils'
 import { ADD, UPDATE, ADD_DAI_TEACHER, ADD_DELETE_STUDENT, OTHER_STUDENT } from 'constants/options'
 import ItemForm from './ItemForm'
+import ResultListModal from './ResultListModal'
 
 const namespace = 'lessonItem'
 
-const LessonItem = ({ dispatch, curPowers, lessonItem, loading }) => {
+const LessonItem = ({ dispatch, curPowers, lessonItem, loading, modal }) => {
   const addPower = checkPower(ADD, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
   const addDaiTeacherPower = checkPower(ADD_DAI_TEACHER, curPowers)
@@ -35,6 +36,17 @@ const LessonItem = ({ dispatch, curPowers, lessonItem, loading }) => {
         payload: params,
       })
     },
+    onAddStudent (params) {
+      dispatch({
+        type: 'lessonStudent/addStudent',
+        payload: { params },
+      })
+    },
+    onResetStudents () {
+      dispatch({
+        type: `${namespace}/resetStudents`,
+      })
+    },
     onSubmit (params) {
       dispatch({
         type: params.lessonid ? `${namespace}/update` : `${namespace}/create`,
@@ -46,9 +58,18 @@ const LessonItem = ({ dispatch, curPowers, lessonItem, loading }) => {
     },
   }
 
+  const resultListModalProps = {
+    modal,
+    onCancel () {
+      dispatch({ type: 'modal/hideModal' })
+      dispatch(routerRedux.goBack())
+    },
+  }
+
   return (
     <div className="content-inner">
       <ItemForm {...itemFormProps} />
+      {modal.visible && modal.id === 4 && <ResultListModal {...resultListModalProps} />}
     </div>
   )
 }
@@ -58,10 +79,11 @@ LessonItem.propTypes = {
   curPowers: PropTypes.array.isRequired,
   lessonItem: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
+  modal: PropTypes.object.isRequired,
 }
 
-function mapStateToProps ({ lessonItem, loading }) {
-  return { lessonItem, loading }
+function mapStateToProps ({ lessonItem, loading, modal }) {
+  return { lessonItem, loading, modal }
 }
 
 export default connect(mapStateToProps)(LessonItem)

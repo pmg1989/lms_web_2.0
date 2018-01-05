@@ -10,7 +10,7 @@ const namespace = 'lessonStudent'
 
 const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId }, addDeletePower, otherPower, lessonStudent, loading, modal }) => {
   const listProps = {
-    loading: loading.effects['lessonStudent/query'],
+    loading: loading.models.lessonStudent,
     addDeletePower,
     otherPower,
     uploadRecordStatus: categoryId.includes('jl-') && user.teacher_category === 'jl',
@@ -97,9 +97,11 @@ const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId 
     },
   }
 
+  const ListGen = () => <List {...listProps} />
+
   return (
     <div>
-      <List {...listProps} />
+      <ListGen />
       {modal.visible && modal.id === 1 && <CommentModal {...commentModalProps} />}
       {modal.visible && modal.id === 2 && <RecordModal {...recordModalProps} />}
       {modal.visible && modal.id === 3 && <FeedbackModal {...feedbackModalProps} />}
