@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import BigCalendar from 'react-big-calendar'
-import { Spin } from 'antd'
+import { Spin, Tooltip } from 'antd'
 import { Link } from 'dva/router'
 import moment from 'moment'
 import classnames from 'classnames'
@@ -12,11 +12,20 @@ moment.locale('zh_CN')
 BigCalendar.momentLocalizer(moment) // or globalizeLocalizer
 
 const MonthEvent = ({ event }) => {
+  const Title = (
+    <div>
+      {moment.unix(event.available).format('HH:mm')} -- {moment.unix(event.deadline).format('HH:mm')}<br />
+      {event.category_summary}<br />老师: {event.teacher}<br />教室: {event.classroom}
+    </div>
+  )
+
   return (
-    <Link to={`/lesson/update?lessonid=${event.id}`} className={styles.title_box}>
-      <span className={`icon ${event.category}-${event.iconType}`} />
-      <span className={styles.title}>{event.title}</span>
-    </Link>
+    <Tooltip title={Title} mouseLeaveDelay={0}>
+      <Link to={`/lesson/update?lessonid=${event.id}`} className={styles.title_box}>
+        <span className={`icon ${event.category}-${event.iconType}`} />
+        <span className={styles.title}>{event.text}</span>
+      </Link>
+    </Tooltip>
   )
 }
 
