@@ -69,10 +69,14 @@ class Calendar extends Component {
 
   handleViews = (view) => {
     if (view === 'week' && !this.state.weekClicked) {
-      this.setState({ weekClicked: true })
       const momentDate = moment()
       const daysInMonth = momentDate.daysInMonth()
       const curDate = momentDate.date()
+      if (this.state.dicMonth[momentDate.format('YYYY-MM')]) {
+        // 已经请求过数据，不再请求
+        return
+      }
+      this.setState({ weekClicked: true })
       if (curDate < 7) {
         this.props.onNavigate({
           available: moment().subtract(1, 'month').startOf('month').format('X'),
@@ -96,7 +100,6 @@ class Calendar extends Component {
       // 点击 + more 按钮时，不做任何请求 
       return
     }
-
     if (this.state.dicMonth[momentDate.format('YYYY-MM')]) {
       // 已经请求过数据，不再请求
       return
@@ -139,7 +142,7 @@ class Calendar extends Component {
 
   render () {
     const { lessonCalendar: { lessons, searchQuery, isPostBack }, loading } = this.props
-
+    console.log(this.state.dicMonth)
     return (
       <Spin spinning={loading} size="large">
         <div className={styles.calendar_container}>
