@@ -69,26 +69,31 @@ class Calendar extends Component {
 
   handleViews = (view) => {
     if (view === 'week' && !this.state.weekClicked) {
-      const momentDate = moment()
+      const { lessonCalendar: { searchQuery: { available } } } = this.props
+      const momentDate = moment(available * 1000)
       const daysInMonth = momentDate.daysInMonth()
       const curDate = momentDate.date()
-      if (this.state.dicMonth[momentDate.format('YYYY-MM')]) {
-        // 已经请求过数据，不再请求
-        return
-      }
       this.setState({ weekClicked: true })
       if (curDate < 7) {
+        if (this.state.dicMonth[moment(available * 1000).subtract(1, 'month').format('YYYY-MM')]) {
+          // 已经请求过数据，不再请求
+          return
+        }
         this.props.onNavigate({
-          available: moment().subtract(1, 'month').startOf('month').format('X'),
-          deadline: moment().subtract(1, 'month').endOf('month').format('X'),
+          available: moment(available * 1000).subtract(1, 'month').startOf('month').format('X'),
+          deadline: moment(available * 1000).subtract(1, 'month').endOf('month').format('X'),
         })
-        this.handleCatchMonth(moment().subtract(1, 'month'))
+        this.handleCatchMonth(moment(available * 1000).subtract(1, 'month'))
       } else if (daysInMonth - curDate < 7) {
+        if (this.state.dicMonth[moment(available * 1000).add(1, 'month').format('YYYY-MM')]) {
+          // 已经请求过数据，不再请求
+          return
+        }
         this.props.onNavigate({
-          available: moment().add(1, 'month').startOf('month').format('X'),
-          deadline: moment().add(1, 'month').endOf('month').format('X'),
+          available: moment(available * 1000).add(1, 'month').startOf('month').format('X'),
+          deadline: moment(available * 1000).add(1, 'month').endOf('month').format('X'),
         })
-        this.handleCatchMonth(moment().add(1, 'month'))
+        this.handleCatchMonth(moment(available * 1000).add(1, 'month'))
       }
     }
   }
