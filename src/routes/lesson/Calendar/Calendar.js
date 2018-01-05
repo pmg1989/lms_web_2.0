@@ -82,19 +82,21 @@ class Calendar extends Component {
       const momentDate = moment(available * 1000)
       const daysInMonth = momentDate.daysInMonth()
       const curDate = momentDate.date()
+      const prevMomentDate = moment(available * 1000).subtract(1, 'month')
+      const nextMomentDate = moment(available * 1000).add(1, 'month')
       this.setState({ weekClicked: true })
-      if (curDate < 7 && this.checkCacheMonth(moment(available * 1000).subtract(1, 'month'))) {
+      if (curDate < 7 && this.checkCacheMonth(prevMomentDate)) {
         this.props.onNavigate({
-          available: moment(available * 1000).subtract(1, 'month').startOf('month').format('X'),
-          deadline: moment(available * 1000).subtract(1, 'month').endOf('month').format('X'),
+          available: prevMomentDate.startOf('month').format('X'),
+          deadline: prevMomentDate.endOf('month').format('X'),
         })
-        this.handleCacheMonth(moment(available * 1000).subtract(1, 'month'))
-      } else if (daysInMonth - curDate < 7 && this.checkCacheMonth(moment(available * 1000).add(1, 'month'))) {
+        this.handleCacheMonth(prevMomentDate)
+      } else if (daysInMonth - curDate < 7 && this.checkCacheMonth(nextMomentDate)) {
         this.props.onNavigate({
-          available: moment(available * 1000).add(1, 'month').startOf('month').format('X'),
-          deadline: moment(available * 1000).add(1, 'month').endOf('month').format('X'),
+          available: nextMomentDate.startOf('month').format('X'),
+          deadline: nextMomentDate.endOf('month').format('X'),
         })
-        this.handleCacheMonth(moment(available * 1000).add(1, 'month'))
+        this.handleCacheMonth(nextMomentDate)
       }
     }
   }
@@ -125,18 +127,20 @@ class Calendar extends Component {
     } else if (curView === 'week') {
       const daysInMonth = momentDate.daysInMonth()
       const curDate = momentDate.date()
-      if (curNavigate === 'PREV' && curDate < 7 && this.checkCacheMonth(moment(date).subtract(1, 'month'))) {
+      const prevMomentDate = moment(date).subtract(1, 'month')
+      const nextMomentDate = moment(date).add(1, 'month')
+      if (curNavigate === 'PREV' && curDate < 7 && this.checkCacheMonth(prevMomentDate)) {
         onNavigate({
-          available: moment(date).subtract(1, 'month').startOf('month').format('X'),
-          deadline: moment(date).subtract(1, 'month').endOf('month').format('X'),
+          available: prevMomentDate.startOf('month').format('X'),
+          deadline: prevMomentDate.endOf('month').format('X'),
         })
-        this.handleCacheMonth(moment(date).subtract(1, 'month'))
-      } else if (curNavigate === 'NEXT' && daysInMonth - curDate < 7 && this.checkCacheMonth(moment(date).add(1, 'month'))) {
+        this.handleCacheMonth(prevMomentDate)
+      } else if (curNavigate === 'NEXT' && daysInMonth - curDate < 7 && this.checkCacheMonth(nextMomentDate)) {
         onNavigate({
-          available: moment(date).add(1, 'month').startOf('month').format('X'),
-          deadline: moment(date).add(1, 'month').endOf('month').format('X'),
+          available: nextMomentDate.startOf('month').format('X'),
+          deadline: nextMomentDate.endOf('month').format('X'),
         })
-        this.handleCacheMonth(moment(date).add(1, 'month'))
+        this.handleCacheMonth(nextMomentDate)
       }
     }
   }
