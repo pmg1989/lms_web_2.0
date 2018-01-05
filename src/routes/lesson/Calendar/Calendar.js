@@ -59,8 +59,12 @@ class Calendar extends Component {
   state = {
     weekClicked: false, // 首次查看week信息时需要验证当前时间是否需要上个月/下个月的获取
     dicMonth: {
-      [moment().format('YYYY-MM')]: true,
+      [moment(this.props.lessonCalendar.searchQuery.available * 1000).format('YYYY-MM')]: true,
     }, // 缓存获取过的月份数据
+  }
+
+  handleCatchMonth = (momentDate) => {
+    this.setState(({ dicMonth }) => ({ dicMonth: { ...dicMonth, [momentDate.format('YYYY-MM')]: true } }))
   }
 
   handleViews = (view) => {
@@ -71,14 +75,16 @@ class Calendar extends Component {
       const curDate = momentDate.date()
       if (curDate < 7) {
         this.props.onNavigate({
-          available: momentDate.subtract(1, 'month').startOf('month').format('X'),
-          deadline: momentDate.subtract(1, 'month').endOf('month').format('X'),
+          available: moment().subtract(1, 'month').startOf('month').format('X'),
+          deadline: moment().subtract(1, 'month').endOf('month').format('X'),
         })
+        this.handleCatchMonth(moment().subtract(1, 'month'))
       } else if (daysInMonth - curDate < 7) {
         this.props.onNavigate({
-          available: momentDate.add(1, 'month').startOf('month').format('X'),
-          deadline: momentDate.add(1, 'month').endOf('month').format('X'),
+          available: moment().add(1, 'month').startOf('month').format('X'),
+          deadline: moment().add(1, 'month').endOf('month').format('X'),
         })
+        this.handleCatchMonth(moment().add(1, 'month'))
       }
     }
   }
@@ -91,12 +97,18 @@ class Calendar extends Component {
       return
     }
 
+    if (this.state.dicMonth[momentDate.format('YYYY-MM')]) {
+      // 已经请求过数据，不再请求
+      return
+    }
+
     if (curView === 'month' || curView === 'agenda') {
       // 加载当前月的数据
       onNavigate({
         available: momentDate.startOf('month').format('X'),
         deadline: momentDate.endOf('month').format('X'),
       })
+      this.handleCatchMonth(momentDate)
     } else if (curView === 'day') {
       if ((momentDate.date() === 1 && curNavigate === 'NEXT') // 加载后一个月的数据
         || (momentDate.date() === momentDate.daysInMonth() && curNavigate === 'PREV')) { // 加载前一个月的数据
@@ -104,20 +116,23 @@ class Calendar extends Component {
           available: momentDate.startOf('month').format('X'),
           deadline: momentDate.endOf('month').format('X'),
         })
+        this.handleCatchMonth(momentDate)
       }
     } else if (curView === 'week') {
       const daysInMonth = momentDate.daysInMonth()
       const curDate = momentDate.date()
       if (curNavigate === 'PREV' && curDate < 7) {
         onNavigate({
-          available: momentDate.subtract(1, 'month').startOf('month').format('X'),
-          deadline: momentDate.subtract(1, 'month').endOf('month').format('X'),
+          available: moment(date).subtract(1, 'month').startOf('month').format('X'),
+          deadline: moment(date).subtract(1, 'month').endOf('month').format('X'),
         })
+        this.handleCatchMonth(moment(date).subtract(1, 'month'))
       } else if (curNavigate === 'NEXT' && daysInMonth - curDate < 7) {
         onNavigate({
-          available: momentDate.add(1, 'month').startOf('month').format('X'),
-          deadline: momentDate.add(1, 'month').endOf('month').format('X'),
+          available: moment(date).add(1, 'month').startOf('month').format('X'),
+          deadline: moment(date).add(1, 'month').endOf('month').format('X'),
         })
+        this.handleCatchMonth(moment(date).add(1, 'month'))
       }
     }
   }

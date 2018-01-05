@@ -81,6 +81,7 @@ export default {
         lessons = data[0].list.map((lesson) => {
           const start = moment.unix(lesson.available)
           const end = moment.unix(lesson.deadline)
+          lesson.title = ''
           lesson.text = `${lesson.teacher}(${lesson.classroom}${lesson.category.includes('-vip-') ? ' V' : ''})`
           lesson.start = new Date(start.year(), start.month(), start.date(), start.hour(), start.minute(), 0)
           lesson.end = new Date(end.year(), end.month(), end.date(), end.hour(), end.minute(), 0)
@@ -108,9 +109,8 @@ export default {
       return { ...state, ...action.payload }
     },
     getLessonsSuccess (state, action) {
-      // const { lessons, ...newState } = action.payload
-      // return { ...state, ...newState, lessons: [...state.lessons, ...lessons] }
-      return { ...state, ...action.payload }
+      const { lessons, ...newState } = action.payload
+      return { ...state, ...newState, lessons: [...state.lessons, ...lessons] }
     },
   },
 }
