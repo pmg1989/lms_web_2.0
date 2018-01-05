@@ -68,7 +68,7 @@ class Calendar extends Component {
     this.props.onResetLessons()
   }
 
-  handleCatchMonth = (momentDate) => {
+  handleCachMonth = (momentDate) => {
     this.setState(({ dicMonth }) => ({ dicMonth: { ...dicMonth, [momentDate.format('YYYY-MM')]: true } }))
   }
 
@@ -88,7 +88,7 @@ class Calendar extends Component {
           available: moment(available * 1000).subtract(1, 'month').startOf('month').format('X'),
           deadline: moment(available * 1000).subtract(1, 'month').endOf('month').format('X'),
         })
-        this.handleCatchMonth(moment(available * 1000).subtract(1, 'month'))
+        this.handleCachMonth(moment(available * 1000).subtract(1, 'month'))
       } else if (daysInMonth - curDate < 7) {
         if (this.state.dicMonth[moment(available * 1000).add(1, 'month').format('YYYY-MM')]) {
           // 已经请求过数据，不再请求
@@ -98,7 +98,7 @@ class Calendar extends Component {
           available: moment(available * 1000).add(1, 'month').startOf('month').format('X'),
           deadline: moment(available * 1000).add(1, 'month').endOf('month').format('X'),
         })
-        this.handleCatchMonth(moment(available * 1000).add(1, 'month'))
+        this.handleCachMonth(moment(available * 1000).add(1, 'month'))
       }
     }
   }
@@ -121,7 +121,7 @@ class Calendar extends Component {
         available: momentDate.startOf('month').format('X'),
         deadline: momentDate.endOf('month').format('X'),
       })
-      this.handleCatchMonth(momentDate)
+      this.handleCachMonth(momentDate)
     } else if (curView === 'day') {
       if ((momentDate.date() === 1 && curNavigate === 'NEXT') // 加载后一个月的数据
         || (momentDate.date() === momentDate.daysInMonth() && curNavigate === 'PREV')) { // 加载前一个月的数据
@@ -129,7 +129,7 @@ class Calendar extends Component {
           available: momentDate.startOf('month').format('X'),
           deadline: momentDate.endOf('month').format('X'),
         })
-        this.handleCatchMonth(momentDate)
+        this.handleCachMonth(momentDate)
       }
     } else if (curView === 'week') {
       const daysInMonth = momentDate.daysInMonth()
@@ -139,13 +139,13 @@ class Calendar extends Component {
           available: moment(date).subtract(1, 'month').startOf('month').format('X'),
           deadline: moment(date).subtract(1, 'month').endOf('month').format('X'),
         })
-        this.handleCatchMonth(moment(date).subtract(1, 'month'))
+        this.handleCachMonth(moment(date).subtract(1, 'month'))
       } else if (curNavigate === 'NEXT' && daysInMonth - curDate < 7) {
         onNavigate({
           available: moment(date).add(1, 'month').startOf('month').format('X'),
           deadline: moment(date).add(1, 'month').endOf('month').format('X'),
         })
-        this.handleCatchMonth(moment(date).add(1, 'month'))
+        this.handleCachMonth(moment(date).add(1, 'month'))
       }
     }
   }
