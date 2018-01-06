@@ -59,13 +59,14 @@ class Calendar extends Component {
 
   state = {
     weekClicked: false, // 首次查看week信息时需要验证当前时间是否需要上个月/下个月的获取
+    curDate: +(new Date().getTime() / 1000),
     dicMonth: {
       [moment(this.props.lessonCalendar.searchQuery.available * 1000).format('YYYY-MM')]: true,
     }, // 缓存获取过的月份数据
   }
 
   componentWillUnmount () {
-    this.props.onResetLessons()
+    this.props.onResetLessons(this.state.curDate)
   }
 
   handleCacheMonth = (momentDate) => {
@@ -84,7 +85,7 @@ class Calendar extends Component {
       const curDate = momentDate.date()
       const prevMomentDate = moment(available * 1000).subtract(1, 'month')
       const nextMomentDate = moment(available * 1000).add(1, 'month')
-      this.setState({ weekClicked: true })
+      this.setState({ weekClicked: true, curDate: momentDate.format('X') })
       if (curDate < 7 && this.checkCacheMonth(prevMomentDate)) {
         this.props.onNavigate({
           available: prevMomentDate.startOf('month').format('X'),
@@ -108,6 +109,7 @@ class Calendar extends Component {
       // 点击 + more 按钮时，不做任何请求 
       return
     }
+    this.setState({ curDate: momentDate.format('X') })
     if ((curView === 'month' || curView === 'agenda') && this.checkCacheMonth(momentDate)) {
       // 加载当前月的数据
       onNavigate({
@@ -147,7 +149,7 @@ class Calendar extends Component {
 
   render () {
     const { lessonCalendar: { lessons, searchQuery, isPostBack }, loading } = this.props
-    console.log(this.state.dicMonth)
+
     return (
       <Spin spinning={loading} size="large">
         <div className={styles.calendar_container}>

@@ -112,8 +112,9 @@ export default {
       const { lessons, ...newState } = action.payload
       return { ...state, ...newState, lessons: [...state.lessons, ...lessons] }
     },
-    resetLessons (state) {
-      return { ...state, lessons: [] }
+    resetLessons (state, action) {
+      const { available } = action.payload
+      return { ...state, lessons: [], searchQuery: { ...state.searchQuery, available } }
     },
   },
 }
