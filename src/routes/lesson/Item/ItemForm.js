@@ -61,7 +61,7 @@ class ItemForm extends Component {
       this.handleSchoolChange(item.school_id || this.state.schoolId, false)
       this.changeStudentForm(item.category_idnumber)
     }
-    if (!Object.keys(lessonItem.teachersDic).length && Object.keys(teachersDic).length) {
+    if (!this.state.teachers.length && Object.keys(teachersDic).length) {
       const teachersState = teachersDic[item.school_id || this.state.schoolId] || []
       teachersState.length && this.setState({ teachers: teachersState })
     }
