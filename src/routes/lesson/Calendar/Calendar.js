@@ -59,7 +59,7 @@ class Calendar extends Component {
 
   state = {
     weekClicked: false, // 首次查看week信息时需要验证当前时间是否需要上个月/下个月的获取
-    curDate: +(new Date().getTime() / 1000),
+    curDate: this.props.lessonCalendar.searchQuery.available,
     dicMonth: {
       [moment(this.props.lessonCalendar.searchQuery.available * 1000).format('YYYY-MM')]: true,
     }, // 缓存获取过的月份数据
