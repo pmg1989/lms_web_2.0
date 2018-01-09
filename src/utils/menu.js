@@ -7,7 +7,7 @@ const menu = [
   {
     id: 1,
     key: 'dashboard',
-    icon: 'laptop',
+    icon: 'desktop',
     name: '管理平台',
     power: [1, 2],
   },
