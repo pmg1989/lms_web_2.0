@@ -1,9 +1,11 @@
-import { getCurPowers, renderQuery } from 'utils'
-import { query as queryLessons } from 'services/lesson/list'
+import { getCurPowers } from 'utils'
+import { queryComingLessons, queryTeacherStatInfo } from 'services/dashboard'
 
 export default {
   namespace: 'dashboard',
   state: {
+    comingLessons: [],
+    teacherStatInfo: {},
   },
   subscriptions: {
     setup ({ dispatch, history }) {
@@ -12,31 +14,42 @@ export default {
           const curPowers = getCurPowers('/dashboard')
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
-            // dispatch({ type: 'query', payload: {} })
+            dispatch({ type: 'queryComingLessons' })
+            dispatch({ type: 'queryTeacherStatInfo' })
           }
         }
       })
     },
   },
   effects: {
-    * query ({ payload }, { select, call, put }) {
-      const { searchQuery } = yield select(({ dashboard }) => dashboard)
-      const querys = renderQuery(searchQuery, payload)
-      const { data, success } = yield call(queryLessons, querys)
-
+    * queryComingLessons ({}, { call, put }) {
+      const { data, success } = yield call(queryComingLessons)
       if (success) {
         yield put({
-          type: 'querySuccess',
+          type: 'queryComingLessonsSuccess',
           payload: {
-            searchQuery: querys,
-            data,
+            comingLessons: (data[0] && data[0].list) || [],
+          },
+        })
+      }
+    },
+    * queryTeacherStatInfo ({ }, { call, put }) {
+      const { data, success } = yield call(queryTeacherStatInfo)
+      if (success) {
+        yield put({
+          type: 'queryTeacherStatInfoSuccess',
+          payload: {
+            teacherStatInfo: data,
           },
         })
       }
     },
   },
   reducers: {
-    querySuccess (state, action) {
+    queryComingLessonsSuccess (state, action) {
+      return { ...state, ...action.payload }
+    },
+    queryTeacherStatInfoSuccess (state, action) {
       return { ...state, ...action.payload }
     },
   },
