@@ -7,28 +7,30 @@ const menu = [
   {
     id: 1,
     key: 'dashboard',
-    name: '管理平台',
     icon: 'laptop',
+    name: '管理平台',
     power: [1, 2],
   },
   // lesson
   {
     id: 2,
     key: 'lesson',
+    icon: 'idcard',
     name: '课程管理',
-    icon: 'desktop',
     clickable: false,
     power: [1],
     children: [
       {
         id: 21,
         key: 'calendar',
+        icon: 'calendar',
         name: '日历管理',
         power: [1, 2, 3, 4, 5],
       },
       {
         id: 22,
         key: 'list',
+        icon: 'bars',
         name: '课程列表',
         power: [1, 2, 3, 4, 5, 6],
       },
@@ -56,26 +58,29 @@ const menu = [
   {
     id: 3,
     key: 'account',
-    name: '用户管理',
     icon: 'user',
+    name: '用户管理',
     clickable: false,
     power: [1],
     children: [
       {
         id: 31,
         key: 'role',
+        icon: 'setting',
         name: '角色管理',
         power: [1, 2, 3, 4, 5],
       },
       {
         id: 32,
         key: 'admin',
+        icon: 'woman',
         name: '工作人员',
         power: [1, 2, 3, 4, 5, 6, 8, 9],
       },
       {
         id: 33,
         key: 'user',
+        icon: 'team',
         name: '学员',
         power: [1, 2, 6, 10, 11],
       },
@@ -85,14 +90,15 @@ const menu = [
   {
     id: 4,
     key: 'system',
-    name: '系统管理',
     icon: 'appstore',
+    name: '系统管理',
     clickable: false,
     power: [1],
     children: [
       {
         id: 41,
         key: 'modify-password',
+        icon: 'unlock',
         name: '修改密码',
         power: [1, 2, 4],
       },
@@ -102,14 +108,22 @@ const menu = [
   {
     id: 5,
     key: 'analysis',
+    icon: 'area-chart',
     name: '数据分析',
-    icon: 'pie-chart',
     clickable: false,
     power: [1],
     children: [
       {
         id: 51,
         key: 'report',
+        icon: 'bars',
+        name: '报表统计',
+        power: [1, 2],
+      },
+      {
+        id: 52,
+        key: 'chart',
+        icon: 'pie-chart',
         name: '报表统计',
         power: [1, 2],
       },
