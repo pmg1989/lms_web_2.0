@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu } from 'antd'
 import { DataTable, DropMenu } from 'components'
+import { getRoleName } from 'utils/dictionary'
 import { UPDATE } from 'constants/options'
 import styles from './List.less'
 
@@ -28,6 +29,7 @@ function List ({
       title: '角色名称',
       dataIndex: 'name',
       key: 'roleName',
+      render: roleName => <span>{getRoleName(roleName)} - {roleName}</span>,
     }, {
       title: '操作',
       key: 'operation',
