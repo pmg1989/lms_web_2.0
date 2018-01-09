@@ -5,9 +5,11 @@ import { Col, Row } from 'antd'
 import ComingLessons from './ComingLessons'
 import TeacherStatInfo from './TeacherStatInfo'
 
+const roles = ['admin', 'coursecreator', 'teacher']
+
 const namespace = 'dashboard'
 
-function Dashboard ({ dashboard, loading }) {
+function Dashboard ({ dashboard, loading, user: { rolename } }) {
   const comingLessonsProps = {
     list: dashboard.comingLessons,
     loading: loading.effects[`${namespace}/queryComingLessons`],
@@ -20,14 +22,18 @@ function Dashboard ({ dashboard, loading }) {
 
   return (
     <div className="content-inner">
-      <Row gutter={20} style={{ minWidth: 700 }}>
-        <Col span={16}>
-          <ComingLessons {...comingLessonsProps} />
-        </Col>
-        <Col span={8}>
-          <TeacherStatInfo {...teacherStatInfoProps} />
-        </Col>
-      </Row>
+      {roles.includes(rolename) &&
+        <Row gutter={20} style={{ minWidth: 700 }}>
+          <Col span={16}>
+            <ComingLessons {...comingLessonsProps} />
+          </Col>
+          {rolename === 'teacher' &&
+          <Col span={8}>
+            <TeacherStatInfo {...teacherStatInfoProps} />
+          </Col>
+          }
+        </Row>
+      }
     </div>
   )
 }
@@ -35,10 +41,11 @@ function Dashboard ({ dashboard, loading }) {
 Dashboard.propTypes = {
   dashboard: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
 }
 
-function mapStateToProps ({ dashboard, loading }) {
-  return { dashboard, loading }
+function mapStateToProps ({ dashboard, loading, app: { user } }) {
+  return { dashboard, loading, user }
 }
 
 export default connect(mapStateToProps)(Dashboard)

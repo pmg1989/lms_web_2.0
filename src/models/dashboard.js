@@ -1,6 +1,8 @@
 import { getCurPowers } from 'utils'
 import { queryComingLessons, queryTeacherStatInfo } from 'services/dashboard'
 
+const roles = ['admin', 'coursecreator', 'teacher']
+
 export default {
   namespace: 'dashboard',
   state: {
@@ -14,14 +16,22 @@ export default {
           const curPowers = getCurPowers('/dashboard')
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
-            dispatch({ type: 'queryComingLessons' })
-            dispatch({ type: 'queryTeacherStatInfo' })
+            dispatch({ type: 'query' })
           }
         }
       })
     },
   },
   effects: {
+    * query ({ }, { select, put }) {
+      const { user } = yield select(({ app }) => app)
+      if (roles.includes(user.rolename)) {
+        yield put({ type: 'queryComingLessons' })
+        if (user.rolename === 'teacher') {
+          yield put({ type: 'queryTeacherStatInfo' })
+        }
+      }
+    },
     * queryComingLessons ({}, { call, put }) {
       const { data, success } = yield call(queryComingLessons)
       if (success) {
