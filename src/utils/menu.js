@@ -98,6 +98,23 @@ const menu = [
       },
     ],
   },
+  // analysis
+  {
+    id: 5,
+    key: 'analysis',
+    name: '数据分析',
+    icon: 'pie-chart',
+    clickable: false,
+    power: [1],
+    children: [
+      {
+        id: 51,
+        key: 'report',
+        name: '报表统计',
+        power: [1, 2],
+      },
+    ],
+  },
 ]
 
 export default menu
