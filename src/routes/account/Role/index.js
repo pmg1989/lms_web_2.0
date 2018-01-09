@@ -2,35 +2,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { checkPower } from 'utils'
-import { ADD, UPDATE, DELETE } from 'constants/options'
+import { UPDATE } from 'constants/options'
 import RoleList from './List'
-import RoleSearch from './Search'
 import RoleModal from './ModalForm'
 
 const namespace = 'accountRole'
 
 function Role ({ curPowers, dispatch, accountRole, modal, loading }) {
-  const addPower = checkPower(ADD, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
-  const deletePower = checkPower(DELETE, curPowers)
-
-  const searchProps = {
-    addPower,
-    onAdd () {
-      dispatch({
-        type: 'modal/showModal',
-        payload: {
-          type: 'create',
-        },
-      })
-    },
-  }
 
   const listProps = {
     accountRole,
     loading: loading.effects[`${namespace}/query`],
     updatePower,
-    deletePower,
     onDeleteItem (id) {
       dispatch({ type: `${namespace}/delete`, payload: { id } })
     },
@@ -65,7 +49,6 @@ function Role ({ curPowers, dispatch, accountRole, modal, loading }) {
 
   return (
     <div className="content-inner">
-      <RoleSearch {...searchProps} />
       <RoleList {...listProps} />
       <RoleModal {...modalProps} />
     </div>

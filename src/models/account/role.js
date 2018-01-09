@@ -24,12 +24,12 @@ export default {
 
   effects: {
     * query ({}, { call, put }) {
-      const data = yield call(query)
-      if (data.success) {
+      const { data, success } = yield call(query)
+      if (success) {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.list,
+            list: data.map(item => ({ ...item, power: JSON.parse(item.power) })),
           },
         })
       }
@@ -51,6 +51,7 @@ export default {
     },
     * update ({ payload }, { call, put }) {
       const { curItem } = payload
+      delete curItem.name
       const params = { ...curItem, power: JSON.stringify(curItem.power) }
       const data = yield call(update, params)
       if (data && data.success) {

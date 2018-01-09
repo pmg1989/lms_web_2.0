@@ -68,7 +68,7 @@ const menu = [
         key: 'role',
         icon: 'setting',
         name: '角色管理',
-        power: [1, 2, 3, 4, 5],
+        power: [1, 2, 4],
       },
       {
         id: 32,
