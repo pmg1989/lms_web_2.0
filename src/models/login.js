@@ -29,35 +29,17 @@ export default {
         username: payload.username,
         password: payload.password,
       })
-      data.role_power = {
-        1: [1, 2],
-        2: [1],
-        21: [1, 2, 3, 4, 5],
-        22: [1, 2, 3, 4, 5, 6],
-        23: [2, 3],
-        24: [2, 4, 12, 13, 14],
-        25: [2, 4],
-        3: [1],
-        31: [1, 2, 3, 4, 5, 6],
-        32: [1, 2, 3, 4, 5, 6, 8, 9],
-        33: [1, 2, 4, 6, 10, 11],
-        4: [1],
-        41: [1, 2, 4],
-        5: [1],
-        51: [1, 2],
-        52: [1, 2],
-      }
 
       if (success) {
         yield put({
           type: 'app/loginSuccess',
           payload: {
             user: data,
-            userPower: data.role_power,
+            userPower: JSON.parse(data.power),
           },
         })
 
-        const allPathPowers = getAllPathPowers(menu, data.role_power)
+        const allPathPowers = getAllPathPowers(menu, JSON.parse(data.power))
         setLoginIn(data, allPathPowers, payload)
 
         const nextLocation = yield select(state => state.routing.locationBeforeTransitions)

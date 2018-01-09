@@ -71,7 +71,7 @@ const setLoginIn = (data, pathPowers, formProps) => {
   }
   Cookie.set('user_name', data.uname)
   Cookie.set('utoken', data.utoken)
-  Cookie.set('user_power', data.role_power)
+  Cookie.set('user_power', data.power)
   localStorage.setItem('user_info', JSON.stringify(data))
   localStorage.setItem('allPathPowers', JSON.stringify(pathPowers))
   allPathPowers = pathPowers
