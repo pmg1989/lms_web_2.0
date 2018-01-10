@@ -31,9 +31,10 @@ function CalendarHome ({ dispatch, lessonCalendar, loading }) {
         payload: query,
       })
     },
-    onResetLessons () {
+    onResetLessons (available) {
       dispatch({
         type: `${namespace}/resetLessons`,
+        payload: { available },
       })
     },
   }

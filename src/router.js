@@ -163,6 +163,23 @@ const Routers = function ({ history, app }) {
             },
           ],
         },
+        // analysis
+        {
+          path: 'analysis',
+          name: 'analysis',
+          childRoutes: [
+            {
+              path: 'report',
+              name: 'report',
+              getComponent (nextState, cb) {
+                require.ensure([], (require) => {
+                  registerModel(app, require('./models/analysis/report'))
+                  cb(null, require('./routes/analysis/Report'))
+                }, 'analysis-report')
+              },
+            },
+          ],
+        },
         // no-power
         {
           path: 'no-power',

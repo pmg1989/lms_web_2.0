@@ -13,7 +13,7 @@ const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId 
     loading: loading.models.lessonStudent,
     addDeletePower,
     otherPower,
-    uploadRecordStatus: categoryId.includes('jl-') && user.teacher_category === 'jl',
+    uploadRecordStatus: !!categoryId && categoryId.includes('jl-') && user.teacher_category === 'jl',
     lessonStudent,
     onDeleteItem (item) {
       dispatch({
@@ -97,11 +97,9 @@ const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId 
     },
   }
 
-  const ListGen = () => <List {...listProps} />
-
   return (
     <div>
-      <ListGen />
+      <List {...listProps} />
       {modal.visible && modal.id === 1 && <CommentModal {...commentModalProps} />}
       {modal.visible && modal.id === 2 && <RecordModal {...recordModalProps} />}
       {modal.visible && modal.id === 3 && <FeedbackModal {...feedbackModalProps} />}

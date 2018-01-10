@@ -26,11 +26,15 @@ export default {
           const curPowers = getCurPowers(pathname)
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
-            if (pathname === '/lesson/detail') {
+            if (pathname === '/lesson/create') {
+              dispatch({ type: 'querySource', payload: { lessonid, type: 'create' } })
+            } else if (pathname === '/lesson/update') {
+              dispatch({ type: 'querySource', payload: { lessonid, type: 'update' } })
+            } else {
+              dispatch({ type: 'querySource', payload: { lessonid, type: 'detail' } })
               // 清除修改时留下的数据
-              dispatch({ type: 'querySuccess', payload: { item: {}, type: 'create' } })
+              dispatch({ type: 'querySuccess', payload: { item: {}, type: 'detail' } })
             }
-            dispatch({ type: 'querySource', payload: { lessonid, type: pathname === '/lesson/update' ? 'update' : 'detail' } })
           }
         }
       })
@@ -88,10 +92,13 @@ export default {
           courseCategorys,
           classroomsDic,
           teachersDic,
+          type: payload.type,
         },
       })
 
-      yield put({ type: 'query', payload })
+      if (payload.type !== 'create') {
+        yield put({ type: 'query', payload })
+      }
     },
     * queryStudents ({ payload }, { call, put }) {
       const { data, success } = yield call(queryUsers, { rolename: 'student', ...payload })

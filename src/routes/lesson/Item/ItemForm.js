@@ -61,7 +61,7 @@ class ItemForm extends Component {
       this.handleSchoolChange(item.school_id || this.state.schoolId, false)
       this.changeStudentForm(item.category_idnumber)
     }
-    if (!Object.keys(lessonItem.teachersDic).length && Object.keys(teachersDic).length) {
+    if (!this.state.teachers.length && Object.keys(teachersDic).length) {
       const teachersState = teachersDic[item.school_id || this.state.schoolId] || []
       teachersState.length && this.setState({ teachers: teachersState })
     }
@@ -504,25 +504,26 @@ class ItemForm extends Component {
           {type !== 'create' &&
           <FormItem label="添加学员" {...formItemLayout}>
             {getFieldDecorator('studentInfo', {
-            })(<Row style={{ marginBottom: '24px' }}>
-              <Col span={16}>
-                <Select
-                  size="large"
-                  disabled={disabled}
-                  mode="combobox"
-                  placeholder="请逐个输入学员手机号码进行验证"
-                  notFoundContent={fetching ? <Spin size="small" /> : <Tag color="red">{errorMsg}</Tag>}
-                  filterOption={false}
-                  onSelect={this.handleSelectStudent}
-                  onChange={this.queryStudentList2}
-                >
-                  {studentList.map((d, key) => <Option key={key} value={`${d.firstname}-${d.phone2}`}>{`${d.firstname}-${d.phone2}`}</Option>)}
-                </Select>
-              </Col>
-              <Col span={8} className={styles.text_right}>
-                <Button onClick={this.handleAddStudent} disabled={addDisabled} type="primary" size="large" icon="plus-circle-o">添加</Button>
-              </Col>
-            </Row>)}
+            })(type === 'update' ?
+              <Row style={{ marginBottom: '24px' }}>
+                <Col span={16}>
+                  <Select
+                    size="large"
+                    disabled={disabled}
+                    mode="combobox"
+                    placeholder="请逐个输入学员手机号码进行验证"
+                    notFoundContent={fetching ? <Spin size="small" /> : <Tag color="red">{errorMsg}</Tag>}
+                    filterOption={false}
+                    onSelect={this.handleSelectStudent}
+                    onChange={this.queryStudentList2}
+                  >
+                    {studentList.map((d, key) => <Option key={key} value={`${d.firstname}-${d.phone2}`}>{`${d.firstname}-${d.phone2}`}</Option>)}
+                  </Select>
+                </Col>
+                <Col span={8} className={styles.text_right}>
+                  <Button onClick={this.handleAddStudent} disabled={addDisabled} type="primary" size="large" icon="plus-circle-o">添加</Button>
+                </Col>
+              </Row> : <div />)}
             <ItemStudent lessonInfo={{ lessonid: item.id, categoryId: item.category_idnumber }} addDeletePower={addDeleteStudentPower} otherPower={otherStudentPower} />
           </FormItem>}
           <FormItem wrapperCol={{ span: 17, offset: 4 }}>

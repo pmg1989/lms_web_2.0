@@ -57,7 +57,7 @@ function List ({
       key: 'acronym',
       width: 240,
       render: (acronym, record) => (
-        <Radio.Group defaultValue={acronym} onChange={e => onAttendance({ status: e.target.value, userid: record.id })}>
+        <Radio.Group disabled={!otherPower} defaultValue={acronym} onChange={e => onAttendance({ status: e.target.value, userid: record.id })}>
           <Radio.Button value="P"><span className={styles.primary}>出席</span></Radio.Button>
           <Radio.Button value="L"><span className={styles.warning}>迟到</span></Radio.Button>
           <Radio.Button value="A"><span className={styles.danger}>缺席</span></Radio.Button>
