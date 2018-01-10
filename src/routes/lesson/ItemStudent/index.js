@@ -13,7 +13,7 @@ const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId 
     loading: loading.models.lessonStudent,
     addDeletePower,
     otherPower,
-    uploadRecordStatus: categoryId.includes('jl-') && user.teacher_category === 'jl',
+    uploadRecordStatus: !!categoryId && categoryId.includes('jl-') && user.teacher_category === 'jl',
     lessonStudent,
     onDeleteItem (item) {
       dispatch({
