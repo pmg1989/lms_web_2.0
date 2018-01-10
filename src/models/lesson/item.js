@@ -92,6 +92,7 @@ export default {
           courseCategorys,
           classroomsDic,
           teachersDic,
+          type: payload.type,
         },
       })
 
