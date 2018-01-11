@@ -50,14 +50,12 @@ function List ({
       title: '姓名',
       dataIndex: 'firstname',
       key: 'firstname',
-      width: 250,
     }, {
       title: '考勤',
       dataIndex: 'acronym',
       key: 'acronym',
-      width: 240,
       render: (acronym, record) => (
-        <Radio.Group disabled={!otherPower} defaultValue={acronym} onChange={e => onAttendance({ status: e.target.value, userid: record.id })}>
+        <Radio.Group size="small" disabled={!otherPower} defaultValue={acronym} onChange={e => onAttendance({ status: e.target.value, userid: record.id })}>
           <Radio.Button value="P"><span className={styles.primary}>出席</span></Radio.Button>
           <Radio.Button value="L"><span className={styles.warning}>迟到</span></Radio.Button>
           <Radio.Button value="A"><span className={styles.danger}>缺席</span></Radio.Button>
@@ -67,14 +65,12 @@ function List ({
       title: '评价状态',
       dataIndex: 'gradetime',
       key: 'gradetime',
-      width: 70,
       render: gradetime => (
         <Tag color={gradetime ? 'green' : 'red'}>{gradetime ? '已' : '未'}评价</Tag>
       ),
     }, {
       title: '操作',
       key: 'operation',
-      width: 120,
       render: (text, record) => (
         <DropMenu>
           <Menu onClick={({ key }) => handleMenuClick(key, record)}>
@@ -93,7 +89,7 @@ function List ({
     className: styles.table_list,
     loading,
     columns,
-    scroll: { x: 706 },
+    scroll: { x: 500 },
     dataSource: list,
     pagination: false,
     animate: false,

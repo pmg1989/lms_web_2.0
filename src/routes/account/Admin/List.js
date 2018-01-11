@@ -70,10 +70,6 @@ function List ({
       key: 'firstname',
       sorter: (a, b) => a.firstname.localeCompare(b.firstname),
     }, {
-      title: '手机号',
-      dataIndex: 'phone2',
-      key: 'phone2',
-    }, {
       title: '校区',
       dataIndex: 'school',
       key: 'school',
@@ -107,12 +103,6 @@ function List ({
       dataIndex: 'suspended',
       key: 'suspended',
       render: suspended => <span>{suspended === 1 ? <Tag color="red">已离职</Tag> : '在职'}</span>,
-    }, {
-      title: '加入时间',
-      dataIndex: 'timecreated',
-      key: 'timecreated',
-      render: timecreated => (<span>{moment.unix(timecreated).format('YYYY-MM-DD HH:mm')}</span>),
-      sorter: (a, b) => a.timecreated - b.timecreated,
     }, {
       title: '操作',
       key: 'operation',
