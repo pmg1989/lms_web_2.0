@@ -1,4 +1,50 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" content="A admin dashboard application demo built upon Ant Design and Dva.js"><title>牛班音乐学校</title><link rel="icon" href="http://www.newband.com/images1/favicon.ico" type="image/x-icon"><link rel="stylesheet" href="/css/nprogress.css"><!--[if lte IE 10]>
       <script
         src="https://as.alipayobjects.com/g/component/??console-polyfill/0.2.2/index.js,media-match/2.0.2/media.match.min.js"></script>
-  <![endif]--><link href="/4.0.1/index.51ed7190.css?c42ca1536117c505036c" rel="stylesheet"></head><body><div id="root"></div><script type="text/javascript" src="/4.0.1/index.1b9dcc48.js?c42ca1536117c505036c"></script></body></html>
+  <![endif]--><script type="text/javascript">(function () {
+      window.zhuge = window.zhuge || [];
+      window.zhuge.methods = "_init identify track getDid getSid getKey setSuperProperty setUserProperties setPlatform".split(" ");
+      window.zhuge.factory = function (b) {
+        return function () {
+          var a = Array.prototype.slice.call(arguments);
+          a.unshift(b);
+          window.zhuge.push(a);
+          return window.zhuge;
+        }
+      };
+      for (var i = 0; i < window.zhuge.methods.length; i++) {
+        var key = window.zhuge.methods[i];
+        window.zhuge[key] = window.zhuge.factory(key);
+      }
+      window.zhuge.load = function (b, x) {
+        if (!document.getElementById("zhuge-js")) {
+          var a = document.createElement("script");
+          var verDate = new Date();
+          var verStr = verDate.getFullYear().toString() + verDate.getMonth().toString() + verDate.getDate().toString();
+
+          a.type = "text/javascript";
+          a.id = "zhuge-js";
+          a.async = !0;
+          a.src = (location.protocol == 'http:' ? "http://sdk.zhugeio.com/zhuge.min.js?v=" : 'https://zgsdk.zhugeio.com/zhuge.min.js?v=') + verStr;
+          a.onerror = function () {
+            window.zhuge.identify = window.zhuge.track = function (ename, props, callback) {
+              if (callback && Object.prototype.toString.call(callback) === '[object Function]') callback();
+            };
+          };
+          var c = document.getElementsByTagName("script")[0];
+          c.parentNode.insertBefore(a, c);
+          window.zhuge._init(b, x)
+        }
+      };
+      window.zhuge.load('d3e2521de2b6411291c55b9f861f32fa', {
+        platform: { //自定义触发环境信息(选填)
+          '版本': 'v2.0'
+        },
+        superProperty: { //全局的事件属性(选填)
+          '应用名称': 'LMS教务端'
+        },
+        autoTrack: true,
+        //启用全埋点采集（选填，默认false）
+        singlePage: true //是否是单页面应用（SPA），启用autoTrack后生效（选填，默认false）
+      });
+    })();</script><link href="/4.0.1/index.95e11898.css?3eea9abe80bbb4b9b050" rel="stylesheet"></head><body><div id="root"></div><script type="text/javascript" src="/4.0.1/index.c99186c5.js?3eea9abe80bbb4b9b050"></script></body></html>
