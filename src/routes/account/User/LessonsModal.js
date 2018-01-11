@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Icon, Table } from 'antd'
+import { Link } from 'dva/router'
 import moment from 'moment'
 import CirclePlayer from 'components/MediaPlayer/CirclePlayer'
 import { getModalType } from 'utils/dictionary'
@@ -9,6 +10,7 @@ const ModalForm = ({
   modal: { curItem, type, visible },
   loading,
   onCancel,
+  onCancelAll,
 }) => {
   const { name, icon } = getModalType(type)
   const modalFormOpts = {
@@ -26,6 +28,9 @@ const ModalForm = ({
       title: '课程名称',
       dataIndex: 'category_summary',
       key: 'category_summary',
+      render (summary, record) {
+        return <Link onClick={onCancelAll} to={`/lesson/detail?lessonid=${record.id}`}>{summary}</Link>
+      },
     }, {
       title: '任课老师',
       dataIndex: 'teacher',
@@ -67,6 +72,7 @@ ModalForm.propTypes = {
   loading: PropTypes.bool.isRequired,
   modal: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,
+  onCancelAll: PropTypes.func.isRequired,
 }
 
 export default ModalForm

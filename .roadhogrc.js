@@ -12,7 +12,8 @@ export default {
     theme: "./theme.config.js",
     hash: true,
     publicPath: `/${version}/`,
-    outputPath: `./dist/${version}`,
+    // outputPath : `./dist/${version}`,
+    outputPath: `./dist/deploy`,
     proxy: {
         "/api/moodle": {
             "target": process.env.PROXY_HOST || 'http://school.newband.com:8086',

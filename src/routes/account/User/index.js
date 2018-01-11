@@ -121,6 +121,9 @@ function User ({ curPowers, dispatch, accountUser, modal, loading }) {
     onCancel () {
       dispatch({ type: 'modal/hideModal', payload: { showParent: true } })
     },
+    onCancelAll () {
+      dispatch({ type: 'modal/hideModal' })
+    },
   }
 
   return (
