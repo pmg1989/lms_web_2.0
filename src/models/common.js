@@ -1,6 +1,7 @@
 import { query as querySchools } from 'services/common/school'
 import { query as queryCategorys } from 'services/common/category'
 import { query as queryTeachers } from 'services/account/admin'
+import { query as queryClassRooms } from 'services/common/classroom'
 
 export default {
   namespace: 'commonModel',
@@ -8,6 +9,8 @@ export default {
     schools: [],
     categorys: [],
     teachersDic: {},
+    teachers2Dic: {},
+    classroomsDic: {},
   },
   effects: {
     * querySchools ({ }, { select, call, put }) {
@@ -46,6 +49,35 @@ export default {
               }
               return dic
             }, {}),
+            teachers2Dic: data.reduce((dic, teacher) => {
+              if (teacher.school_id) {
+                if (!dic[teacher.school_id]) {
+                  dic[teacher.school_id] = []
+                }
+                dic[teacher.school_id].push(teacher)
+              }
+              return dic
+            }, {}),
+          },
+        })
+      }
+    },
+    * queryClassRooms ({ }, { select, call, put }) {
+      const { classroomsDic } = yield select(({ commonModel }) => commonModel)
+      if (!Object.keys(classroomsDic).length) {
+        const { data } = yield call(queryClassRooms, { school_id: 0 })
+        yield put({
+          type: 'queryClassRoomsSuccess',
+          payload: {
+            classroomsDic: data.reduce((dic, classroom) => {
+              if (classroom.school_id) {
+                if (!dic[classroom.school_id]) {
+                  dic[classroom.school_id] = []
+                }
+                dic[classroom.school_id].push(classroom)
+              }
+              return dic
+            }, {}),
           },
         })
       }
@@ -60,6 +92,9 @@ export default {
       return { ...state, ...payload }
     },
     queryTeachersSuccess (state, { payload }) {
+      return { ...state, ...payload }
+    },
+    queryClassRoomsSuccess (state, { payload }) {
       return { ...state, ...payload }
     },
   },

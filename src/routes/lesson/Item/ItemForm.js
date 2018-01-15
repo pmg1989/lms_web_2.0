@@ -32,6 +32,7 @@ class ItemForm extends Component {
     addDeleteStudentPower: PropTypes.bool.isRequired,
     otherStudentPower: PropTypes.bool.isRequired,
     lessonItem: PropTypes.object.isRequired,
+    commonModel: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
@@ -56,13 +57,13 @@ class ItemForm extends Component {
 
   componentWillReceiveProps (nextProps) {
     const { lessonItem } = this.props
-    const { lessonItem: { item, teachersDic } } = nextProps
+    const { lessonItem: { item }, commonModel: { teachers2Dic } } = nextProps
     if (!lessonItem.item.category_summary && item.category_summary) {
       this.handleSchoolChange(item.school_id || this.state.schoolId, false)
       this.changeStudentForm(item.category_idnumber)
     }
-    if (!this.state.teachers.length && Object.keys(teachersDic).length) {
-      const teachersState = teachersDic[item.school_id || this.state.schoolId] || []
+    if (!this.state.teachers.length && Object.keys(teachers2Dic).length) {
+      const teachersState = teachers2Dic[item.school_id || this.state.schoolId] || []
       teachersState.length && this.setState({ teachers: teachersState })
     }
   }
@@ -139,20 +140,20 @@ class ItemForm extends Component {
   handleSchoolChange = (schoolId, needSetValue = true) => {
     this.setState({ schoolId })
     if (needSetValue) {
-      const { form: { setFieldsValue, getFieldValue }, lessonItem: { teachersDic, courseCategorys } } = this.props
+      const { form: { setFieldsValue, getFieldValue }, lessonItem: { courseCategorys }, commonModel: { teachers2Dic } } = this.props
       const categoryid = getFieldValue('categoryid')
       const courseCategory = courseCategorys.find(cur => cur.id === categoryid)
-      const teachers = teachersDic[schoolId] || []
+      const teachers = teachers2Dic[schoolId] || []
       this.setState({ teachers: teachers.filter(cur => courseCategory && courseCategory.idnumber.includes(cur.teacher_subject)) })
       setFieldsValue({ teacherid: undefined, classroomid: undefined })
     }
   }
 
   handleCategoryChange = (categoryid) => {
-    const { lessonItem: { courseCategorys, teachersDic }, form: { getFieldValue, setFieldsValue } } = this.props
+    const { lessonItem: { courseCategorys }, commonModel: { teachers2Dic }, form: { getFieldValue, setFieldsValue } } = this.props
     const courseCategory = courseCategorys.find(cur => cur.id === categoryid)
     const schoolId = getFieldValue('school_id')
-    const teachers = teachersDic[schoolId] || []
+    const teachers = teachers2Dic[schoolId] || []
     this.setState({ teachers: teachers.filter(cur => courseCategory.idnumber.includes(cur.teacher_subject)) })
 
     const oldCategoryid = getFieldValue('categoryid')
@@ -305,7 +306,8 @@ class ItemForm extends Component {
 
   render () {
     const {
-      lessonItem: { type, item, courseCategorys, schools, classroomsDic, studentList },
+      lessonItem: { type, item, courseCategorys, studentList },
+      commonModel: { schools, classroomsDic },
       addPower, updatePower, addDeleteStudentPower, otherStudentPower,
       loading, onGoBack,
       form: { getFieldDecorator },
