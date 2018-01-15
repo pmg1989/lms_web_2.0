@@ -38,14 +38,13 @@ export default {
 
   effects: {
     * query ({ payload }, { call, put }) {
-      const { lessonid, type } = payload
+      const { lessonid } = payload
       const { data, success } = yield call(query, { lessonid })
       if (success) {
         yield put({
           type: 'querySuccess',
           payload: {
             item: data,
-            type,
           },
         })
       }
@@ -70,6 +69,8 @@ export default {
             type: payload.type,
           },
         })
+      } else {
+        yield put({ type: 'changeType', payload: { type: payload.type } })
       }
 
       if (payload.type !== 'create') {
@@ -134,8 +135,14 @@ export default {
     queryStudentsSuccess (state, action) {
       return { ...state, ...action.payload }
     },
+    changeType (state, action) {
+      return { ...state, ...action.payload }
+    },
     resetStudents (state) {
       return { ...state, studentList: [] }
+    },
+    resetItem (state) {
+      return { ...state, type: 'create', item: {} }
     },
   },
 }

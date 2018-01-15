@@ -40,6 +40,7 @@ class ItemForm extends Component {
     onChangeDaiTeacher: PropTypes.func.isRequired,
     onQueryStudentList: PropTypes.func.isRequired,
     onResetStudents: PropTypes.func.isRequired,
+    onResetItem: PropTypes.func.isRequired,
     onAddStudent: PropTypes.func.isRequired,
   }
 
@@ -66,6 +67,10 @@ class ItemForm extends Component {
       const teachersState = teachers2Dic[item.school_id || this.state.schoolId] || []
       teachersState.length && this.setState({ teachers: teachersState })
     }
+  }
+
+  componentWillUnmount () {
+    this.props.onResetItem()
   }
 
   TeacherDaiFormItem = ({ teacherId, disabled }) => {

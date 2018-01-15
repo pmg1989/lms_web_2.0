@@ -57,6 +57,9 @@ const LessonItem = ({ dispatch, curPowers, lessonItem, loading, modal, commonMod
     onGoBack () {
       dispatch(routerRedux.goBack())
     },
+    onResetItem () {
+      dispatch({ type: `${namespace}/resetItem` })
+    },
   }
 
   const resultListModalProps = {
