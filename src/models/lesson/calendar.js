@@ -1,9 +1,6 @@
 import moment from 'moment'
 import { getCurPowers, renderQuery, getSchool } from 'utils'
 import { query as queryLessons } from 'services/lesson/list'
-import { query as querySchools } from 'services/common/school'
-import { query as queryCategorys } from 'services/common/category'
-import { query as queryTeachers } from 'services/account/admin'
 
 const initParams = {
   school: getSchool(),
@@ -25,9 +22,6 @@ export default {
   state: {
     isPostBack: true, // 判断是否是首次加载页面，修复 + more bug
     searchQuery: initParams,
-    schools: [],
-    categorys: [],
-    teachersDic: {},
     lessons: [],
   },
   subscriptions: {
@@ -45,27 +39,10 @@ export default {
     },
   },
   effects: {
-    * querySearch ({ }, { call, put }) {
-      const { data: schools } = yield call(querySchools)
-      const { data: categorys } = yield call(queryCategorys)
-      const { data: teachers } = yield call(queryTeachers, { rolename: 'teacher', school: '' })
-      const teachersDic = teachers.reduce((dic, teacher) => {
-        if (teacher.school) {
-          if (!dic[teacher.school]) {
-            dic[teacher.school] = []
-          }
-          dic[teacher.school].push(teacher)
-        }
-        return dic
-      }, {})
-      yield put({
-        type: 'querySearchSuccess',
-        payload: {
-          schools,
-          categorys,
-          teachersDic,
-        },
-      })
+    * querySearch ({ }, { put }) {
+      yield put({ type: 'commonModel/querySchools' })
+      yield put({ type: 'commonModel/queryCategorys' })
+      yield put({ type: 'commonModel/queryTeachers' })
     },
     * getLessons ({ payload }, { select, call, put }) {
       const { searchQuery } = yield select(({ lessonCalendar }) => lessonCalendar)
@@ -105,9 +82,6 @@ export default {
     },
   },
   reducers: {
-    querySearchSuccess (state, action) {
-      return { ...state, ...action.payload }
-    },
     getLessonsSuccess (state, action) {
       const { lessons, ...newState } = action.payload
       return { ...state, ...newState, lessons: [...state.lessons, ...lessons] }

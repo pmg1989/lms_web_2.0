@@ -1,8 +1,6 @@
 import { routerRedux } from 'dva/router'
 import { getCurPowers, renderQuery, getSchool } from 'utils'
 import { create, update, query, queryItem, updateLevel, updateCancelLevel } from 'services/account/admin'
-// import { query as queryRole } from 'services/account/role'
-import { query as querySchools } from 'services/common/school'
 import { query as queryClassRooms } from 'services/common/classroom'
 
 const page = {
@@ -16,7 +14,6 @@ export default {
     curId: '', // 存储获取列表时的id, 因为在修改信息获取详细数据时id会变
     searchQuery: {},
     list: [],
-    schools: [],
     pagination: {
       ...page,
       total: null,
@@ -72,16 +69,8 @@ export default {
         })
       }
     },
-    * querySchools ({ }, { call, put }) {
-      const { data, success } = yield call(querySchools)
-      if (success) {
-        yield put({
-          type: 'querySchoolsSuccess',
-          payload: {
-            schools: data,
-          },
-        })
-      }
+    * querySchools ({ }, { put }) {
+      yield put({ type: 'commonModel/querySchools' })
     },
     * create ({ payload }, { call, put }) {
       const { data, success } = yield call(create, payload.curItem)
@@ -186,9 +175,6 @@ export default {
 
   reducers: {
     querySuccess (state, action) {
-      return { ...state, ...action.payload }
-    },
-    querySchoolsSuccess (state, action) {
       return { ...state, ...action.payload }
     },
     toggleResignSuccess (state, action) {
