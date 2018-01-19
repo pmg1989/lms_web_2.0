@@ -129,6 +129,39 @@ const menu = [
       },
     ],
   },
+  // practice
+  {
+    id: 6,
+    key: 'practice',
+    icon: 'customer-service',
+    name: '练声曲管理',
+    clickable: false,
+    power: [1],
+    children: [
+      {
+        id: 61,
+        key: 'list',
+        icon: 'bars',
+        name: '练声曲',
+        power: [1],
+        outLink: () => {
+          const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}')
+          return `http://staging.web.newband.com:5001/signin/practice/${userInfo.teacher_info}`
+        },
+      },
+      {
+        id: 62,
+        key: 'test',
+        icon: 'bars',
+        name: '学员测试',
+        power: [1],
+        outLink: () => {
+          const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}')
+          return `http://staging.web.newband.com:5001/signin/exam/${userInfo.teacher_info}`
+        },
+      },
+    ],
+  },
 ]
 
 export default menu

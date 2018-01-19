@@ -9,6 +9,10 @@ import { stringify } from 'qs'
 
 const immutableMenu = Immutable.fromJS(menu)
 
+const renderOutLink = (link) => {
+  window.open(link)
+}
+
 function Menus ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys, userPower, changeOpenKeys }) {
   const topMenus = menu.map(item => item.key)
 
@@ -25,10 +29,18 @@ function Menus ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKey
       }
       return (
         <Menu.Item key={linkTo}>
-          <Link to={`${linkTo}${query}`}>
-            {item.icon ? <Icon type={item.icon} /> : ''}
-            {isSiderFold && topMenus.indexOf(item.key) >= 0 ? '' : item.name}
-          </Link>
+          {!item.outLink &&
+            <Link to={`${linkTo}${query}`}>
+              {item.icon ? <Icon type={item.icon} /> : ''}
+              {isSiderFold && topMenus.indexOf(item.key) >= 0 ? '' : item.name}
+            </Link>
+          }
+          {item.outLink &&
+            <a target="_blank" onClick={() => renderOutLink(item.outLink())}>
+              {item.icon ? <Icon type={item.icon} /> : ''}
+              {isSiderFold && topMenus.indexOf(item.key) >= 0 ? '' : item.name}
+            </a>
+          }
         </Menu.Item>
       )
     })
