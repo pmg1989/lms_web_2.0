@@ -77,10 +77,11 @@ function List ({
       key: 'username',
       sorter: (a, b) => a.username.localeCompare(b.username),
     }, {
-      title: '真实姓名',
-      dataIndex: 'firstname',
-      key: 'firstname',
-      sorter: (a, b) => a.firstname.localeCompare(b.firstname),
+      title: '艺名',
+      dataIndex: 'alternatename',
+      key: 'alternatename',
+      render: (alternatename, record) => <span>{record.rolename === 'teacher' ? alternatename : record.firstname}</span>,
+      sorter: (a, b) => a.alternatename.localeCompare(b.alternatename),
     }, {
       title: '校区',
       dataIndex: 'school',

@@ -14,7 +14,7 @@ function ComingLessons ({ list, loading }) {
               {moment.unix(item.available).format('YYYY-MM-DD')} {moment.unix(item.available).format('HH:mm')} - {moment.unix(item.deadline).format('HH:mm')}
             </Col>
             <Col span={12}>
-              <strong>{item.category_summary}</strong> {item.teacher} {item.classroom}教室
+              <strong>{item.category_summary}</strong> {item.teacher_alternatename} {item.classroom}教室
             </Col>
           </Row>
         ))}

@@ -59,7 +59,7 @@ export default {
           const start = moment.unix(lesson.available)
           const end = moment.unix(lesson.deadline)
           lesson.title = ''
-          lesson.text = `${lesson.teacher}(${lesson.classroom}${lesson.category.includes('-vip-') ? ' V' : ''})`
+          lesson.text = `${lesson.teacher_alternatename}(${lesson.classroom}${lesson.category.includes('-vip-') ? ' V' : ''})`
           lesson.start = new Date(start.year(), start.month(), start.date(), start.hour(), start.minute(), 0)
           lesson.end = new Date(end.year(), end.month(), end.date(), end.hour(), end.minute(), 0)
           lesson.category = lesson.category_idnumber.split('-')[0]

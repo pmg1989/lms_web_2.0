@@ -124,7 +124,7 @@ class ItemForm extends Component {
               initialValue: teacherDaiId || undefined,
               onChange: handleDaiTeacherChange,
             })(<Select size="large" disabled={disabled || !addDaiTeacherPower} placeholder="--请选择添加代课老师--">
-              {teachers.filter(cur => cur.id !== teacherId).map(teacher => <Option key={teacher.id} value={teacher.id.toString()}>{teacher.firstname}</Option>)}
+              {teachers.filter(cur => cur.id !== teacherId).map(teacher => <Option key={teacher.id} value={teacher.id.toString()}>{teacher.teacher_substitute_alternatename}</Option>)}
             </Select>)
             }
           </Col>
@@ -384,7 +384,7 @@ class ItemForm extends Component {
                 },
               ],
             })(<Select disabled={disabled || disabledEdit} placeholder="--请选择老师--">
-              {teachers.map(teacher => <Option key={teacher.id} value={teacher.id.toString()}>{teacher.firstname}</Option>)}
+              {teachers.map(teacher => <Option key={teacher.id} value={teacher.id.toString()}>{teacher.teacher_alternatename}</Option>)}
             </Select>)
             }
           </FormItem>

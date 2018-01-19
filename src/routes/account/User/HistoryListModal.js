@@ -35,8 +35,8 @@ const ModalForm = ({
     },
     {
       title: '任课老师',
-      dataIndex: 'teachername',
-      key: 'teachername',
+      dataIndex: 'teacher_alternatename',
+      key: 'teacher_alternatename',
     },
     {
       title: '备注信息',

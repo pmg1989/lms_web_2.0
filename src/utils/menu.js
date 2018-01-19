@@ -125,7 +125,7 @@ const menu = [
         id: 52,
         key: 'chart',
         icon: 'pie-chart',
-        name: '报表统计',
+        name: '仪表盘',
         power: [1, 2],
       },
     ],

@@ -75,7 +75,7 @@ const ModalForm = ({
             optionFilterProp="children"
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
-            {teacherList.map((item, key) => <Option key={key} value={item.id}>{item.firstname}</Option>)}
+            {teacherList.map((item, key) => <Option key={key} value={item.id}>{item.alternatename}</Option>)}
           </Select>)}
         </FormItem>
         <FormItem label="备注信息" hasFeedback {...formItemLayout}>

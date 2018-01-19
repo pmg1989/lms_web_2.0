@@ -174,6 +174,17 @@ class ModalForm extends Component {
               ],
             })(<Input disabled={disabled} placeholder="请输入真实姓名" />)}
           </FormItem>
+          <FormItem label="艺名" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('alternatename', {
+              initialValue: curItem.alternatename,
+              rules: [
+                {
+                  required: true,
+                  message: '请输入艺名',
+                },
+              ],
+            })(<Input disabled={disabled} placeholder="请输入艺名" />)}
+          </FormItem>
           <FormItem label="手机号" hasFeedback {...formItemLayout} extra={type === 'create' && `新建工作人员时，初始密码默认值是 ${initPassowrd}`}>
             {getFieldDecorator('phone2', {
               initialValue: curItem.phone2,
