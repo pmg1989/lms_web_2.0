@@ -63,7 +63,7 @@ const Search = ({
               initialValue: searchQuery.school || getSchool(),
               onChange: handleSchoolChange,
             })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
-              <Option value="">全部</Option>
+              {/* <Option value="">全部</Option> */}
               {schools.map(item => <Option key={item.id} value={item.school}>{item.name}</Option>)}
             </Select>)
             }
