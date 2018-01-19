@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { checkPower } from 'utils'
-import { ADD, UPDATE, DETAIL, RESIGN, LEAVE } from 'constants/options'
+import { ADD, UPDATE, DETAIL, RESIGN, LEAVE, RESET_PASSWORD } from 'constants/options'
 import List from './List'
 import Search from './Search'
 import ModalForm from './ModalForm'
@@ -16,6 +16,7 @@ function Admin ({ dispatch, curPowers, accountAdmin, modal, loading, commonModel
   const detailPower = checkPower(DETAIL, curPowers)
   const resignPower = checkPower(RESIGN, curPowers)
   const leavePower = checkPower(LEAVE, curPowers)
+  const resetPasswordPower = checkPower(RESET_PASSWORD, curPowers)
 
   const searchProps = {
     schools: commonModel.schools,
@@ -43,6 +44,7 @@ function Admin ({ dispatch, curPowers, accountAdmin, modal, loading, commonModel
     detailPower,
     resignPower,
     leavePower,
+    resetPasswordPower,
     onPageChange (fieldsValue) {
       dispatch({
         type: `${namespace}/query`,
@@ -79,6 +81,12 @@ function Admin ({ dispatch, curPowers, accountAdmin, modal, loading, commonModel
           payload: { curItem: item },
         })
       }
+    },
+    onResetPasswordItem (params) {
+      dispatch({
+        type: `${namespace}/resetPassword`,
+        payload: { params },
+      })
     },
   }
 

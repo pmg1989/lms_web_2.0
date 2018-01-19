@@ -75,7 +75,7 @@ const menu = [
         key: 'admin',
         icon: 'woman',
         name: '工作人员',
-        power: [1, 2, 3, 4, 5, 6, 8, 9],
+        power: [1, 2, 3, 4, 5, 6, 8, 9, 15],
       },
       {
         id: 33,

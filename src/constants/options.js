@@ -14,6 +14,7 @@ export const GET_HISTORY_LIST = 11 // 查看合同的操作历史记录
 export const ADD_DAI_TEACHER = 12 // 添加代课老师
 export const ADD_DELETE_STUDENT = 13 // 学员(排课/退课)
 export const OTHER_STUDENT = 14 // 学员(考勤/评价/反馈/录音)
+export const RESET_PASSWORD = 15 // 重置密码
 
 export const powerName = {
   [MENU]: '查看菜单',
@@ -26,6 +27,7 @@ export const powerName = {
   [FROZEN]: '冻结账户',
   [RESIGN]: '离职',
   [LEAVE]: '请假',
+  [RESET_PASSWORD]: '重置密码',
   [SET_TEACHER]: '设置老师',
   [GET_HISTORY_LIST]: '查看历史',
   [ADD_DAI_TEACHER]: '添加代课老师',

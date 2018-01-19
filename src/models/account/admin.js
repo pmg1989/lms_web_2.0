@@ -1,7 +1,9 @@
 import { routerRedux } from 'dva/router'
 import { getCurPowers, renderQuery, getSchool } from 'utils'
-import { create, update, query, queryItem, updateLevel, updateCancelLevel } from 'services/account/admin'
+import { create, update, query, queryItem, updateLevel, updateCancelLevel, resetPassword } from 'services/account/admin'
 import { query as queryClassRooms } from 'services/common/classroom'
+import { message } from 'antd'
+import { initPassowrd } from 'utils/config'
 
 const page = {
   current: 1,
@@ -169,6 +171,12 @@ export default {
           type: 'updateSuccess',
           payload: { curItem: data, oldId: id },
         })
+      }
+    },
+    * resetPassword ({ payload }, { call }) {
+      const { success } = yield call(resetPassword, payload.params)
+      if (success) {
+        message.success(`密码重置成功，重置后的密码为${initPassowrd}`, 6)
       }
     },
   },
