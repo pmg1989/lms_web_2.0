@@ -1,7 +1,6 @@
 import { getCurPowers, renderQuery, getSchool } from 'utils'
 import { query, queryItem, update } from 'services/account/admin'
 import { queryContractList, updateTeacher, queryHistoryList, queryContractLesson } from 'services/account/user'
-import { query as querySchools } from 'services/common/school'
 
 const page = {
   current: 1,
@@ -13,7 +12,6 @@ export default {
   state: {
     searchQuery: {},
     list: [],
-    schools: [],
     pagination: {
       ...page,
       total: null,
@@ -69,16 +67,8 @@ export default {
         })
       }
     },
-    * querySchools ({ }, { call, put }) {
-      const { data, success } = yield call(querySchools)
-      if (success) {
-        yield put({
-          type: 'querySchoolsSuccess',
-          payload: {
-            schools: data,
-          },
-        })
-      }
+    * querySchools ({ }, { put }) {
+      yield put({ type: 'commonModel/querySchools' })
     },
     * update ({ payload }, { call, put, select }) {
       const oldId = yield select(({ accountUser }) => accountUser.oldId)
@@ -150,9 +140,6 @@ export default {
 
   reducers: {
     querySuccess (state, action) {
-      return { ...state, ...action.payload }
-    },
-    querySchoolsSuccess (state, action) {
       return { ...state, ...action.payload }
     },
     setOldId (state, action) {

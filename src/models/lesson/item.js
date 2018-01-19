@@ -1,20 +1,14 @@
 import { getCurPowers } from 'utils'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, create, update, queryCourseCategory, enrollesson, unenrollesson } from 'services/lesson/item'
-import { query as querySchools } from 'services/common/school'
-import { query as queryClassRooms } from 'services/common/classroom'
-import { query as queryUsers } from 'services/account/admin'
+import { query, create, update, queryCourseCategory, enrollesson, unenrollesson, querylessonStudents, queryCourseStudents } from 'services/lesson/item'
 
 export default {
   namespace: 'lessonItem',
   state: {
     type: 'create',
     item: {},
-    schools: [],
-    classroomsDic: {},
     courseCategorys: [],
-    teachersDic: {},
     studentList: [],
     resultList: {},
   },
@@ -43,14 +37,13 @@ export default {
 
   effects: {
     * query ({ payload }, { call, put }) {
-      const { lessonid, type } = payload
+      const { lessonid } = payload
       const { data, success } = yield call(query, { lessonid })
       if (success) {
         yield put({
           type: 'querySuccess',
           payload: {
             item: data,
-            type,
           },
         })
       }
@@ -60,53 +53,54 @@ export default {
         payload: { lessonid },
       })
     },
-    * querySource ({ payload }, { call, put }) {
-      const { data: schools } = yield call(querySchools)
-      const { data: classrooms } = yield call(queryClassRooms, { school_id: 0 })
-      const { data: courseCategorys } = yield call(queryCourseCategory)
-      const { data: teachers } = yield call(queryUsers, { rolename: 'teacher', school: '' })
+    * querySource ({ payload }, { select, call, put }) {
+      yield put({ type: 'commonModel/querySchools' })
+      yield put({ type: 'commonModel/queryClassRooms' })
+      yield put({ type: 'commonModel/queryTeachers' })
 
-      const classroomsDic = classrooms.reduce((dic, classroom) => {
-        if (classroom.school_id) {
-          if (!dic[classroom.school_id]) {
-            dic[classroom.school_id] = []
-          }
-          dic[classroom.school_id].push(classroom)
-        }
-        return dic
-      }, {})
-      const teachersDic = teachers.reduce((dic, teacher) => {
-        if (teacher.school_id) {
-          if (!dic[teacher.school_id]) {
-            dic[teacher.school_id] = []
-          }
-          dic[teacher.school_id].push(teacher)
-        }
-        return dic
-      }, {})
-
-      yield put({
-        type: 'querySourceSuccess',
-        payload: {
-          schools,
-          courseCategorys,
-          classroomsDic,
-          teachersDic,
-          type: payload.type,
-        },
-      })
+      const { courseCategorys } = yield select(({ lessonItem }) => lessonItem)
+      if (!courseCategorys.length) {
+        const { data } = yield call(queryCourseCategory)
+        yield put({
+          type: 'querySourceSuccess',
+          payload: {
+            courseCategorys: data,
+            type: payload.type,
+          },
+        })
+      } else {
+        yield put({ type: 'changeType', payload: { type: payload.type } })
+      }
 
       if (payload.type !== 'create') {
         yield put({ type: 'query', payload })
       }
     },
     * queryStudents ({ payload }, { call, put }) {
-      const { data, success } = yield call(queryUsers, { rolename: 'student', ...payload })
+      const { params, phone2 } = payload
+      console.log(params, phone2)
+      delete params.startdate
+      const { data, success } = yield call(queryCourseStudents, params)
       if (success) {
         yield put({
           type: 'queryStudentsSuccess',
           payload: {
-            studentList: data.slice(0, 5),
+            studentList: data,
+            phone2,
+          },
+        })
+      }
+    },
+    * queryStudents2 ({ payload }, { call, put }) {
+      const { params, phone2 } = payload
+      console.log(params, phone2)
+      const { data, success } = yield call(querylessonStudents, params)
+      if (success) {
+        yield put({
+          type: 'queryStudentsSuccess',
+          payload: {
+            studentList: data,
+            phone2,
           },
         })
       }
@@ -156,10 +150,23 @@ export default {
       return { ...state, ...action.payload }
     },
     queryStudentsSuccess (state, action) {
+      const { studentList, phone2 } = action.payload
+      studentList.forEach((item, index) => {
+        if (item.phone2 === phone2) {
+          studentList.splice(index, 1)
+          studentList.unshift(item)
+        }
+      })
+      return { ...state, studentList }
+    },
+    changeType (state, action) {
       return { ...state, ...action.payload }
     },
     resetStudents (state) {
       return { ...state, studentList: [] }
+    },
+    resetItem (state) {
+      return { ...state, type: 'create', item: {} }
     },
   },
 }

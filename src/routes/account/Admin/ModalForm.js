@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Modal, Icon, Select, Checkbox, Row, Col } from 'antd'
 import { getSchool, getUserInfo } from 'utils'
+import { initPassowrd } from 'utils/config'
 import { InputAutoComplete } from 'components'
 import { validPhone } from 'utils/utilsValid'
 import { roleNames, categorys, subjects, getModalType } from 'utils/dictionary'
@@ -63,7 +64,7 @@ class ModalForm extends Component {
         delete data.school
         delete data.rolename
       } else {
-        data.password = data.phone2.substr(data.phone2.length - 6)
+        data.password = initPassowrd
       }
       onOk(data)
     })
@@ -173,7 +174,18 @@ class ModalForm extends Component {
               ],
             })(<Input disabled={disabled} placeholder="请输入真实姓名" />)}
           </FormItem>
-          <FormItem label="手机号" hasFeedback {...formItemLayout} extra={type === 'create' && '新建工作人员时，初始密码默认值是手机号码后六位'}>
+          <FormItem label="艺名" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('alternatename', {
+              initialValue: curItem.alternatename,
+              rules: [
+                {
+                  required: true,
+                  message: '请输入艺名',
+                },
+              ],
+            })(<Input disabled={disabled} placeholder="请输入艺名" />)}
+          </FormItem>
+          <FormItem label="手机号" hasFeedback {...formItemLayout} extra={type === 'create' && `新建工作人员时，初始密码默认值是 ${initPassowrd}`}>
             {getFieldDecorator('phone2', {
               initialValue: curItem.phone2,
               rules: [

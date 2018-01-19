@@ -9,7 +9,7 @@ import ResultListModal from './ResultListModal'
 
 const namespace = 'lessonItem'
 
-const LessonItem = ({ dispatch, curPowers, lessonItem, loading, modal }) => {
+const LessonItem = ({ dispatch, curPowers, lessonItem, loading, modal, commonModel }) => {
   const addPower = checkPower(ADD, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
   const addDaiTeacherPower = checkPower(ADD_DAI_TEACHER, curPowers)
@@ -23,17 +23,26 @@ const LessonItem = ({ dispatch, curPowers, lessonItem, loading, modal }) => {
     addDeleteStudentPower,
     otherStudentPower,
     lessonItem,
+    commonModel,
     loading: loading.models.lessonItem,
+    queryStudentsLoading: loading.effects[`${namespace}/queryStudents`],
+    queryStudents2Loading: loading.effects[`${namespace}/queryStudents2`],
     onChangeDaiTeacher ({ type, params }) {
       dispatch({
         type: `${namespace}/changeDaiTeacher`,
         payload: { type, params },
       })
     },
-    onQueryStudentList (params) {
+    onQueryStudentList (params, phone2) {
       dispatch({
         type: `${namespace}/queryStudents`,
-        payload: params,
+        payload: { params, phone2 },
+      })
+    },
+    onQueryStudentList2 (params, phone2) {
+      dispatch({
+        type: `${namespace}/queryStudents2`,
+        payload: { params, phone2 },
       })
     },
     onAddStudent (params) {
@@ -55,6 +64,9 @@ const LessonItem = ({ dispatch, curPowers, lessonItem, loading, modal }) => {
     },
     onGoBack () {
       dispatch(routerRedux.goBack())
+    },
+    onResetItem () {
+      dispatch({ type: `${namespace}/resetItem` })
     },
   }
 
@@ -80,10 +92,11 @@ LessonItem.propTypes = {
   lessonItem: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
   modal: PropTypes.object.isRequired,
+  commonModel: PropTypes.object.isRequired,
 }
 
-function mapStateToProps ({ lessonItem, loading, modal }) {
-  return { lessonItem, loading, modal }
+function mapStateToProps ({ lessonItem, loading, modal, commonModel }) {
+  return { lessonItem, loading, modal, commonModel }
 }
 
 export default connect(mapStateToProps)(LessonItem)

@@ -94,9 +94,9 @@ function List ({
       sorter: (a, b) => a.classroom.localeCompare(b.classroom),
     }, {
       title: '老师',
-      dataIndex: 'teacher',
-      key: 'teacher',
-      sorter: (a, b) => a.teacher.localeCompare(b.teacher),
+      dataIndex: 'teacher_alternatename',
+      key: 'teacher_alternatename',
+      sorter: (a, b) => a.teacher_alternatename.localeCompare(b.teacher_alternatename),
     }, {
       title: '已选学生人数',
       dataIndex: 'num_student',

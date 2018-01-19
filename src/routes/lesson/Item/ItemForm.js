@@ -32,13 +32,18 @@ class ItemForm extends Component {
     addDeleteStudentPower: PropTypes.bool.isRequired,
     otherStudentPower: PropTypes.bool.isRequired,
     lessonItem: PropTypes.object.isRequired,
+    commonModel: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
+    queryStudentsLoading: PropTypes.bool,
+    queryStudents2Loading: PropTypes.bool,
     onSubmit: PropTypes.func.isRequired,
     onGoBack: PropTypes.func.isRequired,
     onChangeDaiTeacher: PropTypes.func.isRequired,
     onQueryStudentList: PropTypes.func.isRequired,
+    onQueryStudentList2: PropTypes.func.isRequired,
     onResetStudents: PropTypes.func.isRequired,
+    onResetItem: PropTypes.func.isRequired,
     onAddStudent: PropTypes.func.isRequired,
   }
 
@@ -49,22 +54,31 @@ class ItemForm extends Component {
     timeEnds: timeList,
     teachers: [],
     fetching: false,
-    errorMsg: '没有匹配的学员数据',
+    errorMsg: '请先完善课程信息！',
     addDisabled: true,
     studentid: null,
   }
 
   componentWillReceiveProps (nextProps) {
     const { lessonItem } = this.props
-    const { lessonItem: { item, teachersDic } } = nextProps
+    const { lessonItem: { item, studentList }, commonModel: { teachers2Dic } } = nextProps
     if (!lessonItem.item.category_summary && item.category_summary) {
       this.handleSchoolChange(item.school_id || this.state.schoolId, false)
       this.changeStudentForm(item.category_idnumber)
     }
-    if (!this.state.teachers.length && Object.keys(teachersDic).length) {
-      const teachersState = teachersDic[item.school_id || this.state.schoolId] || []
+    if (!this.state.teachers.length && Object.keys(teachers2Dic).length) {
+      const teachersState = teachers2Dic[item.school_id || this.state.schoolId] || []
       teachersState.length && this.setState({ teachers: teachersState })
     }
+    if (((this.props.queryStudentsLoading && !nextProps.queryStudentsLoading) ||
+        (this.props.queryStudents2Loading && !nextProps.queryStudents2Loading)) &&
+        !studentList.length) {
+      this.setState({ fetching: false, errorMsg: '没有可匹配的学员列表！' })
+    }
+  }
+
+  componentWillUnmount () {
+    this.props.onResetItem()
   }
 
   TeacherDaiFormItem = ({ teacherId, disabled }) => {
@@ -110,7 +124,7 @@ class ItemForm extends Component {
               initialValue: teacherDaiId || undefined,
               onChange: handleDaiTeacherChange,
             })(<Select size="large" disabled={disabled || !addDaiTeacherPower} placeholder="--请选择添加代课老师--">
-              {teachers.filter(cur => cur.id !== teacherId).map(teacher => <Option key={teacher.id} value={teacher.id.toString()}>{teacher.firstname}</Option>)}
+              {teachers.filter(cur => cur.id !== teacherId).map(teacher => <Option key={teacher.id} value={teacher.id.toString()}>{teacher.teacher_substitute_alternatename}</Option>)}
             </Select>)
             }
           </Col>
@@ -139,20 +153,20 @@ class ItemForm extends Component {
   handleSchoolChange = (schoolId, needSetValue = true) => {
     this.setState({ schoolId })
     if (needSetValue) {
-      const { form: { setFieldsValue, getFieldValue }, lessonItem: { teachersDic, courseCategorys } } = this.props
+      const { form: { setFieldsValue, getFieldValue }, lessonItem: { courseCategorys }, commonModel: { teachers2Dic } } = this.props
       const categoryid = getFieldValue('categoryid')
       const courseCategory = courseCategorys.find(cur => cur.id === categoryid)
-      const teachers = teachersDic[schoolId] || []
+      const teachers = teachers2Dic[schoolId] || []
       this.setState({ teachers: teachers.filter(cur => courseCategory && courseCategory.idnumber.includes(cur.teacher_subject)) })
       setFieldsValue({ teacherid: undefined, classroomid: undefined })
     }
   }
 
   handleCategoryChange = (categoryid) => {
-    const { lessonItem: { courseCategorys, teachersDic }, form: { getFieldValue, setFieldsValue } } = this.props
+    const { lessonItem: { courseCategorys }, commonModel: { teachers2Dic }, form: { getFieldValue, setFieldsValue } } = this.props
     const courseCategory = courseCategorys.find(cur => cur.id === categoryid)
     const schoolId = getFieldValue('school_id')
-    const teachers = teachersDic[schoolId] || []
+    const teachers = teachers2Dic[schoolId] || []
     this.setState({ teachers: teachers.filter(cur => courseCategory.idnumber.includes(cur.teacher_subject)) })
 
     const oldCategoryid = getFieldValue('categoryid')
@@ -191,7 +205,7 @@ class ItemForm extends Component {
 
   queryStudentList = (phone2) => {
     const { form: { getFieldsValue }, lessonItem: { studentList }, onQueryStudentList, onResetStudents } = this.props
-    const { school_id } = getFieldsValue(['school_id'])
+    // const { school_id } = getFieldsValue(['school_id'])
     const params = getFieldsValue(['categoryid', 'teacherid', 'classroomid', 'openweekday', 'numsections', 'startdate', 'available', 'deadline'])
 
     if (params.categoryid && params.teacherid && params.classroomid && params.openweekday && params.openweekday.length && params.numsections && params.startdate && params.available && params.deadline) {
@@ -211,9 +225,7 @@ class ItemForm extends Component {
       params.openweekday = params.openweekday.sort().join(',')
       params.available = moment(`${stateDate.format('YYYY-MM-DD')} ${params.available}`).format('X')
       params.deadline = moment(`${stateDate.format('YYYY-MM-DD')} ${params.deadline}`).format('X')
-      console.log(school_id, params)
-      // this.props.onQueryStudentList(params)
-      onQueryStudentList({ phone2, school: '' })
+      onQueryStudentList(params, phone2)
     } else {
       console.log('error')
       this.setState({ fetching: false, errorMsg: '请先完善表单数据！' })
@@ -222,11 +234,10 @@ class ItemForm extends Component {
   }
 
   queryStudentList2 = (phone2) => {
-    console.log(phone2)
-    const { form: { getFieldsValue }, lessonItem: { studentList }, onQueryStudentList, onResetStudents } = this.props
-    const params = getFieldsValue(['categoryid', 'teacherid', 'startdate', 'available'])
+    const { form: { getFieldsValue }, lessonItem: { studentList }, onQueryStudentList2, onResetStudents } = this.props
+    const params = getFieldsValue(['categoryid', 'teacherid', 'classroomid', 'startdate', 'available'])
 
-    if (params.categoryid && params.teacherid && params.startdate && params.available) {
+    if (params.categoryid && params.teacherid && params.classroomid && params.startdate && params.available) {
       if (phone2.length < 11) {
         studentList.length && onResetStudents()
         this.setState({ fetching: false, errorMsg: '请继续输入手机号码！' })
@@ -240,9 +251,7 @@ class ItemForm extends Component {
       this.setState({ fetching: true })
       params.available = moment(`${params.startdate.format('YYYY-MM-DD')} ${params.available}`).format('X')
       delete params.startdate
-      console.log(params)
-      // this.props.onQueryStudentList(params)
-      onQueryStudentList({ phone2, school: '' })
+      onQueryStudentList2(params, phone2)
     } else {
       console.log('error')
       this.setState({ fetching: false, errorMsg: '请先完善表单数据！' })
@@ -305,7 +314,8 @@ class ItemForm extends Component {
 
   render () {
     const {
-      lessonItem: { type, item, courseCategorys, schools, classroomsDic, studentList },
+      lessonItem: { type, item, courseCategorys, studentList },
+      commonModel: { schools, classroomsDic },
       addPower, updatePower, addDeleteStudentPower, otherStudentPower,
       loading, onGoBack,
       form: { getFieldDecorator },
@@ -330,7 +340,7 @@ class ItemForm extends Component {
         <Form className={styles.form_box}>
           <FormItem label="课程类型" hasFeedback {...formItemLayout} extra="支持输入关键字筛选">
             {getFieldDecorator('categoryid', {
-              initialValue: item.category_summary,
+              initialValue: item.categoryid && item.categoryid.toString(),
               onChange: this.handleCategoryChange,
               rules: [
                 {
@@ -374,7 +384,7 @@ class ItemForm extends Component {
                 },
               ],
             })(<Select disabled={disabled || disabledEdit} placeholder="--请选择老师--">
-              {teachers.map(teacher => <Option key={teacher.id} value={teacher.id.toString()}>{teacher.firstname}</Option>)}
+              {teachers.map(teacher => <Option key={teacher.id} value={teacher.id.toString()}>{teacher.teacher_alternatename}</Option>)}
             </Select>)
             }
           </FormItem>
@@ -493,7 +503,7 @@ class ItemForm extends Component {
               mode="multiple"
               labelInValue
               placeholder="请逐个输入学员手机号码进行验证"
-              notFoundContent={fetching ? <Spin size="small" /> : <Tag color="red">{errorMsg}</Tag>}
+              notFoundContent={fetching ? <Spin size="small" /> : <Tag color="red">{errorMsg }</Tag>}
               filterOption={false}
               onChange={this.handleMultipleChange}
               onSearch={this.queryStudentList}

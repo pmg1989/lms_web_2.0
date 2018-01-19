@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const webpack = require('webpack')
+const { devZhugeAppKey } = require('./src/utils/config')
 
 module.exports = (webpackConfig, env) => {
   const production = env === 'production'
@@ -29,7 +30,7 @@ module.exports = (webpackConfig, env) => {
       } : null,
       hash: true,
       headScripts: production ? null : ['/roadhog.dll.js'],
-      zhugeAppKey: process.env.zhugeAppKey || 'd3e2521de2b6411291c55b9f861f32fa',
+      zhugeAppKey: process.env.zhugeAppKey || devZhugeAppKey,
     }),
   ])
 

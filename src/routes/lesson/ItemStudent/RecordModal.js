@@ -124,7 +124,7 @@ const ModalForm = ({
       if (errors) {
         return
       }
-      values.studentid = curItem.id
+      values.userid = curItem.id
       values.lessonid = curItem.lessonid
       delete values.file
       onOk(values)

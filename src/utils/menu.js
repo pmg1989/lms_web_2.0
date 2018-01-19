@@ -1,6 +1,7 @@
 // 权限的基本操作 详细可参见 ../constants/options.js
 // power = { 1: "查看菜单", 2: "查看页面", 3: "新增", 4: "修改", 5: "删除", 6: "详情" }
 // options = { MENU: "查看菜单", CONTENT: "查看页面", ADD: "新增", UPDATE: "修改", DELETE: "删除", DETAIL: "详情" }
+import { praceticeDoman } from 'utils/config'
 
 const menu = [
   // dashboard
@@ -75,7 +76,7 @@ const menu = [
         key: 'admin',
         icon: 'woman',
         name: '工作人员',
-        power: [1, 2, 3, 4, 5, 6, 8, 9],
+        power: [1, 2, 3, 4, 5, 6, 8, 9, 15],
       },
       {
         id: 33,
@@ -124,8 +125,41 @@ const menu = [
         id: 52,
         key: 'chart',
         icon: 'pie-chart',
-        name: '报表统计',
+        name: '仪表盘',
         power: [1, 2],
+      },
+    ],
+  },
+  // practice
+  {
+    id: 6,
+    key: 'practice',
+    icon: 'customer-service',
+    name: '练声曲管理',
+    clickable: false,
+    power: [1],
+    children: [
+      {
+        id: 61,
+        key: 'list',
+        icon: 'bars',
+        name: '练声曲',
+        power: [1],
+        outLink: () => {
+          const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}')
+          return `${praceticeDoman}/signin/practice/${userInfo.teacher_info}`
+        },
+      },
+      {
+        id: 62,
+        key: 'test',
+        icon: 'bars',
+        name: '学员测试',
+        power: [1],
+        outLink: () => {
+          const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}')
+          return `${praceticeDoman}/signin/exam/${userInfo.teacher_info}`
+        },
       },
     ],
   },

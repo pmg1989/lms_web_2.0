@@ -91,7 +91,7 @@ const ContractList = ({ list, status, ...contractProps }) => {
           <div key={key} className={styles.list}>
             <TitleBanner title={item.profession.category_summary} image={`/images/course-type/${categoryId}.png`} />
             <div className={styles.item}>
-              <div className={styles.left}><span className={styles.title}>老师：{item.profession.teacher_name || '未分配'}</span></div>
+              <div className={styles.left}><span className={styles.title}>老师：{item.profession.teacher_alternatename || '未分配'}</span></div>
               <div className={styles.right}>{moment.unix(item.profession.available).format('YYYY-MM-DD')} - {moment.unix(item.profession.deadline).format('YYYY-MM-DD')}</div>
             </div>
             <Contract type="profession" status={status} item={item.profession} {...contractProps} />

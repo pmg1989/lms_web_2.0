@@ -58,7 +58,7 @@ const Search = ({
               onChange: handleChange,
             })(<Select style={{ width: 150 }} disabled={getUserInfo().rolename === 'teacher'}>
               <Option value="">全部</Option>
-              {teachers.map(item => <Option key={item.id} value={item.id.toString()}>{item.firstname}</Option>)}
+              {teachers.map(item => <Option key={item.id} value={item.id.toString()}>{item.alternatename}</Option>)}
             </Select>)
             }
           </FormItem>

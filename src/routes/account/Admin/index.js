@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { checkPower } from 'utils'
-import { ADD, UPDATE, DETAIL, RESIGN, LEAVE } from 'constants/options'
+import { ADD, UPDATE, DETAIL, RESIGN, LEAVE, RESET_PASSWORD } from 'constants/options'
 import List from './List'
 import Search from './Search'
 import ModalForm from './ModalForm'
@@ -10,15 +10,16 @@ import LevelModal from './LevelModal'
 
 const namespace = 'accountAdmin'
 
-function Admin ({ dispatch, curPowers, accountAdmin, modal, loading }) {
+function Admin ({ dispatch, curPowers, accountAdmin, modal, loading, commonModel }) {
   const addPower = checkPower(ADD, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
   const detailPower = checkPower(DETAIL, curPowers)
   const resignPower = checkPower(RESIGN, curPowers)
   const leavePower = checkPower(LEAVE, curPowers)
+  const resetPasswordPower = checkPower(RESET_PASSWORD, curPowers)
 
   const searchProps = {
-    schools: accountAdmin.schools,
+    schools: commonModel.schools,
     addPower,
     onSearch (fieldsValue) {
       dispatch({
@@ -37,11 +38,13 @@ function Admin ({ dispatch, curPowers, accountAdmin, modal, loading }) {
 
   const listProps = {
     accountAdmin,
+    schools: commonModel.schools,
     loading: loading.effects[`${namespace}/query`],
     updatePower,
     detailPower,
     resignPower,
     leavePower,
+    resetPasswordPower,
     onPageChange (fieldsValue) {
       dispatch({
         type: `${namespace}/query`,
@@ -79,10 +82,16 @@ function Admin ({ dispatch, curPowers, accountAdmin, modal, loading }) {
         })
       }
     },
+    onResetPasswordItem (params) {
+      dispatch({
+        type: `${namespace}/resetPassword`,
+        payload: { params },
+      })
+    },
   }
 
   const modalProps = {
-    schools: accountAdmin.schools,
+    schools: commonModel.schools,
     modal,
     loading: loading.models.accountAdmin,
     onOk (data) {
@@ -130,10 +139,11 @@ Admin.propTypes = {
   accountAdmin: PropTypes.object,
   modal: PropTypes.object,
   loading: PropTypes.object.isRequired,
+  commonModel: PropTypes.object.isRequired,
 }
 
-function mapStateToProps ({ accountAdmin, modal, loading }) {
-  return { accountAdmin, modal, loading }
+function mapStateToProps ({ accountAdmin, modal, loading, commonModel }) {
+  return { accountAdmin, modal, loading, commonModel }
 }
 
 export default connect(mapStateToProps)(Admin)

@@ -4,7 +4,7 @@ import { Menu, Tag, Modal } from 'antd'
 import moment from 'moment'
 import { DataTable, DropMenu } from 'components'
 import { getRoleName, getCategory, getSubject } from 'utils/dictionary'
-import { UPDATE, DETAIL, RESIGN, LEAVE } from 'constants/options'
+import { UPDATE, DETAIL, RESIGN, LEAVE, RESET_PASSWORD } from 'constants/options'
 import styles from './List.less'
 
 const confirm = Modal.confirm
@@ -12,20 +12,22 @@ const confirm = Modal.confirm
 function List ({
   accountAdmin: {
     searchQuery,
-    schools,
     list,
     pagination,
   },
+  schools,
   loading,
   onPageChange,
   updatePower,
   detailPower,
   resignPower,
   leavePower,
+  resetPasswordPower,
   onEditItem,
   onDetailItem,
   onResignItem,
   onLeaveItem,
+  onResetPasswordItem,
 }) {
   const handleResignItem = (record) => {
     confirm({
@@ -49,12 +51,22 @@ function List ({
     }
   }
 
+  const handleResetPasswordItem = (record) => {
+    confirm({
+      title: `您确定要重置${record.firstname}的登录密码吗?`,
+      onOk () {
+        onResetPasswordItem({ userid: record.id })
+      },
+    })
+  }
+
   const handleMenuClick = (key, record) => {
     return {
       [UPDATE]: onEditItem,
       [DETAIL]: onDetailItem,
       [RESIGN]: handleResignItem,
       [LEAVE]: handleLeaveItem,
+      [RESET_PASSWORD]: handleResetPasswordItem,
     }[key](record)
   }
 
@@ -65,10 +77,11 @@ function List ({
       key: 'username',
       sorter: (a, b) => a.username.localeCompare(b.username),
     }, {
-      title: '真实姓名',
-      dataIndex: 'firstname',
-      key: 'firstname',
-      sorter: (a, b) => a.firstname.localeCompare(b.firstname),
+      title: '艺名',
+      dataIndex: 'alternatename',
+      key: 'alternatename',
+      render: (alternatename, record) => <span>{record.rolename === 'teacher' ? alternatename : record.firstname}</span>,
+      sorter: (a, b) => a.alternatename.localeCompare(b.alternatename),
     }, {
       title: '校区',
       dataIndex: 'school',
@@ -114,6 +127,7 @@ function List ({
             {updatePower && <Menu.Item key={UPDATE}>编辑</Menu.Item>}
             {leavePower && <Menu.Item key={LEAVE}>{record.teacher_status === 'normal' ? '请假' : '销假'}</Menu.Item>}
             {resignPower && <Menu.Item key={RESIGN}>{record.suspended === 1 ? '重新入职' : '离职'}</Menu.Item>}
+            {resetPasswordPower && <Menu.Item key={RESET_PASSWORD}>重置密码</Menu.Item>}
           </Menu>
         </DropMenu>
       ),
@@ -161,15 +175,18 @@ function List ({
 List.propTypes = {
   loading: PropTypes.bool.isRequired,
   accountAdmin: PropTypes.object.isRequired,
+  schools: PropTypes.array.isRequired,
   updatePower: PropTypes.bool.isRequired,
   detailPower: PropTypes.bool.isRequired,
   resignPower: PropTypes.bool.isRequired,
   leavePower: PropTypes.bool.isRequired,
+  resetPasswordPower: PropTypes.bool.isRequired,
   onPageChange: PropTypes.func.isRequired,
   onEditItem: PropTypes.func.isRequired,
   onDetailItem: PropTypes.func.isRequired,
   onResignItem: PropTypes.func.isRequired,
   onLeaveItem: PropTypes.func.isRequired,
+  onResetPasswordItem: PropTypes.func.isRequired,
 }
 
 export default List

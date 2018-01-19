@@ -15,7 +15,7 @@ const MonthEvent = ({ event }) => {
   const Title = (
     <div>
       {moment.unix(event.available).format('HH:mm')} -- {moment.unix(event.deadline).format('HH:mm')}<br />
-      {event.category_summary}<br />老师: {event.teacher}<br />教室: {event.classroom}
+      {event.category_summary}<br />老师: {event.alternatename}<br />教室: {event.classroom}
     </div>
   )
 
@@ -37,7 +37,7 @@ const AgendaEvent = ({ event }) => {
   return (
     <Link to={`/lesson/update?lessonid=${event.id}`} className={classnames(styles.title_box, styles.dark)}>
       <span className={`icon ${event.category}-${event.iconType}`} />
-      <span className={styles.title}>{`${event.teacher} - ${event.category_summary} - ${event.classroom}教室`}</span>
+      <span className={styles.title}>{`${event.teacher_alternatename} - ${event.category_summary} - ${event.classroom}教室`}</span>
     </Link>
   )
 }
