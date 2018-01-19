@@ -1,5 +1,5 @@
 import { message } from 'antd'
-import { query, attendance, queryComment, comment, queryFeedback, uploadRecord } from 'services/lesson/student'
+import { query, attendance, queryComment, comment, queryFeedback, uploadRecord, uploadSong } from 'services/lesson/student'
 import { enrollesson, unenrollesson } from 'services/lesson/item'
 
 export default {
@@ -75,11 +75,18 @@ export default {
       const { type, curItem } = payload
       yield put({ type: 'modal/showModal', payload: { type, curItem, id: 2 } })
     },
-    * record ({ payload }, { put }) {
-      console.log(payload)
-      yield put({ type: 'modal/hideModal' })
+    * updateSong ({ payload }, { call, put }) {
+      const { params } = payload
+      const { success } = yield call(uploadSong, params)
+      if (success) {
+        yield put({ type: 'modal/hideModal' })
+        yield put({
+          type: 'updateSongSuccess',
+          payload: params,
+        })
+      }
     },
-    * upload ({ payload }, { call, put }) {
+    * uploadRecord ({ payload }, { call, put }) {
       const { params } = payload
       const { data, success } = yield call(uploadRecord, params)
       if (success) {
@@ -118,6 +125,11 @@ export default {
     uploadSuccess (state, action) {
       const { jlRecording, id } = action.payload
       const list = state.list.map(item => (item.id === id ? { ...item, jl_recording: jlRecording } : item))
+      return { ...state, list }
+    },
+    updateSongSuccess (state, action) {
+      const { userid, song, original_singer } = action.payload
+      const list = state.list.map(item => (item.id === userid ? { ...item, jl_song: { ...item.jl_song, song, original_singer } } : item))
       return { ...state, list }
     },
   },

@@ -8,7 +8,7 @@ import List from './List'
 
 const namespace = 'lessonList'
 
-function ListHome ({ curPowers, dispatch, lessonList, loading }) {
+function ListHome ({ curPowers, dispatch, lessonList, loading, commonModel }) {
   const addPower = checkPower(ADD, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
   const detailPower = checkPower(DETAIL, curPowers)
@@ -17,9 +17,9 @@ function ListHome ({ curPowers, dispatch, lessonList, loading }) {
   const searchProps = {
     addPower,
     searchQuery: lessonList.searchQuery,
-    schools: lessonList.schools,
-    categorys: lessonList.categorys,
-    teachersDic: lessonList.teachersDic,
+    schools: commonModel.schools,
+    categorys: commonModel.categorys,
+    teachersDic: commonModel.teachersDic,
     onSearch (fieldsValue) {
       dispatch({
         type: `${namespace}/query`,
@@ -73,10 +73,11 @@ ListHome.propTypes = {
   dispatch: PropTypes.func.isRequired,
   lessonList: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
+  commonModel: PropTypes.object.isRequired,
 }
 
-function mapStateToProps ({ lessonList, loading }) {
-  return { lessonList, loading }
+function mapStateToProps ({ lessonList, loading, commonModel }) {
+  return { lessonList, loading, commonModel }
 }
 
 export default connect(mapStateToProps)(ListHome)

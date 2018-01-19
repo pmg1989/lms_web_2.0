@@ -27,3 +27,7 @@ export async function uploadRecord (params) {
 export async function removeUploadRecord (params) {
   return request({ wsfunction: 'mod_frontservice_delete_file', ...params })
 }
+
+export async function uploadSong (params) {
+  return request({ wsfunction: 'mod_frontservice_update_jl_song', ...params })
+}

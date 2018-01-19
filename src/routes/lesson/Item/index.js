@@ -9,7 +9,7 @@ import ResultListModal from './ResultListModal'
 
 const namespace = 'lessonItem'
 
-const LessonItem = ({ dispatch, curPowers, lessonItem, loading, modal }) => {
+const LessonItem = ({ dispatch, curPowers, lessonItem, loading, modal, commonModel }) => {
   const addPower = checkPower(ADD, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
   const addDaiTeacherPower = checkPower(ADD_DAI_TEACHER, curPowers)
@@ -23,6 +23,7 @@ const LessonItem = ({ dispatch, curPowers, lessonItem, loading, modal }) => {
     addDeleteStudentPower,
     otherStudentPower,
     lessonItem,
+    commonModel,
     loading: loading.models.lessonItem,
     onChangeDaiTeacher ({ type, params }) {
       dispatch({
@@ -56,6 +57,9 @@ const LessonItem = ({ dispatch, curPowers, lessonItem, loading, modal }) => {
     onGoBack () {
       dispatch(routerRedux.goBack())
     },
+    onResetItem () {
+      dispatch({ type: `${namespace}/resetItem` })
+    },
   }
 
   const resultListModalProps = {
@@ -80,10 +84,11 @@ LessonItem.propTypes = {
   lessonItem: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
   modal: PropTypes.object.isRequired,
+  commonModel: PropTypes.object.isRequired,
 }
 
-function mapStateToProps ({ lessonItem, loading, modal }) {
-  return { lessonItem, loading, modal }
+function mapStateToProps ({ lessonItem, loading, modal, commonModel }) {
+  return { lessonItem, loading, modal, commonModel }
 }
 
 export default connect(mapStateToProps)(LessonItem)

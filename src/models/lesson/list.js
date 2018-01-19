@@ -1,9 +1,6 @@
 import moment from 'moment'
 import { getCurPowers, renderQuery, getSchool } from 'utils'
 import { query, remove, removeCourse, deleteBatch } from 'services/lesson/list'
-import { query as querySchools } from 'services/common/school'
-import { query as queryCategorys } from 'services/common/category'
-import { query as queryTeachers } from 'services/account/admin'
 
 const page = {
   current: 1,
@@ -20,9 +17,6 @@ export default {
   namespace: 'lessonList',
   state: {
     searchQuery: initParams,
-    schools: [],
-    categorys: [],
-    teachersDic: {},
     list: [],
     pagination: {
       ...page,
@@ -44,27 +38,10 @@ export default {
     },
   },
   effects: {
-    * querySearch ({ }, { call, put }) {
-      const { data: schools } = yield call(querySchools)
-      const { data: categorys } = yield call(queryCategorys)
-      const { data: teachers } = yield call(queryTeachers, { rolename: 'teacher', school: '' })
-      const teachersDic = teachers.reduce((dic, teacher) => {
-        if (teacher.school) {
-          if (!dic[teacher.school]) {
-            dic[teacher.school] = []
-          }
-          dic[teacher.school].push(teacher)
-        }
-        return dic
-      }, {})
-      yield put({
-        type: 'querySearchSuccess',
-        payload: {
-          schools,
-          categorys,
-          teachersDic,
-        },
-      })
+    * querySearch ({ }, { put }) {
+      yield put({ type: 'commonModel/querySchools' })
+      yield put({ type: 'commonModel/queryCategorys' })
+      yield put({ type: 'commonModel/queryTeachers' })
     },
     * query ({ payload }, { select, call, put }) {
       const { searchQuery, pagination } = yield select(({ lessonList }) => lessonList)
@@ -136,9 +113,6 @@ export default {
     },
   },
   reducers: {
-    querySearchSuccess (state, { payload }) {
-      return { ...state, ...payload }
-    },
     querySuccess (state, { payload }) {
       return { ...state, ...payload }
     },

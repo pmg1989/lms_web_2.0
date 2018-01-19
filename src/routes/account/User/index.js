@@ -12,14 +12,14 @@ import LessonsModal from './LessonsModal'
 
 const namespace = 'accountUser'
 
-function User ({ curPowers, dispatch, accountUser, modal, loading }) {
+function User ({ curPowers, dispatch, accountUser, modal, loading, commonModel }) {
   const detailPower = checkPower(DETAIL, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
   const setTeacherPower = checkPower(SET_TEACHER, curPowers)
   const getHistoryPower = checkPower(GET_HISTORY_LIST, curPowers)
 
   const searchProps = {
-    schools: accountUser.schools,
+    schools: commonModel.schools,
     onSearch (fieldsValue) {
       dispatch({
         type: `${namespace}/query`,
@@ -30,6 +30,7 @@ function User ({ curPowers, dispatch, accountUser, modal, loading }) {
 
   const listProps = {
     accountUser,
+    schools: commonModel.schools,
     loading: loading.effects[`${namespace}/query`],
     detailPower,
     updatePower,
@@ -144,10 +145,11 @@ User.propTypes = {
   curPowers: PropTypes.array.isRequired,
   loading: PropTypes.object.isRequired,
   modal: PropTypes.object.isRequired,
+  commonModel: PropTypes.object.isRequired,
 }
 
-function mapStateToProps ({ accountUser, modal, loading }) {
-  return { accountUser, modal, loading }
+function mapStateToProps ({ accountUser, modal, loading, commonModel }) {
+  return { accountUser, modal, loading, commonModel }
 }
 
 export default connect(mapStateToProps)(User)

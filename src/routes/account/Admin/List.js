@@ -12,10 +12,10 @@ const confirm = Modal.confirm
 function List ({
   accountAdmin: {
     searchQuery,
-    schools,
     list,
     pagination,
   },
+  schools,
   loading,
   onPageChange,
   updatePower,
@@ -161,6 +161,7 @@ function List ({
 List.propTypes = {
   loading: PropTypes.bool.isRequired,
   accountAdmin: PropTypes.object.isRequired,
+  schools: PropTypes.array.isRequired,
   updatePower: PropTypes.bool.isRequired,
   detailPower: PropTypes.bool.isRequired,
   resignPower: PropTypes.bool.isRequired,

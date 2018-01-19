@@ -9,10 +9,10 @@ import styles from './List.less'
 function List ({
   accountUser: {
     searchQuery,
-    schools,
     list,
     pagination,
   },
+  schools,
   loading,
   onPageChange,
   detailPower,
@@ -109,6 +109,7 @@ function List ({
 
 List.propTypes = {
   accountUser: PropTypes.object.isRequired,
+  schools: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,
   detailPower: PropTypes.bool.isRequired,
   onPageChange: PropTypes.func.isRequired,

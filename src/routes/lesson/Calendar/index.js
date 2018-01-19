@@ -8,12 +8,12 @@ import styles from './Calendar.less'
 
 const namespace = 'lessonCalendar'
 
-function CalendarHome ({ dispatch, lessonCalendar, loading }) {
+function CalendarHome ({ dispatch, lessonCalendar, loading, commonModel }) {
   const searchProps = {
     searchQuery: lessonCalendar.searchQuery,
-    schools: lessonCalendar.schools,
-    categorys: lessonCalendar.categorys,
-    teachersDic: lessonCalendar.teachersDic,
+    schools: commonModel.schools,
+    categorys: commonModel.categorys,
+    teachersDic: commonModel.teachersDic,
     onSearch (fieldsValue) {
       dispatch({
         type: `${namespace}/getLessons`,
@@ -51,10 +51,11 @@ CalendarHome.propTypes = {
   dispatch: PropTypes.func.isRequired,
   lessonCalendar: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
+  commonModel: PropTypes.object.isRequired,
 }
 
-function mapStateToProps ({ lessonCalendar, loading }) {
-  return { lessonCalendar, loading }
+function mapStateToProps ({ lessonCalendar, loading, commonModel }) {
+  return { lessonCalendar, loading, commonModel }
 }
 
 export default connect(mapStateToProps)(CalendarHome)

@@ -2,8 +2,6 @@ import { getCurPowers } from 'utils'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { query, create, update, queryCourseCategory, enrollesson, unenrollesson } from 'services/lesson/item'
-import { query as querySchools } from 'services/common/school'
-import { query as queryClassRooms } from 'services/common/classroom'
 import { query as queryUsers } from 'services/account/admin'
 
 export default {
@@ -11,10 +9,7 @@ export default {
   state: {
     type: 'create',
     item: {},
-    schools: [],
-    classroomsDic: {},
     courseCategorys: [],
-    teachersDic: {},
     studentList: [],
     resultList: {},
   },
@@ -43,14 +38,13 @@ export default {
 
   effects: {
     * query ({ payload }, { call, put }) {
-      const { lessonid, type } = payload
+      const { lessonid } = payload
       const { data, success } = yield call(query, { lessonid })
       if (success) {
         yield put({
           type: 'querySuccess',
           payload: {
             item: data,
-            type,
           },
         })
       }
@@ -60,41 +54,24 @@ export default {
         payload: { lessonid },
       })
     },
-    * querySource ({ payload }, { call, put }) {
-      const { data: schools } = yield call(querySchools)
-      const { data: classrooms } = yield call(queryClassRooms, { school_id: 0 })
-      const { data: courseCategorys } = yield call(queryCourseCategory)
-      const { data: teachers } = yield call(queryUsers, { rolename: 'teacher', school: '' })
+    * querySource ({ payload }, { select, call, put }) {
+      yield put({ type: 'commonModel/querySchools' })
+      yield put({ type: 'commonModel/queryClassRooms' })
+      yield put({ type: 'commonModel/queryTeachers' })
 
-      const classroomsDic = classrooms.reduce((dic, classroom) => {
-        if (classroom.school_id) {
-          if (!dic[classroom.school_id]) {
-            dic[classroom.school_id] = []
-          }
-          dic[classroom.school_id].push(classroom)
-        }
-        return dic
-      }, {})
-      const teachersDic = teachers.reduce((dic, teacher) => {
-        if (teacher.school_id) {
-          if (!dic[teacher.school_id]) {
-            dic[teacher.school_id] = []
-          }
-          dic[teacher.school_id].push(teacher)
-        }
-        return dic
-      }, {})
-
-      yield put({
-        type: 'querySourceSuccess',
-        payload: {
-          schools,
-          courseCategorys,
-          classroomsDic,
-          teachersDic,
-          type: payload.type,
-        },
-      })
+      const { courseCategorys } = yield select(({ lessonItem }) => lessonItem)
+      if (!courseCategorys.length) {
+        const { data } = yield call(queryCourseCategory)
+        yield put({
+          type: 'querySourceSuccess',
+          payload: {
+            courseCategorys: data,
+            type: payload.type,
+          },
+        })
+      } else {
+        yield put({ type: 'changeType', payload: { type: payload.type } })
+      }
 
       if (payload.type !== 'create') {
         yield put({ type: 'query', payload })
@@ -158,8 +135,14 @@ export default {
     queryStudentsSuccess (state, action) {
       return { ...state, ...action.payload }
     },
+    changeType (state, action) {
+      return { ...state, ...action.payload }
+    },
     resetStudents (state) {
       return { ...state, studentList: [] }
+    },
+    resetItem (state) {
+      return { ...state, type: 'create', item: {} }
     },
   },
 }

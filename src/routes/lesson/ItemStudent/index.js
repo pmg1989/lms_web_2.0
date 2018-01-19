@@ -80,13 +80,13 @@ const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId 
     },
     onUpload (params) {
       dispatch({
-        type: `${namespace}/upload`,
+        type: `${namespace}/uploadRecord`,
         payload: { params },
       })
     },
     onOk (data) {
       dispatch({
-        type: `${namespace}/record`,
+        type: `${namespace}/updateSong`,
         payload: {
           params: { ...data, lessonid },
         },
