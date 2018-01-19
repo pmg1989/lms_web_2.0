@@ -31,10 +31,16 @@ const LessonItem = ({ dispatch, curPowers, lessonItem, loading, modal, commonMod
         payload: { type, params },
       })
     },
-    onQueryStudentList (params) {
+    onQueryStudentList (params, phone2) {
       dispatch({
         type: `${namespace}/queryStudents`,
-        payload: params,
+        payload: { params, phone2 },
+      })
+    },
+    onQueryStudentList2 (params, phone2) {
+      dispatch({
+        type: `${namespace}/queryStudents2`,
+        payload: { params, phone2 },
       })
     },
     onAddStudent (params) {

@@ -39,6 +39,7 @@ class ItemForm extends Component {
     onGoBack: PropTypes.func.isRequired,
     onChangeDaiTeacher: PropTypes.func.isRequired,
     onQueryStudentList: PropTypes.func.isRequired,
+    onQueryStudentList2: PropTypes.func.isRequired,
     onResetStudents: PropTypes.func.isRequired,
     onResetItem: PropTypes.func.isRequired,
     onAddStudent: PropTypes.func.isRequired,
@@ -197,7 +198,7 @@ class ItemForm extends Component {
 
   queryStudentList = (phone2) => {
     const { form: { getFieldsValue }, lessonItem: { studentList }, onQueryStudentList, onResetStudents } = this.props
-    const { school_id } = getFieldsValue(['school_id'])
+    // const { school_id } = getFieldsValue(['school_id'])
     const params = getFieldsValue(['categoryid', 'teacherid', 'classroomid', 'openweekday', 'numsections', 'startdate', 'available', 'deadline'])
 
     if (params.categoryid && params.teacherid && params.classroomid && params.openweekday && params.openweekday.length && params.numsections && params.startdate && params.available && params.deadline) {
@@ -217,9 +218,7 @@ class ItemForm extends Component {
       params.openweekday = params.openweekday.sort().join(',')
       params.available = moment(`${stateDate.format('YYYY-MM-DD')} ${params.available}`).format('X')
       params.deadline = moment(`${stateDate.format('YYYY-MM-DD')} ${params.deadline}`).format('X')
-      console.log(school_id, params)
-      // this.props.onQueryStudentList(params)
-      onQueryStudentList({ phone2, school: '' })
+      onQueryStudentList(params, phone2)
     } else {
       console.log('error')
       this.setState({ fetching: false, errorMsg: '请先完善表单数据！' })
@@ -228,11 +227,10 @@ class ItemForm extends Component {
   }
 
   queryStudentList2 = (phone2) => {
-    console.log(phone2)
-    const { form: { getFieldsValue }, lessonItem: { studentList }, onQueryStudentList, onResetStudents } = this.props
-    const params = getFieldsValue(['categoryid', 'teacherid', 'startdate', 'available'])
+    const { form: { getFieldsValue }, lessonItem: { studentList }, onQueryStudentList2, onResetStudents } = this.props
+    const params = getFieldsValue(['categoryid', 'teacherid', 'classroomid', 'startdate', 'available'])
 
-    if (params.categoryid && params.teacherid && params.startdate && params.available) {
+    if (params.categoryid && params.teacherid && params.classroomid && params.startdate && params.available) {
       if (phone2.length < 11) {
         studentList.length && onResetStudents()
         this.setState({ fetching: false, errorMsg: '请继续输入手机号码！' })
@@ -246,9 +244,7 @@ class ItemForm extends Component {
       this.setState({ fetching: true })
       params.available = moment(`${params.startdate.format('YYYY-MM-DD')} ${params.available}`).format('X')
       delete params.startdate
-      console.log(params)
-      // this.props.onQueryStudentList(params)
-      onQueryStudentList({ phone2, school: '' })
+      onQueryStudentList2(params, phone2)
     } else {
       console.log('error')
       this.setState({ fetching: false, errorMsg: '请先完善表单数据！' })
@@ -337,7 +333,7 @@ class ItemForm extends Component {
         <Form className={styles.form_box}>
           <FormItem label="课程类型" hasFeedback {...formItemLayout} extra="支持输入关键字筛选">
             {getFieldDecorator('categoryid', {
-              initialValue: item.category_summary,
+              initialValue: item.categoryid && item.categoryid.toString(),
               onChange: this.handleCategoryChange,
               rules: [
                 {

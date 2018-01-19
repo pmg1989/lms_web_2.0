@@ -1,8 +1,7 @@
 import { getCurPowers } from 'utils'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
-import { query, create, update, queryCourseCategory, enrollesson, unenrollesson } from 'services/lesson/item'
-import { query as queryUsers } from 'services/account/admin'
+import { query, create, update, queryCourseCategory, enrollesson, unenrollesson, querylessonStudents, queryCourseStudents } from 'services/lesson/item'
 
 export default {
   namespace: 'lessonItem',
@@ -78,7 +77,23 @@ export default {
       }
     },
     * queryStudents ({ payload }, { call, put }) {
-      const { data, success } = yield call(queryUsers, { rolename: 'student', ...payload })
+      const { params, phone2 } = payload
+      console.log(params, phone2)
+      delete params.startdate
+      const { data, success } = yield call(queryCourseStudents, params)
+      if (success) {
+        yield put({
+          type: 'queryStudentsSuccess',
+          payload: {
+            studentList: data,
+          },
+        })
+      }
+    },
+    * queryStudents2 ({ payload }, { call, put }) {
+      const { params, phone2 } = payload
+      console.log(params, phone2)
+      const { data, success } = yield call(querylessonStudents, params)
       if (success) {
         yield put({
           type: 'queryStudentsSuccess',

@@ -23,3 +23,11 @@ export async function enrollesson (params) {
 export async function unenrollesson (params) {
   return request({ wsfunction: 'mod_frontservice_unenrollesson', ...params })
 }
+
+export async function querylessonStudents (params) {
+  return request({ wsfunction: 'mod_frontservice_lesson_accessiblestudents', ...params })
+}
+
+export async function queryCourseStudents (params) {
+  return request({ wsfunction: 'mod_frontservice_course_accessiblestudents', ...params })
+}
