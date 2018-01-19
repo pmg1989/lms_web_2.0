@@ -6,6 +6,8 @@ import moment from 'moment'
 import CirclePlayer from 'components/MediaPlayer/CirclePlayer'
 import { getModalType } from 'utils/dictionary'
 
+const now = new Date().getTime() / 1000
+
 const ModalForm = ({
   modal: { curItem, type, visible },
   loading,
@@ -35,12 +37,15 @@ const ModalForm = ({
       title: '任课老师',
       dataIndex: 'teacher_alternatename',
       key: 'teacher_alternatename',
+      render (alternatename, record) {
+        return <span>{alternatename}{record.teacher_substitute_alternatename && `（${record.teacher_substitute_alternatename}代上）`}</span>
+      },
     }, {
       title: '上课时间',
       dataIndex: 'available',
       key: 'available',
       render (available, record) {
-        return <span>{moment.unix(available).format('YYYY-MM-DD HH:mm')} ~ {moment.unix(record.deadline).format('HH:mm')}</span>
+        return <span>{moment.unix(available).format('YYYY-MM-DD HH:mm')} ~ {moment.unix(record.deadline).format('HH:mm')} {now > available && <Icon style={{ fontSize: 16, color: '#108ee9' }} type="check-circle-o" />}</span>
       },
     }, {
       title: '教室',
