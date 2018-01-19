@@ -86,6 +86,7 @@ export default {
           type: 'queryStudentsSuccess',
           payload: {
             studentList: data,
+            phone2,
           },
         })
       }
@@ -99,6 +100,7 @@ export default {
           type: 'queryStudentsSuccess',
           payload: {
             studentList: data,
+            phone2,
           },
         })
       }
@@ -148,7 +150,14 @@ export default {
       return { ...state, ...action.payload }
     },
     queryStudentsSuccess (state, action) {
-      return { ...state, ...action.payload }
+      const { studentList, phone2 } = action.payload
+      studentList.forEach((item, index) => {
+        if (item.phone2 === phone2) {
+          studentList.splice(index, 1)
+          studentList.unshift(item)
+        }
+      })
+      return { ...state, studentList }
     },
     changeType (state, action) {
       return { ...state, ...action.payload }

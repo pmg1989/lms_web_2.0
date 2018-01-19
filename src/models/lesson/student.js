@@ -35,7 +35,7 @@ export default {
       if (success) {
         yield put({
           type: 'query',
-          payload: { lessonid: params.userid },
+          payload: { lessonid: params.lessonid },
         })
       }
     },
