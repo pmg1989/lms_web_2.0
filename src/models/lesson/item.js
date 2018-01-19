@@ -98,7 +98,7 @@ export default {
         yield put({
           type: 'queryStudentsSuccess',
           payload: {
-            studentList: data.slice(0, 5),
+            studentList: data,
           },
         })
       }
