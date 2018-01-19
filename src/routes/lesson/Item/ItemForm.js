@@ -35,6 +35,8 @@ class ItemForm extends Component {
     commonModel: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
+    queryStudentsLoading: PropTypes.bool,
+    queryStudents2Loading: PropTypes.bool,
     onSubmit: PropTypes.func.isRequired,
     onGoBack: PropTypes.func.isRequired,
     onChangeDaiTeacher: PropTypes.func.isRequired,
@@ -52,14 +54,14 @@ class ItemForm extends Component {
     timeEnds: timeList,
     teachers: [],
     fetching: false,
-    errorMsg: '没有匹配的学员数据',
+    errorMsg: '请先完善课程信息！',
     addDisabled: true,
     studentid: null,
   }
 
   componentWillReceiveProps (nextProps) {
     const { lessonItem } = this.props
-    const { lessonItem: { item }, commonModel: { teachers2Dic } } = nextProps
+    const { lessonItem: { item, studentList }, commonModel: { teachers2Dic } } = nextProps
     if (!lessonItem.item.category_summary && item.category_summary) {
       this.handleSchoolChange(item.school_id || this.state.schoolId, false)
       this.changeStudentForm(item.category_idnumber)
@@ -67,6 +69,11 @@ class ItemForm extends Component {
     if (!this.state.teachers.length && Object.keys(teachers2Dic).length) {
       const teachersState = teachers2Dic[item.school_id || this.state.schoolId] || []
       teachersState.length && this.setState({ teachers: teachersState })
+    }
+    if (((this.props.queryStudentsLoading && !nextProps.queryStudentsLoading) ||
+        (this.props.queryStudents2Loading && !nextProps.queryStudents2Loading)) &&
+        !studentList.length) {
+      this.setState({ fetching: false, errorMsg: '没有可匹配的学员列表！' })
     }
   }
 
@@ -496,7 +503,7 @@ class ItemForm extends Component {
               mode="multiple"
               labelInValue
               placeholder="请逐个输入学员手机号码进行验证"
-              notFoundContent={fetching ? <Spin size="small" /> : <Tag color="red">{errorMsg}</Tag>}
+              notFoundContent={fetching ? <Spin size="small" /> : <Tag color="red">{errorMsg }</Tag>}
               filterOption={false}
               onChange={this.handleMultipleChange}
               onSearch={this.queryStudentList}

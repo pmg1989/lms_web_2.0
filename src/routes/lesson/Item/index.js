@@ -25,6 +25,8 @@ const LessonItem = ({ dispatch, curPowers, lessonItem, loading, modal, commonMod
     lessonItem,
     commonModel,
     loading: loading.models.lessonItem,
+    queryStudentsLoading: loading.effects[`${namespace}/queryStudents`],
+    queryStudents2Loading: loading.effects[`${namespace}/queryStudents2`],
     onChangeDaiTeacher ({ type, params }) {
       dispatch({
         type: `${namespace}/changeDaiTeacher`,
