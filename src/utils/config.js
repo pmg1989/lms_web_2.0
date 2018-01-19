@@ -8,4 +8,5 @@ export default {
   wstoken: '65b6372750516f21e18d27037edad0e0',
   dashboard: '/lesson/calendar', // default '/'
   navOpenKeys: '["/lesson"]', // default '[]'
+  initPassowrd: 'Newb@nd123',
 }
