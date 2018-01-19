@@ -1,5 +1,6 @@
 const path = require('path')
 const { version } = require('./package.json')
+const { devProxyHost } = require('./src/utils/config')
 
 const svgSpriteDirs = [
     path.resolve(__dirname, 'src/svg/'),
@@ -16,7 +17,7 @@ export default {
     outputPath: `./dist/deploy`,
     proxy: {
         "/api/moodle": {
-            "target": process.env.PROXY_HOST || 'http://school.newband.com:8086',
+            "target": process.env.PROXY_HOST || devProxyHost,
             "changeOrigin": true,
             "pathRewrite": { "^/api/": "/" }
         },

@@ -9,4 +9,7 @@ export default {
   dashboard: '/lesson/calendar', // default '/'
   navOpenKeys: '["/lesson"]', // default '[]'
   initPassowrd: 'Newb@nd123',
+  devProxyHost: 'http://school.newband.com:8086',
+  devZhugeAppKey: 'd3e2521de2b6411291c55b9f861f32fa',
+  praceticeDoman: 'http://staging.web.newband.com:5001',
 }

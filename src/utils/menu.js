@@ -1,6 +1,7 @@
 // 权限的基本操作 详细可参见 ../constants/options.js
 // power = { 1: "查看菜单", 2: "查看页面", 3: "新增", 4: "修改", 5: "删除", 6: "详情" }
 // options = { MENU: "查看菜单", CONTENT: "查看页面", ADD: "新增", UPDATE: "修改", DELETE: "删除", DETAIL: "详情" }
+import { praceticeDoman } from 'utils/config'
 
 const menu = [
   // dashboard
@@ -146,7 +147,7 @@ const menu = [
         power: [1],
         outLink: () => {
           const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}')
-          return `http://staging.web.newband.com:5001/signin/practice/${userInfo.teacher_info}`
+          return `${praceticeDoman}/signin/practice/${userInfo.teacher_info}`
         },
       },
       {
@@ -157,7 +158,7 @@ const menu = [
         power: [1],
         outLink: () => {
           const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}')
-          return `http://staging.web.newband.com:5001/signin/exam/${userInfo.teacher_info}`
+          return `${praceticeDoman}/signin/exam/${userInfo.teacher_info}`
         },
       },
     ],
