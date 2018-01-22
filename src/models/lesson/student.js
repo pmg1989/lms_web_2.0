@@ -128,8 +128,8 @@ export default {
       return { ...state, list }
     },
     updateSongSuccess (state, action) {
-      const { userid, song, original_singer } = action.payload
-      const list = state.list.map(item => (item.id === userid ? { ...item, jl_song: { ...item.jl_song, song, original_singer } } : item))
+      const { userid, song, original_singer: originalSinger } = action.payload
+      const list = state.list.map(item => (item.id === userid ? { ...item, jl_song: { ...item.jl_song, song, original_singer: originalSinger } } : item))
       return { ...state, list }
     },
   },
