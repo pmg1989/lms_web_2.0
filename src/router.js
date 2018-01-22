@@ -178,6 +178,16 @@ const Routers = function ({ history, app }) {
                 }, 'analysis-report')
               },
             },
+            {
+              path: 'chart',
+              name: 'chart',
+              getComponent (nextState, cb) {
+                require.ensure([], (require) => {
+                  registerModel(app, require('./models/analysis/chart'))
+                  cb(null, require('./routes/analysis/Chart'))
+                }, 'analysis-chart')
+              },
+            },
           ],
         },
         // no-power
