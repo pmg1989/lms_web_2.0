@@ -35,12 +35,12 @@ export default {
           type: 'queryChartSuccess',
           payload: {
             lessons: {
-              legendData: ['精品课时 | 335', 'VIP课时 | 310', '被代课时 | 234', '已代课时 | 135'],
+              legendData: ['精品课时 | 100', 'VIP课时 | 200', '被代课时 | 300', '已代课时 | 400'],
               seriesData: [
-                { value: 335, name: '精品课时 | 335' },
-                { value: 310, name: 'VIP课时 | 310' },
-                { value: 234, name: '被代课时 | 234' },
-                { value: 135, name: '已代课时 | 135' },
+                { value: 100, name: '精品课时 | 100' },
+                { value: 200, name: 'VIP课时 | 200' },
+                { value: 300, name: '被代课时 | 300' },
+                { value: 400, name: '已代课时 | 400' },
               ],
             },
           },
