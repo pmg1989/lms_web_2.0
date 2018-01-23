@@ -1,12 +1,37 @@
-import { getCurPowers } from 'utils'
+import moment from 'moment'
+import { getCurPowers, getSchool } from 'utils'
 import { queryLessonsChart } from 'services/analysis/chart'
+
+const renderTeacherLessonsChart = (list) => {
+  return list.reduce((dicTeachers, item) => {
+    if (!dicTeachers[item.name]) {
+      dicTeachers[item.name] = item
+    }
+    if (!dicTeachers.all) {
+      dicTeachers.all = { ...item }
+    } else {
+      dicTeachers.all.profession += item.profession
+      dicTeachers.all.hd += item.hd
+      dicTeachers.all.jl += item.jl
+      dicTeachers.all.substitutee += item.substitutee
+      dicTeachers.all.substituter += item.substituter
+      dicTeachers.all.all += item.all
+    }
+    return dicTeachers
+  }, {})
+}
 
 export default {
   namespace: 'analysisChart',
   state: {
     lessons: {
-      legendData: [],
-      seriesData: [],
+      searchQuery: {
+        isPostBack: true,
+        school: getSchool(),
+        name: 'all',
+        deadline: moment().subtract(1, 'month').endOf('month').format('X'),
+      },
+      data: {},
     },
   },
 
@@ -25,33 +50,43 @@ export default {
   },
 
   effects: {
-    * query ({}, { put }) {
-      yield put({ type: 'queryChart' })
+    * query ({}, { select, put }) {
+      yield put({ type: 'commonModel/querySchools' })
+      yield put({ type: 'commonModel/queryTeachers' })
+      const { searchQuery } = yield select(({ analysisChart }) => analysisChart.lessons)
+      yield put({
+        type: 'queryTeacherLessonsChart',
+        payload: searchQuery,
+      })
     },
-    * queryChart ({ }, { call, put }) {
-      const { success } = yield call(queryLessonsChart)
-      if (success) {
-        yield put({
-          type: 'queryChartSuccess',
-          payload: {
-            lessons: {
-              legendData: ['精品课时 | 100', 'VIP课时 | 200', '被代课时 | 300', '已代课时 | 400'],
-              seriesData: [
-                { value: 100, name: '精品课时 | 100' },
-                { value: 200, name: 'VIP课时 | 200' },
-                { value: 300, name: '被代课时 | 300' },
-                { value: 400, name: '已代课时 | 400' },
-              ],
+    * queryTeacherLessonsChart ({ payload }, { call, put }) {
+      if (payload.isPostBack) {
+        const { isPostBack, name, ...params } = payload
+        const { data, success } = yield call(queryLessonsChart, params)
+        if (success) {
+          yield put({
+            type: 'queryTeacherLessonsChartSuccess',
+            payload: {
+              data: renderTeacherLessonsChart(data),
+              searchQuery: payload,
             },
-          },
+          })
+        }
+      } else {
+        yield put({
+          type: 'setTeacherLessonsChartSuccess',
+          payload: { searchQuery: payload },
         })
       }
     },
   },
 
   reducers: {
-    queryChartSuccess (state, action) {
-      return { ...state, ...action.payload }
+    queryTeacherLessonsChartSuccess (state, action) {
+      return { ...state, lessons: action.payload }
+    },
+    setTeacherLessonsChartSuccess (state, action) {
+      return { ...state, lessons: { ...state.lessons, searchQuery: action.payload.searchQuery } }
     },
   },
 }
