@@ -90,17 +90,14 @@ function List ({
   let total = pagination.total
 
   const getFilterList = () => {
-    const { field, keyword, rolename, category, subject, current, pageSize } = searchQuery
+    const { field, keyword, current, pageSize } = searchQuery
     const currentPage = current || pagination.current
     const sizePage = pageSize || pagination.pageSize
 
-    if (field || rolename || category || subject) {
+    if (field) {
       const filterTotalList = list.filter((item) => {
-        const hasRoleName = rolename ? item.rolename === rolename : true
-        const hasCategory = category ? item.teacher_category === category : true
-        const hasSubject = subject ? item.teacher_subject === subject : true
         const hasKeyWords = keyword ? item[field].includes(decodeURI(keyword)) : true
-        return hasRoleName && hasCategory && hasSubject && hasKeyWords
+        return hasKeyWords
       })
       total = filterTotalList.length
       const filterList = filterTotalList.slice((currentPage - 1) * (sizePage), currentPage * sizePage)

@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Row, Col, Select } from 'antd'
+import { Form, Row, Col, Select, DatePicker } from 'antd'
+import moment from 'moment'
 import { SearchGroup } from 'components'
 import { getSchool } from 'utils'
-import { roleNames, categorys, subjects } from 'utils/dictionary'
 
 const FormItem = Form.Item
 const Option = Select.Option
+const { MonthPicker } = DatePicker
 
 const Search = ({
   schools,
@@ -19,27 +20,30 @@ const Search = ({
   const searchGroupProps = {
     size: 'large',
     select: true,
-    selectOptions: [{ value: 'username', name: '用户名' }, { value: 'firstname', name: '真实姓名' }, { value: 'phone2', name: '手机号' }],
+    selectOptions: [
+      { value: 'name', name: '老师姓名' },
+      { value: 'teacher_level', name: '等级' },
+      { value: 'teacher_category', name: '类别' },
+      { value: 'teacher_subject', name: '科目' },
+    ],
     selectProps: {
-      defaultValue: 'username',
+      defaultValue: 'name',
     },
     onSearch: (value) => {
       const fieldsValue = getFieldsValue()
       fieldsValue.keyword = value.keyword
       fieldsValue.field = value.field
+      fieldsValue.isPostBack = false
       onSearch(fieldsValue)
     },
   }
 
   const handleChange = () => {
     setTimeout(() => {
-      onSearch({ ...getFieldsValue(), isPostBack: false })
-    }, 0)
-  }
-
-  const handleSchoolChange = () => {
-    setTimeout(() => {
-      onSearch({ ...getFieldsValue(), isPostBack: true })
+      const params = getFieldsValue()
+      params.deadline = params.deadline.endOf('month').format('X')
+      params.isPostBack = true
+      onSearch(params)
     }, 0)
   }
 
@@ -50,48 +54,20 @@ const Search = ({
           <FormItem label="校区" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('school', {
               initialValue: getSchool(),
-              onChange: handleSchoolChange,
+              onChange: handleChange,
             })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
               <Option value="">全部</Option>
               {schools.map(item => <Option key={item.id} value={item.school}>{item.name}</Option>)}
             </Select>)
             }
           </FormItem>
-          <FormItem label="角色" style={{ marginBottom: 20, marginRight: 40 }}>
-            {getFieldDecorator('rolename', {
-              initialValue: '',
+          <FormItem label="时间" style={{ marginBottom: 20, marginRight: 40 }}>
+            {getFieldDecorator('deadline', {
+              initialValue: moment().subtract(1, 'month'),
               onChange: handleChange,
-            })(<Select style={{ width: 90 }}>
-              <Option value="">全部</Option>
-              {Object.entries(roleNames).map(([key, value]) => {
-                return <Option key={key} value={key}>{value}</Option>
-              })}
-            </Select>)
-            }
-          </FormItem>
-          <FormItem label="类别" style={{ marginBottom: 20, marginRight: 40 }}>
-            {getFieldDecorator('category', {
-              initialValue: '',
-              onChange: handleChange,
-            })(<Select style={{ width: 90 }}>
-              <Option value="">全部</Option>
-              {Object.entries(categorys).map(([key, value]) => {
-                return <Option key={key} value={key}>{value}</Option>
-              })}
-            </Select>)
-            }
-          </FormItem>
-          <FormItem label="科目" style={{ marginBottom: 20, marginRight: 40 }}>
-            {getFieldDecorator('subject', {
-              initialValue: '',
-              onChange: handleChange,
-            })(<Select style={{ width: 90 }}>
-              <Option value="">全部</Option>
-              {Object.entries(subjects).map(([key, value]) => {
-                return <Option key={key} value={key}>{value}</Option>
-              })}
-            </Select>)
-            }
+            })(
+              <MonthPicker placeholder="--请选择月份--" />
+            )}
           </FormItem>
           <FormItem style={{ marginBottom: 20, marginRight: 0 }}>
             <SearchGroup {...searchGroupProps} />

@@ -7,16 +7,18 @@ const page = {
   pageSize: 10,
 }
 
+const searchTeacherQuery = {
+  isPostBack: true,
+  school: getSchool(),
+  name: 'all',
+  deadline: moment().subtract(1, 'month').endOf('month').format('X'),
+}
+
 export default {
   namespace: 'analysisReport',
   state: {
     teacher: {
-      searchQuery: {
-        isPostBack: true,
-        school: getSchool(),
-        name: 'all',
-        deadline: moment().subtract(1, 'month').endOf('month').format('X'),
-      },
+      searchQuery: searchTeacherQuery,
       list: [],
       pagination: {
         ...page,
@@ -38,19 +40,16 @@ export default {
     },
   },
   effects: {
-    * query ({ }, { select, put }) {
+    * query ({ }, { put }) {
       yield put({ type: 'commonModel/querySchools' })
-      yield put({ type: 'commonModel/queryTeachers' })
-      const { searchQuery } = yield select(({ analysisReport }) => analysisReport.teacher)
       yield put({
         type: 'queryTeacherReport',
-        payload: searchQuery,
+        payload: searchTeacherQuery,
       })
     },
     * queryTeacherReport ({ payload }, { call, put }) {
       if (payload.isPostBack) {
-        const { isPostBack, name, ...params } = payload
-        const { data, success } = yield call(queryTeacherReport, params)
+        const { data, success } = yield call(queryTeacherReport, { school: payload.school, deadline: payload.deadline })
         if (success) {
           yield put({
             type: 'queryTeacherReportSuccess',
@@ -65,6 +64,17 @@ export default {
             },
           })
         }
+      } else {
+        yield put({
+          type: 'setTeacherReportSuccess',
+          payload: {
+            pagination: {
+              current: payload.current ? +payload.current : page.current,
+              pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
+            },
+            searchQuery: payload,
+          },
+        })
       }
     },
     * queryProTeacherReport ({ }, { call, put }) {
@@ -94,13 +104,15 @@ export default {
     queryTeacherReportSuccess (state, action) {
       return { ...state, teacher: action.payload }
     },
+    setTeacherReportSuccess (state, action) {
+      const { list } = state.teacher
+      return { ...state, teacher: { list, ...action.payload } }
+    },
     queryProTeacherReportSuccess (state, action) {
-      const { list } = action.payload
-      return { ...state, teacher: { ...state.teacher, list } }
+      return { ...state, teacher: action.payload }
     },
     queryLessonCompleteReportSuccess (state, action) {
-      const { list } = action.payload
-      return { ...state, teacher: { ...state.teacher, list } }
+      return { ...state, teacher: action.payload }
     },
   },
 }
