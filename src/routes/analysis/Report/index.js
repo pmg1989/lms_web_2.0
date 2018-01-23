@@ -1,8 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import List from './List'
-import Search from './Search'
+import { Tabs } from 'antd'
+import ListTeacher from './Teacher/List'
+import SearchTeacher from './Teacher/Search'
+
+const TabPane = Tabs.TabPane
 
 const namespace = 'analysisReport'
 
@@ -28,10 +31,27 @@ function Report ({ dispatch, analysisReport, loading, commonModel }) {
     },
   }
 
+  const handleTabChange = (key) => {
+    console.log(key)
+  }
+
   return (
     <div className="content-inner">
-      <Search {...searchProps} />
-      <List {...listProps} />
+      <Tabs defaultActiveKey="1" onChange={handleTabChange}>
+        <TabPane tab="老师课时统计月报表" key="1">
+          <SearchTeacher {...searchProps} />
+          <ListTeacher {...listProps} />
+        </TabPane>
+        <TabPane tab="进行中的学生消课率统计" key="2">
+          <SearchTeacher {...searchProps} />
+          <ListTeacher {...listProps} />
+        </TabPane>
+        <TabPane tab="专业课老师开课中的合同报表" key="3">
+          <SearchTeacher {...searchProps} />
+          <ListTeacher {...listProps} />
+        </TabPane>
+      </Tabs>
+      
     </div>
   )
 }
