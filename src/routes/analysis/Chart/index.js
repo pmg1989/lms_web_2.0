@@ -4,6 +4,7 @@ import { connect } from 'dva'
 import { Card } from 'antd'
 import TeacherSearch from './TeacherSearch'
 import TeacherChart from './TeacherChart'
+import LessonCompleteChart from './LessonCompleteChart'
 
 const namespace = 'analysisChart'
 
@@ -30,6 +31,9 @@ function Chart ({ dispatch, analysisChart, loading, commonModel: { schools, teac
       <Card>
         <TeacherSearch {...lessonSearchProps} />
         <TeacherChart {...lessonChartProps} />
+      </Card>
+      <Card>
+        <LessonCompleteChart {...lessonChartProps} />
       </Card>
     </div>
   )
