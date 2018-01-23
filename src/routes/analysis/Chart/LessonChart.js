@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Spin } from 'antd'
 import ReactEcharts from 'echarts-for-react'
 
-const LessonChart = ({ loading, lessons: { searchQuery: { name }, data } }) => {
+const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
   const legendData = [
     `专业课时 | ${(data[name] && data[name].profession) || 0}`,
     `互动课时 | ${(data[name] && data[name].hd) || 0}`,
@@ -23,7 +23,7 @@ const LessonChart = ({ loading, lessons: { searchQuery: { name }, data } }) => {
   const option = {
     title: {
       text: '课时统计',
-      subtext: '可根据月份/老师筛选统计',
+      subtext: '老师课时统计月报表',
       x: 'left',
     },
     tooltip: {
@@ -73,7 +73,7 @@ const LessonChart = ({ loading, lessons: { searchQuery: { name }, data } }) => {
 
 LessonChart.propTypes = {
   loading: PropTypes.bool,
-  lessons: PropTypes.object.isRequired,
+  teacher: PropTypes.object.isRequired,
 }
 
 export default LessonChart

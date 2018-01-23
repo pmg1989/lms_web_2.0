@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { getCurPowers, getSchool } from 'utils'
-import { queryLessonsChart } from 'services/analysis/chart'
+import { queryTeacherChart } from 'services/analysis/chart'
 
 const renderTeacherLessonsChart = (list) => {
   return list.reduce((dicTeachers, item) => {
@@ -24,7 +24,7 @@ const renderTeacherLessonsChart = (list) => {
 export default {
   namespace: 'analysisChart',
   state: {
-    lessons: {
+    teacher: {
       searchQuery: {
         isPostBack: true,
         school: getSchool(),
@@ -53,19 +53,19 @@ export default {
     * query ({}, { select, put }) {
       yield put({ type: 'commonModel/querySchools' })
       yield put({ type: 'commonModel/queryTeachers' })
-      const { searchQuery } = yield select(({ analysisChart }) => analysisChart.lessons)
+      const { searchQuery } = yield select(({ analysisChart }) => analysisChart.teacher)
       yield put({
-        type: 'queryTeacherLessonsChart',
+        type: 'queryTeacherChart',
         payload: searchQuery,
       })
     },
-    * queryTeacherLessonsChart ({ payload }, { call, put }) {
+    * queryTeacherChart ({ payload }, { call, put }) {
       if (payload.isPostBack) {
         const { isPostBack, name, ...params } = payload
-        const { data, success } = yield call(queryLessonsChart, params)
+        const { data, success } = yield call(queryTeacherChart, params)
         if (success) {
           yield put({
-            type: 'queryTeacherLessonsChartSuccess',
+            type: 'queryTeacherChartSuccess',
             payload: {
               data: renderTeacherLessonsChart(data),
               searchQuery: payload,
@@ -74,7 +74,7 @@ export default {
         }
       } else {
         yield put({
-          type: 'setTeacherLessonsChartSuccess',
+          type: 'setTeacherChartSuccess',
           payload: { searchQuery: payload },
         })
       }
@@ -82,11 +82,12 @@ export default {
   },
 
   reducers: {
-    queryTeacherLessonsChartSuccess (state, action) {
-      return { ...state, lessons: action.payload }
+    queryTeacherChartSuccess (state, action) {
+      return { ...state, teacher: action.payload }
     },
-    setTeacherLessonsChartSuccess (state, action) {
-      return { ...state, lessons: { ...state.lessons, searchQuery: action.payload.searchQuery } }
+    setTeacherChartSuccess (state, action) {
+      const { searchQuery } = action.payload
+      return { ...state, teacher: { ...state.teacher, searchQuery } }
     },
   },
 }

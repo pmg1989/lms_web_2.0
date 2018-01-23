@@ -11,18 +11,18 @@ function Chart ({ dispatch, analysisChart, loading, commonModel: { schools, teac
   const lessonSearchProps = {
     schools,
     teachersDic,
-    searchQuery: analysisChart.lessons.searchQuery,
+    searchQuery: analysisChart.teacher.searchQuery,
     onQuery (fieldsValue) {
       dispatch({
-        type: `${namespace}/queryTeacherLessonsChart`,
+        type: `${namespace}/queryTeacherChart`,
         payload: fieldsValue,
       })
     },
   }
 
   const lessonChartProps = {
-    loading: loading.effects[`${namespace}/queryTeacherLessonsChart`],
-    lessons: analysisChart.lessons,
+    loading: loading.effects[`${namespace}/queryTeacherChart`],
+    teacher: analysisChart.teacher,
   }
 
   return (
