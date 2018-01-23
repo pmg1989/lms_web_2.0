@@ -11,6 +11,7 @@ function Chart ({ dispatch, analysisChart, loading, commonModel: { schools, teac
   const lessonSearchProps = {
     schools,
     teachersDic,
+    searchQuery: analysisChart.lessons.searchQuery,
     onQuery (fieldsValue) {
       dispatch({
         type: `${namespace}/queryTeacherLessonsChart`,

@@ -11,13 +11,21 @@ const Option = Select.Option
 class LessonSearch extends Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
+    searchQuery: PropTypes.object.isRequired,
     schools: PropTypes.array.isRequired,
     teachersDic: PropTypes.object.isRequired,
     onQuery: PropTypes.func.isRequired,
   }
 
   state = {
-    teachers: this.props.teachersDic[getSchool()] || [],
+    teachers: this.props.teachersDic[this.props.searchQuery.school] || [],
+  }
+
+  componentWillReceiveProps () {
+    if (!this.state.teachers.length && Object.keys(this.props.teachersDic).length) {
+      const teachersState = this.props.teachersDic[getSchool()] || []
+      teachersState.length && this.setState({ teachers: teachersState })
+    }
   }
 
   handleSchoolChange = (school) => {
@@ -38,14 +46,14 @@ class LessonSearch extends Component {
   }
 
   render () {
-    const { form: { getFieldDecorator }, schools } = this.props
+    const { form: { getFieldDecorator }, schools, searchQuery: { school, name, deadline } } = this.props
     const { teachers } = this.state
 
     return (
       <Form layout="inline" style={{ marginBottom: 20 }}>
         <FormItem label="校区">
           {getFieldDecorator('school', {
-            initialValue: getSchool(),
+            initialValue: school,
             onChange: this.handleSchoolChange,
           })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
             {schools.map(item => <Option key={item.id} value={item.school}>{item.name}</Option>)}
@@ -54,7 +62,7 @@ class LessonSearch extends Component {
         </FormItem>
         <FormItem label="老师">
           {getFieldDecorator('name', {
-            initialValue: 'all',
+            initialValue: name,
             onChange: () => this.handleChange(false),
           })(<Select style={{ width: 150 }}>
             <Option value="all">全部</Option>
@@ -64,7 +72,7 @@ class LessonSearch extends Component {
         </FormItem>
         <FormItem>
           {getFieldDecorator('deadline', {
-            initialValue: moment().subtract(1, 'month'),
+            initialValue: moment.unix(deadline),
             onChange: this.handleChange,
           })(
             <MonthPicker placeholder="--请选择月份--" />
