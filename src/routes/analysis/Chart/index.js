@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Card } from 'antd'
-import LessonSearch from './LessonSearch'
-import LessonChart from './LessonChart'
+import TeacherSearch from './TeacherSearch'
+import TeacherChart from './TeacherChart'
 
 const namespace = 'analysisChart'
 
@@ -28,8 +28,8 @@ function Chart ({ dispatch, analysisChart, loading, commonModel: { schools, teac
   return (
     <div className="content-inner">
       <Card>
-        <LessonSearch {...lessonSearchProps} />
-        <LessonChart {...lessonChartProps} />
+        <TeacherSearch {...lessonSearchProps} />
+        <TeacherChart {...lessonChartProps} />
       </Card>
     </div>
   )
