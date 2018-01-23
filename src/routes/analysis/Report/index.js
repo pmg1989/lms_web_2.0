@@ -51,7 +51,7 @@ function Report ({ dispatch, analysisReport, loading, commonModel }) {
           <ListTeacher {...listProps} />
         </TabPane>
       </Tabs>
-      
+
     </div>
   )
 }
