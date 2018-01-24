@@ -14,11 +14,26 @@ const searchTeacherQuery = {
   deadline: moment().subtract(1, 'month').endOf('month').format('X'),
 }
 
+const lessonCompleteQuery = {
+  isPostBack: true,
+  school: getSchool(),
+  name: 'all',
+  deadline: moment().subtract(1, 'month').endOf('month').format('X'),
+}
+
 export default {
   namespace: 'analysisReport',
   state: {
     teacher: {
       searchQuery: searchTeacherQuery,
+      list: [],
+      pagination: {
+        ...page,
+        total: null,
+      },
+    },
+    lessonComplete: {
+      searchQuery: lessonCompleteQuery,
       list: [],
       pagination: {
         ...page,
@@ -77,22 +92,41 @@ export default {
         })
       }
     },
-    * queryProTeacherReport ({ }, { call, put }) {
-      const { data, success } = yield call(queryProTeacherReport, { deadline: '1517414400' })
-      if (success) {
+    * queryLessonCompleteReport ({ payload }, { call, put }) {
+      if (payload.isPostBack) {
+        const { data, success } = yield call(queryLessonCompleteReport, { school: payload.school, deadline: payload.deadline })
+        if (success) {
+          yield put({
+            type: 'queryLessonCompleteReportSuccess',
+            payload: {
+              list: data,
+              pagination: {
+                current: payload.current ? +payload.current : page.current,
+                pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
+                total: data.length,
+              },
+              searchQuery: payload,
+            },
+          })
+        }
+      } else {
         yield put({
-          type: 'queryProTeacherReportSuccess',
+          type: 'setLessonCompleteReportSuccess',
           payload: {
-            list: data,
+            pagination: {
+              current: payload.current ? +payload.current : page.current,
+              pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
+            },
+            searchQuery: payload,
           },
         })
       }
     },
-    * queryLessonCompleteReport ({ }, { call, put }) {
-      const { data, success } = yield call(queryLessonCompleteReport, { deadline: '1517414400' })
+    * queryProTeacherReport ({ }, { call, put }) {
+      const { data, success } = yield call(queryProTeacherReport, { deadline: '1517414400', school: 'sh01' })
       if (success) {
         yield put({
-          type: 'queryLessonCompleteReportSuccess',
+          type: 'queryProTeacherReportSuccess',
           payload: {
             list: data,
           },
@@ -108,10 +142,14 @@ export default {
       const { list } = state.teacher
       return { ...state, teacher: { list, ...action.payload } }
     },
-    queryProTeacherReportSuccess (state, action) {
-      return { ...state, teacher: action.payload }
-    },
     queryLessonCompleteReportSuccess (state, action) {
+      return { ...state, lessonComplete: action.payload }
+    },
+    setLessonCompleteReportSuccess (state, action) {
+      const { list } = state.lessonComplete
+      return { ...state, lessonComplete: { list, ...action.payload } }
+    },
+    queryProTeacherReportSuccess (state, action) {
       return { ...state, teacher: action.payload }
     },
   },
