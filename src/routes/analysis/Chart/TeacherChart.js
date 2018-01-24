@@ -4,24 +4,34 @@ import { Spin } from 'antd'
 import ReactEcharts from 'echarts-for-react'
 
 const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
+  const values = {
+    pro_vip: (data[name] && data[name].pro_vip) || 0,
+    pro_jp: (data[name] && data[name].pro_jp) || 0,
+    pro_other: (data[name] && data[name].pro_other) || 0,
+    hd: (data[name] && data[name].hd) || 0,
+    jl: (data[name] && data[name].jl) || 0,
+    substitutee: (data[name] && data[name].substitutee) || 0,
+    substituter: (data[name] && data[name].substituter) || 0,
+  }
+
   const legendData = [
-    `专业VIP课时 | ${(data[name] && data[name].pro_vip) || 0}`,
-    `专业精品课时 | ${(data[name] && data[name].pro_jp) || 0}`,
-    `专业其他课时 | ${(data[name] && data[name].pro_other) || 0}`,
-    `互动课时 | ${(data[name] && data[name].hd) || 0}`,
-    `交流课时 | ${(data[name] && data[name].jl) || 0}`,
-    `被代课时 | ${(data[name] && data[name].substitutee) || 0}`,
-    `已代课时 | ${(data[name] && data[name].substituter) || 0}`,
+    `专业VIP课时 | ${values.pro_vip}`,
+    `专业精品课时 | ${values.pro_jp}`,
+    `专业其他课时 | ${values.pro_other}`,
+    `互动课时 | ${values.hd}`,
+    `交流课时 | ${values.jl}`,
+    `被代课时 | ${values.substitutee}`,
+    `已代课时 | ${values.substituter}`,
   ]
 
   const seriesData = [
-    { value: (data[name] && data[name].pro_vip) || 0, name: legendData[0] },
-    { value: (data[name] && data[name].pro_jp) || 0, name: legendData[1] },
-    { value: (data[name] && data[name].pro_other) || 0, name: legendData[2] },
-    { value: (data[name] && data[name].hd) || 0, name: legendData[3] },
-    { value: (data[name] && data[name].jl) || 0, name: legendData[4] },
-    { value: (data[name] && data[name].substitutee) || 0, name: legendData[5] },
-    { value: (data[name] && data[name].substituter) || 0, name: legendData[6] },
+    { value: values.pro_vip, name: legendData[0] },
+    { value: values.pro_jp, name: legendData[1] },
+    { value: values.pro_other, name: legendData[2] },
+    { value: values.hd, name: legendData[3] },
+    { value: values.jl, name: legendData[4] },
+    { value: values.substitutee, name: legendData[5] },
+    { value: values.substituter, name: legendData[6] },
   ]
 
   const option = {
@@ -38,6 +48,7 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
       orient: 'vertical',
       x: 'right',
       data: legendData || [],
+      selected: { [legendData[5]]: false, [legendData[6]]: false },
     },
     series: [
       {
