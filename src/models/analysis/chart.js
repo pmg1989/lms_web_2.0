@@ -28,34 +28,42 @@ const renderLessonCompleteChart = (list) => {
   return list.reduce((dic, item) => {
     const avaliable = item.contract_available
     const yearMonth = avaliable.match(/.*\d\/.*(?=\/.*)/)[0]
-    if (!dic.month[yearMonth]) {
-      dic.month[yearMonth] = {
-        count: 1,
-        profession: item.pro_ontrack,
-        hd: item.hd_ontrack,
-        jl: item.jl_ontrack,
+    if (!dic[yearMonth]) {
+      dic[yearMonth] = {
+        all: {
+          count: 1,
+          profession: item.pro_ontrack,
+          hd: item.hd_ontrack,
+          jl: item.jl_ontrack,
+        },
+        [avaliable]: {
+          count: 1,
+          profession: item.pro_ontrack,
+          hd: item.hd_ontrack,
+          jl: item.jl_ontrack,
+        },
       }
     } else {
-      dic.month[yearMonth].count += 1
-      dic.month[yearMonth].profession += item.pro_ontrack
-      dic.month[yearMonth].hd += item.hd_ontrack
-      dic.month[yearMonth].jl += item.jl_ontrack
-    }
-    if (!dic.day[avaliable]) {
-      dic.day[avaliable] = {
-        count: 1,
-        profession: item.pro_ontrack,
-        hd: item.hd_ontrack,
-        jl: item.jl_ontrack,
+      dic[yearMonth].all.count += 1
+      dic[yearMonth].all.profession += item.pro_ontrack
+      dic[yearMonth].all.hd += item.hd_ontrack
+      dic[yearMonth].all.jl += item.jl_ontrack
+      if (!dic[yearMonth][avaliable]) {
+        dic[yearMonth][avaliable] = {
+          count: 1,
+          profession: item.pro_ontrack,
+          hd: item.hd_ontrack,
+          jl: item.jl_ontrack,
+        }
+      } else {
+        dic[yearMonth][avaliable].count += 1
+        dic[yearMonth][avaliable].profession += item.pro_ontrack
+        dic[yearMonth][avaliable].hd += item.hd_ontrack
+        dic[yearMonth][avaliable].jl += item.jl_ontrack
       }
-    } else {
-      dic.day[avaliable].count += 1
-      dic.day[avaliable].profession += item.pro_ontrack
-      dic.day[avaliable].hd += item.hd_ontrack
-      dic.day[avaliable].jl += item.jl_ontrack
     }
     return dic
-  }, { month: {}, day: {} })
+  }, {})
 }
 
 const searchTeacherQuery = {

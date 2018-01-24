@@ -4,10 +4,28 @@ import { Spin } from 'antd'
 import moment from 'moment'
 import ReactEcharts from 'echarts-for-react'
 
+const renderXAxisData = (data, type, curMonth) => {
+  if (type === 'month') {
+    return Object.keys(data).map(item => item)
+  } else if (type === 'day') {
+    return Object.keys((data[curMonth] || {})).filter(item => item !== 'all')
+  }
+  return []
+}
+
+const renderSeriesData = (data, type, subject, curMonth) => {
+  if (type === 'month') {
+    return Object.keys(data).map(item => (data[item].all[subject] / data[item].all.count).toFixed(2))
+  } else if (type === 'day') {
+    return Object.keys((data[curMonth] || {})).filter(item => item !== 'all')
+      .map(item => (data[curMonth][item][subject] / data[curMonth][item].count).toFixed(2))
+  }
+  return []
+}
+
 const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { type, deadline }, data } }) => {
-  const curData = data[type] || {}
   const curMonth = moment.unix(deadline).format('YYYY/MM')
-  console.log(curMonth)
+
   const option = {
     title: {
       text: '学生合同 On Track',
@@ -29,7 +47,7 @@ const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { type, d
     xAxis: {
       type: 'category',
       boundaryGap: false,
-      data: Object.keys(curData).map(item => item),
+      data: renderXAxisData(data, type, curMonth),
     },
     yAxis: {
       type: 'value',
@@ -38,17 +56,17 @@ const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { type, d
       {
         name: '专业课',
         type: 'line',
-        data: Object.keys(curData).map(item => (curData[item].profession / curData[item].count).toFixed(2)),
+        data: renderSeriesData(data, type, 'profession', curMonth),
       },
       {
         name: '互动课',
         type: 'line',
-        data: Object.keys(curData).map(item => (curData[item].hd / curData[item].count).toFixed(2)),
+        data: renderSeriesData(data, type, 'hd', curMonth),
       },
       {
         name: '交流课',
         type: 'line',
-        data: Object.keys(curData).map(item => (curData[item].jl / curData[item].count).toFixed(2)),
+        data: renderSeriesData(data, type, 'jl', curMonth),
       },
     ],
   }

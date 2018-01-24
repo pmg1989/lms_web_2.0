@@ -81,7 +81,7 @@ class LessonSearch extends Component {
             initialValue: moment.unix(deadline),
             onChange: this.handleChange,
           })(
-            <MonthPicker disabledDate={disabledDate} placeholder="--请选择月份--" />
+            <MonthPicker allowClear={false} disabledDate={disabledDate} placeholder="--请选择月份--" />
           )}
         </FormItem>
       </Form>
