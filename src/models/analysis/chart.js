@@ -28,21 +28,34 @@ const renderLessonCompleteChart = (list) => {
   return list.reduce((dic, item) => {
     const avaliable = item.contract_available
     const yearMonth = avaliable.match(/.*\d\/.*(?=\/.*)/)[0]
-    if (!dic[yearMonth]) {
-      dic[yearMonth] = {
+    if (!dic.month[yearMonth]) {
+      dic.month[yearMonth] = {
         count: 1,
         profession: item.pro_ontrack,
         hd: item.hd_ontrack,
         jl: item.jl_ontrack,
       }
     } else {
-      dic[yearMonth].count += 1
-      dic[yearMonth].profession += item.pro_ontrack
-      dic[yearMonth].hd += item.hd_ontrack
-      dic[yearMonth].jl += item.jl_ontrack
+      dic.month[yearMonth].count += 1
+      dic.month[yearMonth].profession += item.pro_ontrack
+      dic.month[yearMonth].hd += item.hd_ontrack
+      dic.month[yearMonth].jl += item.jl_ontrack
+    }
+    if (!dic.day[avaliable]) {
+      dic.day[avaliable] = {
+        count: 1,
+        profession: item.pro_ontrack,
+        hd: item.hd_ontrack,
+        jl: item.jl_ontrack,
+      }
+    } else {
+      dic.day[avaliable].count += 1
+      dic.day[avaliable].profession += item.pro_ontrack
+      dic.day[avaliable].hd += item.hd_ontrack
+      dic.day[avaliable].jl += item.jl_ontrack
     }
     return dic
-  }, {})
+  }, { month: {}, day: {} })
 }
 
 const searchTeacherQuery = {
@@ -54,7 +67,7 @@ const searchTeacherQuery = {
 
 const searchLessonCompleteQuery = {
   isPostBack: true,
-  school: getSchool(),
+  school: 'cd01', // getSchool(),
   type: 'month',
   deadline: moment().endOf('day').format('X'),
 }
@@ -125,7 +138,7 @@ export default {
         const { data, success } = yield call(queryLessonCompleteChart, params)
         if (success) {
           yield put({
-            type: 'queryLessonCompleteSuccess',
+            type: 'queryLessonCompleteChartSuccess',
             payload: {
               data: renderLessonCompleteChart(data),
               searchQuery: payload,
@@ -134,7 +147,7 @@ export default {
         }
       } else {
         yield put({
-          type: 'setLessonCompleteSuccess',
+          type: 'setLessonCompleteChartSuccess',
           payload: { searchQuery: payload },
         })
       }
@@ -149,7 +162,7 @@ export default {
       const { searchQuery } = action.payload
       return { ...state, teacher: { ...state.teacher, searchQuery } }
     },
-    queryLessonCompleteSuccess (state, action) {
+    queryLessonCompleteChartSuccess (state, action) {
       return { ...state, lessonComplete: action.payload }
     },
     setLessonCompleteChartSuccess (state, action) {
