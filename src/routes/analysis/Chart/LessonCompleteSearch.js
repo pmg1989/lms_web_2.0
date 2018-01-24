@@ -62,7 +62,7 @@ class LessonCompleteSearch extends Component {
         <FormItem label="日期">
           {getFieldDecorator('deadline', {
             initialValue: moment.unix(deadline),
-            onChange: this.handleChange,
+            onChange: () => this.handleChange(false),
           })(
             <MonthPicker disabledDate={disabledDate} placeholder="--请选择月份--" />
           )}

@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Spin } from 'antd'
+import moment from 'moment'
 import ReactEcharts from 'echarts-for-react'
 
-const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { type }, data } }) => {
+const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { type, deadline }, data } }) => {
   const curData = data[type] || {}
-  console.log(curData)
+  const curMonth = moment.unix(deadline).format('YYYY/MM')
+  console.log(curMonth)
   const option = {
     title: {
       text: '学生合同 On Track',
