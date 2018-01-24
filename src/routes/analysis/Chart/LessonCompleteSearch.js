@@ -8,6 +8,12 @@ const FormItem = Form.Item
 const { MonthPicker } = DatePicker
 const Option = Select.Option
 
+const curMonth = moment().endOf('month').format('x')
+
+function disabledDate (current) {
+  return current && current.valueOf() > curMonth
+}
+
 class LessonCompleteSearch extends Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
@@ -58,7 +64,7 @@ class LessonCompleteSearch extends Component {
             initialValue: moment.unix(deadline),
             onChange: this.handleChange,
           })(
-            <MonthPicker placeholder="--请选择月份--" />
+            <MonthPicker disabledDate={disabledDate} placeholder="--请选择月份--" />
           )}
         </FormItem>
       </Form>
