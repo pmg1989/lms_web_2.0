@@ -55,6 +55,7 @@ const searchTeacherQuery = {
 const searchLessonCompleteQuery = {
   isPostBack: true,
   school: getSchool(),
+  type: 'month',
   deadline: moment().endOf('day').format('X'),
 }
 
@@ -120,7 +121,7 @@ export default {
     },
     * queryLessonComplete ({ payload }, { call, put }) {
       if (payload.isPostBack) {
-        const { isPostBack, ...params } = payload
+        const { isPostBack, type, ...params } = payload
         const { data, success } = yield call(queryLessonCompleteChart, params)
         if (success) {
           yield put({

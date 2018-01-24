@@ -38,12 +38,22 @@ class LessonCompleteSearch extends Component {
           {getFieldDecorator('school', {
             initialValue: school,
             onChange: this.handleChange,
-          })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
+          })(<Select style={{ width: 120 }} disabled={getSchool() !== 'global'}>
             {schools.map(item => <Option key={item.id} value={item.school}>{item.name}</Option>)}
           </Select>)
           }
         </FormItem>
-        <FormItem>
+        <FormItem label="类型">
+          {getFieldDecorator('type', {
+            initialValue: 'month',
+            onChange: () => this.handleChange(false),
+          })(<Select style={{ width: 120 }}>
+            <Option value="month">按月份</Option>
+            <Option value="day">按天</Option>
+          </Select>)
+          }
+        </FormItem>
+        <FormItem label="日期">
           {getFieldDecorator('deadline', {
             initialValue: moment.unix(deadline),
             onChange: this.handleChange,
