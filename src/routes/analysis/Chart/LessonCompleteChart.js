@@ -34,17 +34,17 @@ const LessonCompleteChart = ({ loading, lessonComplete: { data } }) => {
       {
         name: '专业课',
         type: 'line',
-        data: Object.keys(data).map(item => data[item].profession),
+        data: Object.keys(data).map(item => (data[item].profession / data[item].count).toFixed(2)),
       },
       {
         name: '互动课',
         type: 'line',
-        data: Object.keys(data).map(item => data[item].hd),
+        data: Object.keys(data).map(item => (data[item].hd / data[item].count).toFixed(2)),
       },
       {
         name: '交流课',
         type: 'line',
-        data: Object.keys(data).map(item => data[item].jl),
+        data: Object.keys(data).map(item => (data[item].jl / data[item].count).toFixed(2)),
       },
     ],
   }

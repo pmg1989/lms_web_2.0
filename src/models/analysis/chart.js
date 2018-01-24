@@ -30,10 +30,16 @@ const renderLessonCompleteChart = (list) => {
     const yearMonth = avaliable.match(/.*\d\/.*(?=\/.*)/)[0]
     if (!dic[yearMonth]) {
       dic[yearMonth] = {
+        count: 1,
         profession: item.pro_ontrack,
         hd: item.hd_ontrack,
         jl: item.jl_ontrack,
       }
+    } else {
+      dic[yearMonth].count += 1
+      dic[yearMonth].profession += item.pro_ontrack
+      dic[yearMonth].hd += item.hd_ontrack
+      dic[yearMonth].jl += item.jl_ontrack
     }
     return dic
   }, {})
