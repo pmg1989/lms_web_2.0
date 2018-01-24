@@ -40,6 +40,14 @@ export default {
         total: null,
       },
     },
+    proTeacher: {
+      searchQuery: searchTeacherQuery,
+      list: [],
+      pagination: {
+        ...page,
+        total: null,
+      },
+    },
   },
   subscriptions: {
     setup ({ dispatch, history }) {
@@ -122,13 +130,32 @@ export default {
         })
       }
     },
-    * queryProTeacherReport ({ }, { call, put }) {
-      const { data, success } = yield call(queryProTeacherReport, { deadline: '1517414400', school: 'sh01' })
-      if (success) {
+    * queryProTeacherReport ({ payload }, { call, put }) {
+      if (payload.isPostBack) {
+        const { data, success } = yield call(queryProTeacherReport, { school: payload.school, deadline: payload.deadline })
+        if (success) {
+          yield put({
+            type: 'queryProTeacherReportSuccess',
+            payload: {
+              list: data,
+              pagination: {
+                current: payload.current ? +payload.current : page.current,
+                pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
+                total: data.length,
+              },
+              searchQuery: payload,
+            },
+          })
+        }
+      } else {
         yield put({
-          type: 'queryProTeacherReportSuccess',
+          type: 'setProTeacherReportSuccess',
           payload: {
-            list: data,
+            pagination: {
+              current: payload.current ? +payload.current : page.current,
+              pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
+            },
+            searchQuery: payload,
           },
         })
       }
@@ -150,7 +177,11 @@ export default {
       return { ...state, lessonComplete: { list, ...action.payload } }
     },
     queryProTeacherReportSuccess (state, action) {
-      return { ...state, teacher: action.payload }
+      return { ...state, proTeacher: action.payload }
+    },
+    setProTeacherReportSuccess (state, action) {
+      const { list } = state.proTeacher
+      return { ...state, proTeacher: { list, ...action.payload } }
     },
   },
 }

@@ -27,17 +27,17 @@ class Report extends Component {
   }
 
   handleTabChange = (tab) => {
-    const { dispatch, analysisReport: { lessonComplete: { searchQuery } } } = this.props
+    const { dispatch, analysisReport: { lessonComplete, proTeacher } } = this.props
     if (!this.state[tab]) {
       if (tab === 'tab2') {
         dispatch({
           type: `${namespace}/queryLessonCompleteReport`,
-          payload: searchQuery,
+          payload: lessonComplete.searchQuery,
         })
       } else if (tab === 'tab3') {
         dispatch({
           type: `${namespace}/queryProTeacherReport`,
-          payload: {},
+          payload: proTeacher.searchQuery,
         })
       }
       this.setState({ [tab]: true })
