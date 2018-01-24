@@ -14,7 +14,7 @@ const LessonCompleteChart = ({ loading, lessonComplete: { data } }) => {
       trigger: 'axis',
     },
     legend: {
-      data: ['总数'],
+      data: ['专业课', '互动课', '交流课'],
     },
     grid: {
       left: '2%',
@@ -32,9 +32,19 @@ const LessonCompleteChart = ({ loading, lessonComplete: { data } }) => {
     },
     series: [
       {
-        name: '总数',
+        name: '专业课',
         type: 'line',
-        data: Object.keys(data).map(item => data[item].all),
+        data: Object.keys(data).map(item => data[item].profession),
+      },
+      {
+        name: '互动课',
+        type: 'line',
+        data: Object.keys(data).map(item => data[item].hd),
+      },
+      {
+        name: '交流课',
+        type: 'line',
+        data: Object.keys(data).map(item => data[item].jl),
       },
     ],
   }

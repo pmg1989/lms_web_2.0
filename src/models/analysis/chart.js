@@ -29,15 +29,10 @@ const renderLessonCompleteChart = (list) => {
     const avaliable = item.contract_available
     const yearMonth = avaliable.match(/.*\d\/.*(?=\/.*)/)[0]
     if (!dic[yearMonth]) {
-      dic[yearMonth] = {}
-      dic[yearMonth].all = 1
-      dic[yearMonth][avaliable] = 1
-    } else {
-      dic[yearMonth].all += 1
-      if (!dic[yearMonth][avaliable]) {
-        dic[yearMonth][avaliable] = 1
-      } else {
-        dic[yearMonth][avaliable] += 1
+      dic[yearMonth] = {
+        profession: item.pro_ontrack,
+        hd: item.hd_ontrack,
+        jl: item.jl_ontrack,
       }
     }
     return dic
@@ -54,7 +49,7 @@ const searchTeacherQuery = {
 const searchLessonCompleteQuery = {
   isPostBack: true,
   school: 'cd01', // getSchool(),
-  deadline: moment().subtract(1, 'month').endOf('month').format('X'),
+  deadline: moment().endOf('day').format('X'),
 }
 
 export default {
