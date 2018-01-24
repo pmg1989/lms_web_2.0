@@ -11,6 +11,9 @@ const renderTeacherLessonsChart = (list) => {
       dicTeachers.all = { ...item }
     } else {
       dicTeachers.all.profession += item.profession
+      dicTeachers.all.pro_vip += item.pro_vip
+      dicTeachers.all.pro_jp += item.pro_jp
+      dicTeachers.all.pro_other += item.pro_other
       dicTeachers.all.hd += item.hd
       dicTeachers.all.jl += item.jl
       dicTeachers.all.substitutee += item.substitutee

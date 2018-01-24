@@ -5,7 +5,9 @@ import ReactEcharts from 'echarts-for-react'
 
 const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
   const legendData = [
-    `专业课时 | ${(data[name] && data[name].profession) || 0}`,
+    `专业VIP课时 | ${(data[name] && data[name].pro_vip) || 0}`,
+    `专业精品课时 | ${(data[name] && data[name].pro_jp) || 0}`,
+    `专业其他课时 | ${(data[name] && data[name].pro_other) || 0}`,
     `互动课时 | ${(data[name] && data[name].hd) || 0}`,
     `交流课时 | ${(data[name] && data[name].jl) || 0}`,
     `被代课时 | ${(data[name] && data[name].substitutee) || 0}`,
@@ -13,11 +15,13 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
   ]
 
   const seriesData = [
-    { value: (data[name] && data[name].profession) || 0, name: legendData[0] },
-    { value: (data[name] && data[name].hd) || 0, name: legendData[1] },
-    { value: (data[name] && data[name].jl) || 0, name: legendData[2] },
-    { value: (data[name] && data[name].substitutee) || 0, name: legendData[3] },
-    { value: (data[name] && data[name].substituter) || 0, name: legendData[4] },
+    { value: (data[name] && data[name].pro_vip) || 0, name: legendData[0] },
+    { value: (data[name] && data[name].pro_jp) || 0, name: legendData[1] },
+    { value: (data[name] && data[name].pro_other) || 0, name: legendData[2] },
+    { value: (data[name] && data[name].hd) || 0, name: legendData[3] },
+    { value: (data[name] && data[name].jl) || 0, name: legendData[4] },
+    { value: (data[name] && data[name].substitutee) || 0, name: legendData[5] },
+    { value: (data[name] && data[name].substituter) || 0, name: legendData[6] },
   ]
 
   const option = {
