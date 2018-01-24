@@ -9,7 +9,7 @@ import LessonCompleteChart from './LessonCompleteChart'
 const namespace = 'analysisChart'
 
 function Chart ({ dispatch, analysisChart, loading, commonModel: { schools, teachersDic } }) {
-  const lessonSearchProps = {
+  const teacherSearchProps = {
     schools,
     teachersDic,
     searchQuery: analysisChart.teacher.searchQuery,
@@ -21,19 +21,24 @@ function Chart ({ dispatch, analysisChart, loading, commonModel: { schools, teac
     },
   }
 
-  const lessonChartProps = {
+  const teacherChartProps = {
     loading: loading.effects[`${namespace}/queryTeacherChart`],
     teacher: analysisChart.teacher,
+  }
+
+  const lessonCompleteChartProps = {
+    loading: loading.effects[`${namespace}/queryLessonComplete`],
+    lessonComplete: analysisChart.lessonComplete,
   }
 
   return (
     <div className="content-inner">
       <Card>
-        <TeacherSearch {...lessonSearchProps} />
-        <TeacherChart {...lessonChartProps} />
+        <TeacherSearch {...teacherSearchProps} />
+        <TeacherChart {...teacherChartProps} />
       </Card>
       <Card>
-        <LessonCompleteChart {...lessonChartProps} />
+        <LessonCompleteChart {...lessonCompleteChartProps} />
       </Card>
     </div>
   )

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Spin } from 'antd'
 import ReactEcharts from 'echarts-for-react'
 
-const LessonCompleteChart = ({ loading }) => {
+const LessonCompleteChart = ({ loading, lessonComplete: { data } }) => {
   const option = {
     title: {
       text: '学生合同 On Track',
@@ -14,7 +14,7 @@ const LessonCompleteChart = ({ loading }) => {
       trigger: 'axis',
     },
     legend: {
-      data: ['专业课', '互动课', '交流课'],
+      data: ['总数'],
     },
     grid: {
       left: '2%',
@@ -25,26 +25,16 @@ const LessonCompleteChart = ({ loading }) => {
     xAxis: {
       type: 'category',
       boundaryGap: false,
-      data: ['一月', '二月', '三月', '四月', '五月', '六月'],
+      data: Object.keys(data).map(item => item),
     },
     yAxis: {
       type: 'value',
     },
     series: [
       {
-        name: '专业课',
+        name: '总数',
         type: 'line',
-        data: [120, 132, 101, 134, 90, 230],
-      },
-      {
-        name: '互动课',
-        type: 'line',
-        data: [220, 182, 191, 234, 290, 330],
-      },
-      {
-        name: '交流课',
-        type: 'line',
-        data: [150, 232, 201, 154, 190, 330],
+        data: Object.keys(data).map(item => data[item].all),
       },
     ],
   }
@@ -63,7 +53,7 @@ const LessonCompleteChart = ({ loading }) => {
 
 LessonCompleteChart.propTypes = {
   loading: PropTypes.bool,
-//   teacher: PropTypes.object.isRequired,
+  lessonComplete: PropTypes.object.isRequired,
 }
 
 export default LessonCompleteChart
