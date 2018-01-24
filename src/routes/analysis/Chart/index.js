@@ -5,6 +5,7 @@ import { Card } from 'antd'
 import TeacherSearch from './TeacherSearch'
 import TeacherChart from './TeacherChart'
 import LessonCompleteChart from './LessonCompleteChart'
+import LessonCompleteSearch from './LessonCompleteSearch'
 
 const namespace = 'analysisChart'
 
@@ -26,6 +27,17 @@ function Chart ({ dispatch, analysisChart, loading, commonModel: { schools, teac
     teacher: analysisChart.teacher,
   }
 
+  const lessonCompleteSearchProps = {
+    schools,
+    searchQuery: analysisChart.lessonComplete.searchQuery,
+    onQuery (fieldsValue) {
+      dispatch({
+        type: `${namespace}/queryLessonComplete`,
+        payload: fieldsValue,
+      })
+    },
+  }
+
   const lessonCompleteChartProps = {
     loading: loading.effects[`${namespace}/queryLessonComplete`],
     lessonComplete: analysisChart.lessonComplete,
@@ -38,6 +50,7 @@ function Chart ({ dispatch, analysisChart, loading, commonModel: { schools, teac
         <TeacherChart {...teacherChartProps} />
       </Card>
       <Card>
+        <LessonCompleteSearch {...lessonCompleteSearchProps} />
         <LessonCompleteChart {...lessonCompleteChartProps} />
       </Card>
     </div>

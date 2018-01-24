@@ -1,0 +1,59 @@
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { DatePicker, Form, Select } from 'antd'
+import moment from 'moment'
+import { getSchool } from 'utils'
+
+const FormItem = Form.Item
+const { MonthPicker } = DatePicker
+const Option = Select.Option
+
+class LessonCompleteSearch extends Component {
+  static propTypes = {
+    form: PropTypes.object.isRequired,
+    searchQuery: PropTypes.object.isRequired,
+    schools: PropTypes.array.isRequired,
+    onQuery: PropTypes.func.isRequired,
+  }
+
+  state = {
+  }
+
+  handleChange = (isPostBack = true) => {
+    const { form: { getFieldsValue }, onQuery } = this.props
+    setTimeout(() => {
+      const params = getFieldsValue()
+      params.deadline = params.deadline.endOf('month').format('X')
+      params.isPostBack = isPostBack
+      onQuery(params)
+    }, 0)
+  }
+
+  render () {
+    const { form: { getFieldDecorator }, schools, searchQuery: { school, deadline } } = this.props
+
+    return (
+      <Form layout="inline" style={{ marginBottom: 20 }}>
+        <FormItem label="校区">
+          {getFieldDecorator('school', {
+            initialValue: school,
+            onChange: this.handleChange,
+          })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
+            {schools.map(item => <Option key={item.id} value={item.school}>{item.name}</Option>)}
+          </Select>)
+          }
+        </FormItem>
+        <FormItem>
+          {getFieldDecorator('deadline', {
+            initialValue: moment.unix(deadline),
+            onChange: this.handleChange,
+          })(
+            <MonthPicker placeholder="--请选择月份--" />
+          )}
+        </FormItem>
+      </Form>
+    )
+  }
+}
+
+export default Form.create()(LessonCompleteSearch)
