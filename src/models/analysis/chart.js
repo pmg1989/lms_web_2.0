@@ -27,39 +27,71 @@ const renderTeacherChart = (list) => {
 const renderLessonCompleteChart = (list) => {
   return list.reduce((dic, item) => {
     const avaliable = item.contract_available
-    const yearMonth = avaliable.match(/.*\d\/.*(?=\/.*)/)[0]
-    if (!dic[yearMonth]) {
-      dic[yearMonth] = {
+    const avaliableArr = avaliable.split('/')
+    const year = avaliableArr[0]
+    const month = avaliableArr[1]
+    const day = avaliableArr[2]
+    if (!dic[year]) {
+      dic[year] = {
         all: {
           count: 1,
           profession: item.pro_ontrack,
           hd: item.hd_ontrack,
           jl: item.jl_ontrack,
         },
-        [avaliable]: {
-          count: 1,
-          profession: item.pro_ontrack,
-          hd: item.hd_ontrack,
-          jl: item.jl_ontrack,
+        [month]: {
+          all: {
+            count: 1,
+            profession: item.pro_ontrack,
+            hd: item.hd_ontrack,
+            jl: item.jl_ontrack,
+          },
+          [day]: {
+            count: 1,
+            profession: item.pro_ontrack,
+            hd: item.hd_ontrack,
+            jl: item.jl_ontrack,
+          },
         },
       }
     } else {
-      dic[yearMonth].all.count += 1
-      dic[yearMonth].all.profession += item.pro_ontrack
-      dic[yearMonth].all.hd += item.hd_ontrack
-      dic[yearMonth].all.jl += item.jl_ontrack
-      if (!dic[yearMonth][avaliable]) {
-        dic[yearMonth][avaliable] = {
-          count: 1,
-          profession: item.pro_ontrack,
-          hd: item.hd_ontrack,
-          jl: item.jl_ontrack,
+      dic[year].all.count += 1
+      dic[year].all.profession += item.pro_ontrack
+      dic[year].all.hd += item.hd_ontrack
+      dic[year].all.jl += item.jl_ontrack
+      if (!dic[year][month]) {
+        dic[year][month] = {
+          all: {
+            count: 1,
+            profession: item.pro_ontrack,
+            hd: item.hd_ontrack,
+            jl: item.jl_ontrack,
+          },
+          [day]: {
+            count: 1,
+            profession: item.pro_ontrack,
+            hd: item.hd_ontrack,
+            jl: item.jl_ontrack,
+          },
         }
       } else {
-        dic[yearMonth][avaliable].count += 1
-        dic[yearMonth][avaliable].profession += item.pro_ontrack
-        dic[yearMonth][avaliable].hd += item.hd_ontrack
-        dic[yearMonth][avaliable].jl += item.jl_ontrack
+        dic[year][month].all.count += 1
+        dic[year][month].all.profession += item.pro_ontrack
+        dic[year][month].all.hd += item.hd_ontrack
+        dic[year][month].all.jl += item.jl_ontrack
+        if (!dic[year][month][day]) {
+          dic[year][month][day] = {
+            count: 1,
+            profession: item.pro_ontrack,
+            hd: item.hd_ontrack,
+            jl: item.jl_ontrack,
+          }
+        } else {
+          dic[year][month][day].count += 1
+          dic[year][month][day].profession += item.pro_ontrack
+          dic[year][month][day].hd += item.hd_ontrack
+          dic[year][month][day].jl += item.jl_ontrack
+        }
       }
     }
     return dic
@@ -77,7 +109,7 @@ const searchLessonCompleteQuery = {
   isPostBack: true,
   school: 'cd01', // getSchool(),
   type: 'month',
-  deadline: moment().endOf('day').format('X'),
+  deadline: moment().subtract(1, 'month').endOf('day').format('X'),
 }
 
 export default {
@@ -171,6 +203,7 @@ export default {
       return { ...state, teacher: { ...state.teacher, searchQuery } }
     },
     queryLessonCompleteChartSuccess (state, action) {
+      console.log(action.payload.data)
       return { ...state, lessonComplete: action.payload }
     },
     setLessonCompleteChartSuccess (state, action) {

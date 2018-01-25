@@ -4,28 +4,40 @@ import { Spin } from 'antd'
 import moment from 'moment'
 import ReactEcharts from 'echarts-for-react'
 
-const renderXAxisData = (data, type, curMonth) => {
+// const emptyData = {
+//   count: 1,
+//   profession: 0,
+//   hd: 0,
+//   jl: 0,
+// }
+
+const renderXAxisData = (data, type, year, month) => {
   if (type === 'month') {
-    return Object.keys(data).sort().map(item => item)
+    const months = data[year] || {}
+    return Object.keys(months).sort().filter(curMonth => curMonth !== 'all')
   } else if (type === 'day') {
-    return Object.keys((data[curMonth] || {})).sort().filter(item => item !== 'all')
+    return Object.keys((data[month] || {})).sort().filter(item => item !== 'all')
   }
   return []
 }
 
-const renderSeriesData = (data, type, subject, curMonth) => {
+const renderSeriesData = (data, type, subject, year, month) => {
   if (type === 'month') {
-    return Object.keys(data).sort().map(item => (data[item].all[subject] / data[item].all.count).toFixed(2))
+    const months = data[year] || {}
+    const monthArr = Object.keys(months).sort().filter(curMonth => curMonth !== 'all')
+    return monthArr.map(curMonth => (months[curMonth].all[subject] / months[curMonth].all.count).toFixed(2))
   } else if (type === 'day') {
-    return Object.keys((data[curMonth] || {})).sort().filter(item => item !== 'all')
-      .map(item => (data[curMonth][item][subject] / data[curMonth][item].count).toFixed(2))
+    return Object.keys((data[month] || {})).sort().filter(item => item !== 'all')
+      .map(item => (data[month][item][subject] / data[month][item].count).toFixed(2))
   }
   return []
 }
 
 const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { type, deadline }, data } }) => {
-  const curMonth = moment.unix(deadline).format('YYYY/MM')
-
+  const curYear = moment.unix(deadline).format('YYYY')
+  const curMonth = moment.unix(deadline).format('MM')
+  // console.log(renderXAxisData(data, type, curYear, curMonth))
+  console.log(renderSeriesData(data, type, 'profession', curYear, curMonth))
   const option = {
     title: {
       text: '学生合同 On Track',
@@ -47,7 +59,7 @@ const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { type, d
     xAxis: {
       type: 'category',
       boundaryGap: false,
-      data: renderXAxisData(data, type, curMonth),
+      data: renderXAxisData(data, type, curYear, curMonth),
     },
     yAxis: {
       type: 'value',
@@ -56,17 +68,17 @@ const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { type, d
       {
         name: '专业课',
         type: 'line',
-        data: renderSeriesData(data, type, 'profession', curMonth),
+        data: renderSeriesData(data, type, 'profession', curYear, curMonth),
       },
       {
         name: '互动课',
         type: 'line',
-        data: renderSeriesData(data, type, 'hd', curMonth),
+        data: renderSeriesData(data, type, 'hd', curYear, curMonth),
       },
       {
         name: '交流课',
         type: 'line',
-        data: renderSeriesData(data, type, 'jl', curMonth),
+        data: renderSeriesData(data, type, 'jl', curYear, curMonth),
       },
     ],
   }
