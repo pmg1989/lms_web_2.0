@@ -13,8 +13,9 @@ import ReactEcharts from 'echarts-for-react'
 
 const renderXAxisData = (data, type, year, month) => {
   if (type === 'month') {
-    const months = data[year] || {}
-    return Object.keys(months).sort().filter(curMonth => curMonth !== 'all')
+    return Object.values(data).sort().reduce((arr, yearMonths) => {
+      return arr.concat(Object.keys(yearMonths).filter(yearMonth => yearMonth !== 'all').sort())
+    }, [])
   } else if (type === 'day') {
     return Object.keys((data[month] || {})).sort().filter(item => item !== 'all')
   }
@@ -23,9 +24,14 @@ const renderXAxisData = (data, type, year, month) => {
 
 const renderSeriesData = (data, type, subject, year, month) => {
   if (type === 'month') {
-    const months = data[year] || {}
-    const monthArr = Object.keys(months).sort().filter(curMonth => curMonth !== 'all')
-    return monthArr.map(curMonth => (months[curMonth].all[subject] / months[curMonth].all.count).toFixed(2))
+    const years = Object.values(data).sort()
+    const yearsMonths = years.reduce((arr, yearMonths) => {
+      return arr.concat(Object.keys(yearMonths).filter(yearMonth => yearMonth !== 'all').sort())
+    }, [])
+    return yearsMonths.map((yearMonth) => {
+      const _year = yearMonth.split('/')[0]
+      return (data[_year][yearMonth].all[subject] / data[_year][yearMonth].all.count).toFixed(2)
+    })
   } else if (type === 'day') {
     return Object.keys((data[month] || {})).sort().filter(item => item !== 'all')
       .map(item => (data[month][item][subject] / data[month][item].count).toFixed(2))
@@ -37,7 +43,7 @@ const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { type, d
   const curYear = moment.unix(deadline).format('YYYY')
   const curMonth = moment.unix(deadline).format('MM')
   // console.log(renderXAxisData(data, type, curYear, curMonth))
-  console.log(renderSeriesData(data, type, 'profession', curYear, curMonth))
+  // console.log(renderSeriesData(data, type, 'profession', curYear, curMonth))
   const option = {
     title: {
       text: '学生合同 On Track',

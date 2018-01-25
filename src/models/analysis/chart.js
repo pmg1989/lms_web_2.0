@@ -31,6 +31,8 @@ const renderLessonCompleteChart = (list) => {
     const year = avaliableArr[0]
     const month = avaliableArr[1]
     const day = avaliableArr[2]
+    const yearMonth = `${year}/${month}`
+    const monthDay = `${month}/${day}`
     if (!dic[year]) {
       dic[year] = {
         all: {
@@ -39,14 +41,14 @@ const renderLessonCompleteChart = (list) => {
           hd: item.hd_ontrack,
           jl: item.jl_ontrack,
         },
-        [month]: {
+        [yearMonth]: {
           all: {
             count: 1,
             profession: item.pro_ontrack,
             hd: item.hd_ontrack,
             jl: item.jl_ontrack,
           },
-          [day]: {
+          [monthDay]: {
             count: 1,
             profession: item.pro_ontrack,
             hd: item.hd_ontrack,
@@ -59,15 +61,15 @@ const renderLessonCompleteChart = (list) => {
       dic[year].all.profession += item.pro_ontrack
       dic[year].all.hd += item.hd_ontrack
       dic[year].all.jl += item.jl_ontrack
-      if (!dic[year][month]) {
-        dic[year][month] = {
+      if (!dic[year][yearMonth]) {
+        dic[year][yearMonth] = {
           all: {
             count: 1,
             profession: item.pro_ontrack,
             hd: item.hd_ontrack,
             jl: item.jl_ontrack,
           },
-          [day]: {
+          [monthDay]: {
             count: 1,
             profession: item.pro_ontrack,
             hd: item.hd_ontrack,
@@ -75,22 +77,22 @@ const renderLessonCompleteChart = (list) => {
           },
         }
       } else {
-        dic[year][month].all.count += 1
-        dic[year][month].all.profession += item.pro_ontrack
-        dic[year][month].all.hd += item.hd_ontrack
-        dic[year][month].all.jl += item.jl_ontrack
-        if (!dic[year][month][day]) {
-          dic[year][month][day] = {
+        dic[year][yearMonth].all.count += 1
+        dic[year][yearMonth].all.profession += item.pro_ontrack
+        dic[year][yearMonth].all.hd += item.hd_ontrack
+        dic[year][yearMonth].all.jl += item.jl_ontrack
+        if (!dic[year][yearMonth][monthDay]) {
+          dic[year][yearMonth][monthDay] = {
             count: 1,
             profession: item.pro_ontrack,
             hd: item.hd_ontrack,
             jl: item.jl_ontrack,
           }
         } else {
-          dic[year][month][day].count += 1
-          dic[year][month][day].profession += item.pro_ontrack
-          dic[year][month][day].hd += item.hd_ontrack
-          dic[year][month][day].jl += item.jl_ontrack
+          dic[year][yearMonth][monthDay].count += 1
+          dic[year][yearMonth][monthDay].profession += item.pro_ontrack
+          dic[year][yearMonth][monthDay].hd += item.hd_ontrack
+          dic[year][yearMonth][monthDay].jl += item.jl_ontrack
         }
       }
     }
@@ -109,7 +111,7 @@ const searchLessonCompleteQuery = {
   isPostBack: true,
   school: 'cd01', // getSchool(),
   type: 'month',
-  deadline: moment().subtract(1, 'month').endOf('day').format('X'),
+  deadline: moment().endOf('day').format('X'),
 }
 
 export default {
@@ -204,6 +206,19 @@ export default {
     },
     queryLessonCompleteChartSuccess (state, action) {
       console.log(action.payload.data)
+      // const data = action.payload.data
+
+      // const years = Object.values(data).sort()
+      // const yearsMonths = years.reduce((arr, yearMonths) => {
+      //   return arr.concat(Object.keys(yearMonths).filter(yearMonth => yearMonth !== 'all').sort())
+      // }, [])
+
+      // const test = yearsMonths.map((yearMonth) => {
+      //   const year = yearMonth.split('/')[0]
+      //   console.log(year)
+      //   return (data[year][yearMonth].all.profession / data[year][yearMonth].all.count).toFixed(2)
+      // })
+      // console.log(test)
       return { ...state, lessonComplete: action.payload }
     },
     setLessonCompleteChartSuccess (state, action) {
