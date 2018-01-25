@@ -56,11 +56,6 @@ function List ({
       key: 'stage_1_vip_percent',
     },
     {
-      title: '专业应上课时',
-      dataIndex: 'pro_ideal_attendcnt',
-      key: 'pro_ideal_attendcnt',
-    },
-    {
       title: '二阶段合同数',
       dataIndex: 'stage_2',
       key: 'stage_2',
