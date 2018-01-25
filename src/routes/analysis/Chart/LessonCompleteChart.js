@@ -35,9 +35,11 @@ const renderSeriesData = (data, type, subject, year, month) => {
     })
   } else if (type === 'day') {
     const monthDays = (data[year] || {})[`${year}/${month}`] || {}
-    delete monthDays.all
-    return Object.values(monthDays)
-      .map(item => (item[subject] / item.count).toFixed(2))
+    return Object.keys(monthDays).filter(monthDay => monthDay !== 'all').sort()
+      .map((monthDay) => {
+        const item = data[year][`${year}/${month}`][monthDay]
+        return (item[subject] / item.count).toFixed(2)
+      })
   }
   return []
 }

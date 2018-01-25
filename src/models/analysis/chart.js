@@ -206,17 +206,6 @@ export default {
     },
     queryLessonCompleteChartSuccess (state, action) {
       console.log(action.payload.data)
-      // const data = action.payload.data
-      // const year = '2017'
-      // const month = '12'
-      // const subject = 'profession'
-
-      // const monthDays = data[year][`${year}/${month}`]
-      // delete monthDays.all
-
-      // const test = Object.values(monthDays)
-      //   .map(item => (item[subject] / item.count).toFixed(2))
-      // console.log(test)
       return { ...state, lessonComplete: action.payload }
     },
     setLessonCompleteChartSuccess (state, action) {
