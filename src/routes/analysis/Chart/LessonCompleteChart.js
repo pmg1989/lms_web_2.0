@@ -6,18 +6,18 @@ import ReactEcharts from 'echarts-for-react'
 
 const renderXAxisData = (data, type, curMonth) => {
   if (type === 'month') {
-    return Object.keys(data).map(item => item)
+    return Object.keys(data).sort().map(item => item)
   } else if (type === 'day') {
-    return Object.keys((data[curMonth] || {})).filter(item => item !== 'all')
+    return Object.keys((data[curMonth] || {})).sort().filter(item => item !== 'all')
   }
   return []
 }
 
 const renderSeriesData = (data, type, subject, curMonth) => {
   if (type === 'month') {
-    return Object.keys(data).map(item => (data[item].all[subject] / data[item].all.count).toFixed(2))
+    return Object.keys(data).sort().map(item => (data[item].all[subject] / data[item].all.count).toFixed(2))
   } else if (type === 'day') {
-    return Object.keys((data[curMonth] || {})).filter(item => item !== 'all')
+    return Object.keys((data[curMonth] || {})).sort().filter(item => item !== 'all')
       .map(item => (data[curMonth][item][subject] / data[curMonth][item].count).toFixed(2))
   }
   return []
