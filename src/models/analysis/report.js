@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { getCurPowers, getSchool } from 'utils'
-import { queryTeacherReport, queryProTeacherReport, queryLessonCompleteReport } from 'services/analysis/report'
+import { queryTeacherReport, queryLessonCompleteReport, queryProTeacherReport } from 'services/analysis/report'
 
 const page = {
   current: 1,
