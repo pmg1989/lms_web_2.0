@@ -106,7 +106,7 @@ class Calendar extends Component {
     const { onNavigate } = this.props
     const momentDate = moment(date)
     if (curNavigate === 'DATE') {
-      // 点击 + more 按钮时，不做任何请求 
+      // 点击 + more 按钮时，不做任何请求
       return
     }
     this.setState({ curDate: momentDate.format('X') })

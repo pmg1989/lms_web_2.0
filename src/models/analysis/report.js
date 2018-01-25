@@ -1,9 +1,53 @@
-import { getCurPowers } from 'utils'
+import moment from 'moment'
+import { getCurPowers, getSchool } from 'utils'
 import { queryTeacherReport, queryProTeacherReport, queryLessonCompleteReport } from 'services/analysis/report'
+
+const page = {
+  current: 1,
+  pageSize: 10,
+}
+
+const searchTeacherQuery = {
+  isPostBack: true,
+  school: getSchool(),
+  name: 'all',
+  deadline: moment().subtract(1, 'month').endOf('month').format('X'),
+}
+
+const lessonCompleteQuery = {
+  isPostBack: true,
+  school: getSchool(),
+  name: 'all',
+  deadline: moment().subtract(1, 'month').endOf('month').format('X'),
+}
 
 export default {
   namespace: 'analysisReport',
   state: {
+    teacher: {
+      searchQuery: searchTeacherQuery,
+      list: [],
+      pagination: {
+        ...page,
+        total: null,
+      },
+    },
+    lessonComplete: {
+      searchQuery: lessonCompleteQuery,
+      list: [],
+      pagination: {
+        ...page,
+        total: null,
+      },
+    },
+    proTeacher: {
+      searchQuery: searchTeacherQuery,
+      list: [],
+      pagination: {
+        ...page,
+        total: null,
+      },
+    },
   },
   subscriptions: {
     setup ({ dispatch, history }) {
@@ -12,50 +56,132 @@ export default {
           const curPowers = getCurPowers(pathname)
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
-            dispatch({ type: 'queryTeacherReport' })
+            dispatch({ type: 'query' })
           }
         }
       })
     },
   },
   effects: {
-    * queryTeacherReport ({ }, { call, put }) {
-      const { data, success } = yield call(queryTeacherReport, { deadline: '1517414400' })
-      if (success) {
+    * query ({ }, { put }) {
+      yield put({ type: 'commonModel/querySchools' })
+      yield put({
+        type: 'queryTeacherReport',
+        payload: searchTeacherQuery,
+      })
+    },
+    * queryTeacherReport ({ payload }, { call, put }) {
+      if (payload.isPostBack) {
+        const { data, success } = yield call(queryTeacherReport, { school: payload.school, deadline: payload.deadline })
+        if (success) {
+          yield put({
+            type: 'queryTeacherReportSuccess',
+            payload: {
+              list: data,
+              pagination: {
+                current: payload.current ? +payload.current : page.current,
+                pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
+                total: data.length,
+              },
+              searchQuery: payload,
+            },
+          })
+        }
+      } else {
         yield put({
-          type: 'queryComingLessonsSuccess',
+          type: 'setTeacherReportSuccess',
           payload: {
-            comingLessons: (data[0] && data[0].list) || [],
+            pagination: {
+              current: payload.current ? +payload.current : page.current,
+              pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
+            },
+            searchQuery: payload,
           },
         })
       }
     },
-    * queryProTeacherReport ({ }, { call, put }) {
-      const { data, success } = yield call(queryProTeacherReport, { deadline: '1517414400' })
-      if (success) {
+    * queryLessonCompleteReport ({ payload }, { call, put }) {
+      if (payload.isPostBack) {
+        const { data, success } = yield call(queryLessonCompleteReport, { school: payload.school, deadline: payload.deadline })
+        if (success) {
+          yield put({
+            type: 'queryLessonCompleteReportSuccess',
+            payload: {
+              list: data,
+              pagination: {
+                current: payload.current ? +payload.current : page.current,
+                pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
+                total: data.length,
+              },
+              searchQuery: payload,
+            },
+          })
+        }
+      } else {
         yield put({
-          type: 'queryComingLessonsSuccess',
+          type: 'setLessonCompleteReportSuccess',
           payload: {
-            comingLessons: (data[0] && data[0].list) || [],
+            pagination: {
+              current: payload.current ? +payload.current : page.current,
+              pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
+            },
+            searchQuery: payload,
           },
         })
       }
     },
-    * queryLessonCompleteReport ({ }, { call, put }) {
-      const { data, success } = yield call(queryLessonCompleteReport, { deadline: '1517414400' })
-      if (success) {
+    * queryProTeacherReport ({ payload }, { call, put }) {
+      if (payload.isPostBack) {
+        const { data, success } = yield call(queryProTeacherReport, { school: payload.school, deadline: payload.deadline })
+        if (success) {
+          yield put({
+            type: 'queryProTeacherReportSuccess',
+            payload: {
+              list: data,
+              pagination: {
+                current: payload.current ? +payload.current : page.current,
+                pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
+                total: data.length,
+              },
+              searchQuery: payload,
+            },
+          })
+        }
+      } else {
         yield put({
-          type: 'queryComingLessonsSuccess',
+          type: 'setProTeacherReportSuccess',
           payload: {
-            comingLessons: (data[0] && data[0].list) || [],
+            pagination: {
+              current: payload.current ? +payload.current : page.current,
+              pageSize: payload.pageSize ? +payload.pageSize : page.pageSize,
+            },
+            searchQuery: payload,
           },
         })
       }
     },
   },
   reducers: {
-    querySuccess (state, action) {
-      return { ...state, ...action.payload }
+    queryTeacherReportSuccess (state, action) {
+      return { ...state, teacher: action.payload }
+    },
+    setTeacherReportSuccess (state, action) {
+      const { list } = state.teacher
+      return { ...state, teacher: { list, ...action.payload } }
+    },
+    queryLessonCompleteReportSuccess (state, action) {
+      return { ...state, lessonComplete: action.payload }
+    },
+    setLessonCompleteReportSuccess (state, action) {
+      const { list } = state.lessonComplete
+      return { ...state, lessonComplete: { list, ...action.payload } }
+    },
+    queryProTeacherReportSuccess (state, action) {
+      return { ...state, proTeacher: action.payload }
+    },
+    setProTeacherReportSuccess (state, action) {
+      const { list } = state.proTeacher
+      return { ...state, proTeacher: { list, ...action.payload } }
     },
   },
 }
