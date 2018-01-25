@@ -17,7 +17,8 @@ const renderXAxisData = (data, type, year, month) => {
       return arr.concat(Object.keys(yearMonths).filter(yearMonth => yearMonth !== 'all').sort())
     }, [])
   } else if (type === 'day') {
-    return Object.keys((data[month] || {})).sort().filter(item => item !== 'all')
+    const monthDays = (data[year] || {})[`${year}/${month}`] || {}
+    return Object.keys(monthDays).filter(monthDay => monthDay !== 'all').sort()
   }
   return []
 }
@@ -33,8 +34,10 @@ const renderSeriesData = (data, type, subject, year, month) => {
       return (data[_year][yearMonth].all[subject] / data[_year][yearMonth].all.count).toFixed(2)
     })
   } else if (type === 'day') {
-    return Object.keys((data[month] || {})).sort().filter(item => item !== 'all')
-      .map(item => (data[month][item][subject] / data[month][item].count).toFixed(2))
+    const monthDays = (data[year] || {})[`${year}/${month}`] || {}
+    delete monthDays.all
+    return Object.values(monthDays)
+      .map(item => (item[subject] / item.count).toFixed(2))
   }
   return []
 }

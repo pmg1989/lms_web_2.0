@@ -207,17 +207,15 @@ export default {
     queryLessonCompleteChartSuccess (state, action) {
       console.log(action.payload.data)
       // const data = action.payload.data
+      // const year = '2017'
+      // const month = '12'
+      // const subject = 'profession'
 
-      // const years = Object.values(data).sort()
-      // const yearsMonths = years.reduce((arr, yearMonths) => {
-      //   return arr.concat(Object.keys(yearMonths).filter(yearMonth => yearMonth !== 'all').sort())
-      // }, [])
+      // const monthDays = data[year][`${year}/${month}`]
+      // delete monthDays.all
 
-      // const test = yearsMonths.map((yearMonth) => {
-      //   const year = yearMonth.split('/')[0]
-      //   console.log(year)
-      //   return (data[year][yearMonth].all.profession / data[year][yearMonth].all.count).toFixed(2)
-      // })
+      // const test = Object.values(monthDays)
+      //   .map(item => (item[subject] / item.count).toFixed(2))
       // console.log(test)
       return { ...state, lessonComplete: action.payload }
     },
