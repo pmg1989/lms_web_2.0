@@ -4,13 +4,6 @@ import { Spin } from 'antd'
 import moment from 'moment'
 import ReactEcharts from 'echarts-for-react'
 
-// const emptyData = {
-//   count: 1,
-//   profession: 0,
-//   hd: 0,
-//   jl: 0,
-// }
-
 const renderXAxisData = (data, type, year, month) => {
   if (type === 'month') {
     return Object.values(data).sort().reduce((arr, yearMonths) => {

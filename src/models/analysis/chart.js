@@ -100,6 +100,36 @@ const renderLessonCompleteChart = (list) => {
   }, {})
 }
 
+const monthAll = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+
+const emptyData = {
+  count: 1,
+  profession: 0,
+  hd: 0,
+  jl: 0,
+}
+
+const fillLessonCompleteChart = (data) => {
+  return Object.keys(data).reduce((dic, year) => {
+    const yearMonthAll = monthAll.map(month => `${year}/${month}`)
+    return yearMonthAll.reduce((dic2, yearMonth) => {
+      if (!dic2[year]) {
+        dic2[year] = {
+          all: emptyData,
+          [`${year}/01`]: { all: emptyData, '01/01': emptyData },
+        }
+      } else if (!dic2[year][yearMonth]) {
+        const month = yearMonth.split('/')[1]
+        dic2[year][yearMonth] = {
+          all: emptyData,
+          [`${month}/01`]: emptyData,
+        }
+      }
+      return dic2
+    }, dic)
+  }, data)
+}
+
 const searchTeacherQuery = {
   isPostBack: true,
   school: getSchool(),
@@ -178,11 +208,13 @@ export default {
       if (payload.isPostBack) {
         const { isPostBack, type, ...params } = payload
         const { data, success } = yield call(queryLessonCompleteChart, params)
+        const dataDic = renderLessonCompleteChart(data)
+        console.log(dataDic)
         if (success) {
           yield put({
             type: 'queryLessonCompleteChartSuccess',
             payload: {
-              data: renderLessonCompleteChart(data),
+              data: fillLessonCompleteChart(dataDic),
               searchQuery: payload,
             },
           })
@@ -207,6 +239,7 @@ export default {
     queryLessonCompleteChartSuccess (state, action) {
       console.log(action.payload.data)
       return { ...state, lessonComplete: action.payload }
+      // return { ...state, lessonComplete: { searchQuery: state.lessonComplete.searchQuery, data: {} } }
     },
     setLessonCompleteChartSuccess (state, action) {
       const { searchQuery } = action.payload
