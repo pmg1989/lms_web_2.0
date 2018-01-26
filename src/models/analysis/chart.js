@@ -110,23 +110,33 @@ const emptyData = {
 }
 
 const fillLessonCompleteChart = (data) => {
-  function fillMonthDays (yearMonth) {
-    const month = yearMonth.split('/')[1]
-    const days = moment(yearMonth, 'YYYY-MM').daysInMonth()
-    const dic = {}
-    for (let day = 1; day <= days; day += 1) {
-      dic[`${month}/${day}`] = emptyData
-    }
-    return dic
-  }
-
   return Object.keys(data).reduce((dic, year) => {
+    function fillMonthDays (yearMonth, isEmpty) {
+      const month = yearMonth.split('/')[1]
+      const days = moment(yearMonth, 'YYYY-MM').daysInMonth()
+      const _dic = {}
+      for (let day = 1; day <= days; day += 1) {
+        const dayPad = day.toString().padStart(2, '0')
+        if (isEmpty) {
+          _dic[`${month}/${dayPad}`] = emptyData
+        } else {
+          _dic[`${month}/${dayPad}`] = data[year][yearMonth][`${month}/${dayPad}`] || emptyData
+        }
+      }
+      return _dic
+    }
+
     const yearMonthAll = monthAll.map(month => `${year}/${month}`)
     return yearMonthAll.reduce((dic2, yearMonth) => {
       if (!dic2[year][yearMonth]) {
         dic2[year][yearMonth] = {
           all: emptyData,
-          ...fillMonthDays(yearMonth),
+          ...fillMonthDays(yearMonth, true),
+        }
+      } else {
+        dic2[year][yearMonth] = {
+          all: dic2[year][yearMonth].all,
+          ...fillMonthDays(yearMonth, false),
         }
       }
       return dic2
