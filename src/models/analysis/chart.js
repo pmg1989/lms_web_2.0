@@ -100,16 +100,15 @@ const renderLessonCompleteChart = (list) => {
   }, {})
 }
 
-const monthAll = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
-
-const emptyData = {
-  count: 1,
-  profession: 0,
-  hd: 0,
-  jl: 0,
-}
-
 const fillLessonCompleteChart = (data) => {
+  const nowMonth = moment().format('YYYY/MM')
+  const emptyData = {
+    count: 1,
+    profession: 0,
+    hd: 0,
+    jl: 0,
+  }
+
   return Object.keys(data).reduce((dic, year) => {
     function fillMonthDays (yearMonth, isEmpty) {
       const month = yearMonth.split('/')[1]
@@ -126,7 +125,16 @@ const fillLessonCompleteChart = (data) => {
       return _dic
     }
 
-    const yearMonthAll = monthAll.map(month => `${year}/${month}`)
+    const yearMonthAll = []
+    const monthAll = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+
+    monthAll.reduce((_yearMonthAll, month) => {
+      if (`${year}/${month}` <= nowMonth) {
+        _yearMonthAll.push(`${year}/${month}`)
+      }
+      return _yearMonthAll
+    }, yearMonthAll)
+
     return yearMonthAll.reduce((dic2, yearMonth) => {
       if (!dic2[year][yearMonth]) {
         dic2[year][yearMonth] = {
@@ -222,8 +230,8 @@ export default {
       if (payload.isPostBack) {
         const { isPostBack, type, ...params } = payload
         const { data, success } = yield call(queryLessonCompleteChart, params)
+        data.push({ contract_available: '2018/01/10', hd_ontrack: 1, jl_ontrack: 1, pro_ontrack: 1 })
         const dataDic = renderLessonCompleteChart(data)
-        console.log(dataDic)
         if (success) {
           yield put({
             type: 'queryLessonCompleteChartSuccess',
@@ -253,7 +261,6 @@ export default {
     queryLessonCompleteChartSuccess (state, action) {
       console.log(action.payload.data)
       return { ...state, lessonComplete: action.payload }
-      // return { ...state, lessonComplete: { searchQuery: state.lessonComplete.searchQuery, data: {} } }
     },
     setLessonCompleteChartSuccess (state, action) {
       const { searchQuery } = action.payload
