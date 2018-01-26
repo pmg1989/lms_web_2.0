@@ -26,144 +26,36 @@ const renderTeacherChart = (list) => {
 
 const renderLessonCompleteChart = (list) => {
   return list.reduce((dic, item) => {
-    const avaliable = item.contract_available
-    const avaliableArr = avaliable.split('/')
-    const year = avaliableArr[0]
-    const month = avaliableArr[1]
-    const day = avaliableArr[2]
-    const yearMonth = `${year}/${month}`
-    const monthDay = `${month}/${day}`
-    if (!dic[year]) {
-      dic[year] = {
-        all: {
-          count: 1,
-          profession: item.pro_ontrack,
-          hd: item.hd_ontrack,
-          jl: item.jl_ontrack,
-        },
-        [yearMonth]: {
-          all: {
-            count: 1,
-            profession: item.pro_ontrack,
-            hd: item.hd_ontrack,
-            jl: item.jl_ontrack,
-          },
-          [monthDay]: {
-            count: 1,
-            profession: item.pro_ontrack,
-            hd: item.hd_ontrack,
-            jl: item.jl_ontrack,
-          },
-        },
-      }
+    if (!dic[item.student_idnumber]) {
+      dic[item.student_idnumber] = item
     } else {
-      dic[year].all.count += 1
-      dic[year].all.profession += item.pro_ontrack
-      dic[year].all.hd += item.hd_ontrack
-      dic[year].all.jl += item.jl_ontrack
-      if (!dic[year][yearMonth]) {
-        dic[year][yearMonth] = {
-          all: {
-            count: 1,
-            profession: item.pro_ontrack,
-            hd: item.hd_ontrack,
-            jl: item.jl_ontrack,
-          },
-          [monthDay]: {
-            count: 1,
-            profession: item.pro_ontrack,
-            hd: item.hd_ontrack,
-            jl: item.jl_ontrack,
-          },
-        }
-      } else {
-        dic[year][yearMonth].all.count += 1
-        dic[year][yearMonth].all.profession += item.pro_ontrack
-        dic[year][yearMonth].all.hd += item.hd_ontrack
-        dic[year][yearMonth].all.jl += item.jl_ontrack
-        if (!dic[year][yearMonth][monthDay]) {
-          dic[year][yearMonth][monthDay] = {
-            count: 1,
-            profession: item.pro_ontrack,
-            hd: item.hd_ontrack,
-            jl: item.jl_ontrack,
-          }
-        } else {
-          dic[year][yearMonth][monthDay].count += 1
-          dic[year][yearMonth][monthDay].profession += item.pro_ontrack
-          dic[year][yearMonth][monthDay].hd += item.hd_ontrack
-          dic[year][yearMonth][monthDay].jl += item.jl_ontrack
-        }
-      }
+      dic[item.student_idnumber].pro_ontrack = (dic[item.student_idnumber].pro_ontrack + item.pro_ontrack) / 2
+      dic[item.student_idnumber].hd_ontrack = (dic[item.student_idnumber].hd_ontrack + item.hd_ontrack) / 2
+      dic[item.student_idnumber].jl_ontrack = (dic[item.student_idnumber].jl_ontrack + item.jl_ontrack) / 2
+    }
+    if (!dic.all) {
+      dic.all = { ...item }
+    } else {
+      dic.all.pro_ontrack = (dic.all.pro_ontrack + item.pro_ontrack) / 2
+      dic.all.hd_ontrack = (dic.all.hd_ontrack + item.hd_ontrack) / 2
+      dic.all.jl_ontrack = (dic.all.jl_ontrack + item.jl_ontrack) / 2
     }
     return dic
   }, {})
-}
-
-const fillLessonCompleteChart = (data) => {
-  const nowMonth = moment().format('YYYY/MM')
-  const emptyData = {
-    count: 1,
-    profession: 0,
-    hd: 0,
-    jl: 0,
-  }
-
-  return Object.keys(data).reduce((dic, year) => {
-    function fillMonthDays (yearMonth, isEmpty) {
-      const month = yearMonth.split('/')[1]
-      const days = moment(yearMonth, 'YYYY-MM').daysInMonth()
-      const _dic = {}
-      for (let day = 1; day <= days; day += 1) {
-        const dayPad = day.toString().padStart(2, '0')
-        if (isEmpty) {
-          _dic[`${month}/${dayPad}`] = emptyData
-        } else {
-          _dic[`${month}/${dayPad}`] = data[year][yearMonth][`${month}/${dayPad}`] || emptyData
-        }
-      }
-      return _dic
-    }
-
-    const yearMonthAll = []
-    const monthAll = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
-
-    monthAll.reduce((_yearMonthAll, month) => {
-      if (`${year}/${month}` <= nowMonth) {
-        _yearMonthAll.push(`${year}/${month}`)
-      }
-      return _yearMonthAll
-    }, yearMonthAll)
-
-    return yearMonthAll.reduce((dic2, yearMonth) => {
-      if (!dic2[year][yearMonth]) {
-        dic2[year][yearMonth] = {
-          all: emptyData,
-          ...fillMonthDays(yearMonth, true),
-        }
-      } else {
-        dic2[year][yearMonth] = {
-          all: dic2[year][yearMonth].all,
-          ...fillMonthDays(yearMonth, false),
-        }
-      }
-      return dic2
-    }, dic)
-  }, data)
 }
 
 const searchTeacherQuery = {
   isPostBack: true,
   school: getSchool(),
   name: 'all',
-  deadline: moment().subtract(1, 'month').endOf('month').format('X'),
+  deadline: moment().endOf('month').format('X'),
 }
 
 const searchLessonCompleteQuery = {
   isPostBack: true,
-  school: 'cd01', // getSchool(),
-  type: 'month',
-  deadline: moment().endOf('day').format('X'),
+  school: getSchool(),
+  idNumber: 'all',
+  deadline: moment().endOf('month').format('X'),
 }
 
 export default {
@@ -228,15 +120,13 @@ export default {
     },
     * queryLessonComplete ({ payload }, { call, put }) {
       if (payload.isPostBack) {
-        const { isPostBack, type, ...params } = payload
+        const { isPostBack, idNumber, ...params } = payload
         const { data, success } = yield call(queryLessonCompleteChart, params)
-        data.push({ contract_available: '2018/01/10', hd_ontrack: 1, jl_ontrack: 1, pro_ontrack: 1 })
-        const dataDic = renderLessonCompleteChart(data)
         if (success) {
           yield put({
             type: 'queryLessonCompleteChartSuccess',
             payload: {
-              data: fillLessonCompleteChart(dataDic),
+              data: renderLessonCompleteChart(data),
               searchQuery: payload,
             },
           })
@@ -259,7 +149,6 @@ export default {
       return { ...state, teacher: { ...state.teacher, searchQuery } }
     },
     queryLessonCompleteChartSuccess (state, action) {
-      console.log(action.payload.data)
       return { ...state, lessonComplete: action.payload }
     },
     setLessonCompleteChartSuccess (state, action) {

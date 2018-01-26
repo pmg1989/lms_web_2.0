@@ -63,7 +63,7 @@ const Search = ({
           </FormItem>
           <FormItem label="时间" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('deadline', {
-              initialValue: moment().subtract(1, 'month'),
+              initialValue: moment().endOf('month'),
               onChange: handleChange,
             })(
               <MonthPicker placeholder="--请选择月份--" />

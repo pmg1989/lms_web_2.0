@@ -1,88 +1,112 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Spin } from 'antd'
-import moment from 'moment'
 import ReactEcharts from 'echarts-for-react'
 
-const renderXAxisData = (data, type, year, month) => {
-  if (type === 'month') {
-    return Object.values(data).sort().reduce((arr, yearMonths) => {
-      return arr.concat(Object.keys(yearMonths).filter(yearMonth => yearMonth !== 'all').sort())
-    }, [])
-  } else if (type === 'day') {
-    const monthDays = (data[year] || {})[`${year}/${month}`] || {}
-    return Object.keys(monthDays).filter(monthDay => monthDay !== 'all').sort()
+const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { idNumber }, data } }) => {
+  const item = data[idNumber] || {
+    pro_ontrack: 0,
+    hd_ontrack: 0,
+    jl_ontrack: 0,
   }
-  return []
-}
-
-const renderSeriesData = (data, type, subject, year, month) => {
-  if (type === 'month') {
-    const years = Object.values(data).sort()
-    const yearsMonths = years.reduce((arr, yearMonths) => {
-      return arr.concat(Object.keys(yearMonths).filter(yearMonth => yearMonth !== 'all').sort())
-    }, [])
-    return yearsMonths.map((yearMonth) => {
-      const _year = yearMonth.split('/')[0]
-      return (data[_year][yearMonth].all[subject] / data[_year][yearMonth].all.count).toFixed(2)
-    })
-  } else if (type === 'day') {
-    const monthDays = (data[year] || {})[`${year}/${month}`] || {}
-    return Object.keys(monthDays).filter(monthDay => monthDay !== 'all').sort()
-      .map((monthDay) => {
-        const item = data[year][`${year}/${month}`][monthDay]
-        return (item[subject] / item.count).toFixed(2)
-      })
-  }
-  return []
-}
-
-const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { type, deadline }, data } }) => {
-  const curYear = moment.unix(deadline).format('YYYY')
-  const curMonth = moment.unix(deadline).format('MM')
-  // console.log(renderXAxisData(data, type, curYear, curMonth))
-  // console.log(renderSeriesData(data, type, 'profession', curYear, curMonth))
   const option = {
     title: {
-      text: '学生合同 On Track',
+      text: '学生合同On Track',
       subtext: '进行中的学生消课率统计',
       x: 'left',
     },
     tooltip: {
-      trigger: 'axis',
+      formatter: '{b} : {c}',
     },
-    legend: {
-      data: ['专业课', '互动课', '交流课'],
-    },
-    grid: {
-      left: '2%',
-      right: '2%',
-      bottom: '2%',
-      containLabel: true,
-    },
-    xAxis: {
-      type: 'category',
-      boundaryGap: false,
-      data: renderXAxisData(data, type, curYear, curMonth),
-    },
-    yAxis: {
-      type: 'value',
+    toolbox: {
+      feature: {
+        restore: {},
+        saveAsImage: {},
+      },
     },
     series: [
       {
-        name: '专业课',
-        type: 'line',
-        data: renderSeriesData(data, type, 'profession', curYear, curMonth),
+        name: '专业课onTrack',
+        type: 'gauge',
+        min: 0,
+        max: 5,
+        radius: '100%',
+        axisLine: { // 坐标轴线
+          lineStyle: { // 属性lineStyle控制线条样式
+            width: 20,
+          },
+        },
+        axisTick: { // 坐标轴小标记
+          length: 30, // 属性length控制线长
+          lineStyle: { // 属性lineStyle控制线条样式
+            color: 'auto',
+          },
+        },
+        splitLine: { // 分隔线
+          length: 40, // 属性length控制线长
+          lineStyle: { // 属性lineStyle（详见lineStyle）控制线条样式
+            color: 'auto',
+          },
+        },
+        data: [{ value: item.pro_ontrack.toFixed(2), name: '专业课onTrack' }],
       },
       {
-        name: '互动课',
-        type: 'line',
-        data: renderSeriesData(data, type, 'hd', curYear, curMonth),
+        name: '互动课onTrack',
+        type: 'gauge',
+        min: 0,
+        max: 5,
+        center: ['20%', '53%'], // 默认全局居中
+        radius: '80%',
+        axisLine: { // 坐标轴线
+          lineStyle: { // 属性lineStyle控制线条样式
+            width: 10,
+          },
+        },
+        axisTick: { // 坐标轴小标记
+          length: 20, // 属性length控制线长
+          lineStyle: { // 属性lineStyle控制线条样式
+            color: 'auto',
+          },
+        },
+        splitLine: { // 分隔线
+          length: 30, // 属性length控制线长
+          lineStyle: { // 属性lineStyle（详见lineStyle）控制线条样式
+            color: 'auto',
+          },
+        },
+        pointer: {
+          width: 5,
+        },
+        data: [{ value: item.hd_ontrack.toFixed(2), name: '互动课onTrack' }],
       },
       {
-        name: '交流课',
-        type: 'line',
-        data: renderSeriesData(data, type, 'jl', curYear, curMonth),
+        name: '交流课onTrack',
+        type: 'gauge',
+        min: 0,
+        max: 5,
+        center: ['80%', '53%'], // 默认全局居中
+        radius: '80%',
+        axisLine: { // 坐标轴线
+          lineStyle: { // 属性lineStyle控制线条样式
+            width: 10,
+          },
+        },
+        axisTick: { // 坐标轴小标记
+          length: 20, // 属性length控制线长
+          lineStyle: { // 属性lineStyle控制线条样式
+            color: 'auto',
+          },
+        },
+        splitLine: { // 分隔线
+          length: 30, // 属性length控制线长
+          lineStyle: { // 属性lineStyle（详见lineStyle）控制线条样式
+            color: 'auto',
+          },
+        },
+        pointer: {
+          width: 5,
+        },
+        data: [{ value: item.jl_ontrack.toFixed(2), name: '交流课onTrack' }],
       },
     ],
   }

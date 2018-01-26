@@ -11,14 +11,14 @@ const searchTeacherQuery = {
   isPostBack: true,
   school: getSchool(),
   name: 'all',
-  deadline: moment().subtract(1, 'month').endOf('month').format('X'),
+  deadline: moment().endOf('month').format('X'),
 }
 
 const lessonCompleteQuery = {
   isPostBack: true,
   school: getSchool(),
   name: 'all',
-  deadline: moment().subtract(1, 'month').endOf('month').format('X'),
+  deadline: moment().endOf('month').format('X'),
 }
 
 export default {

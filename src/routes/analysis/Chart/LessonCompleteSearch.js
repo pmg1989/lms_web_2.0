@@ -8,7 +8,7 @@ const FormItem = Form.Item
 const { MonthPicker } = DatePicker
 const Option = Select.Option
 
-const defaultDeadline = moment().endOf('day')
+const defaultDeadline = moment().endOf('month')
 const curMonth = moment().endOf('month').format('x')
 
 function disabledDate (current) {
@@ -21,6 +21,7 @@ class LessonCompleteSearch extends Component {
     searchQuery: PropTypes.object.isRequired,
     schools: PropTypes.array.isRequired,
     onQuery: PropTypes.func.isRequired,
+    data: PropTypes.object.isRequired,
   }
 
   handleChange = (isPostBack = true) => {
@@ -35,28 +36,23 @@ class LessonCompleteSearch extends Component {
 
   handleSchoolChange = () => {
     this.props.form.setFieldsValue({
-      type: 'month',
+      idNumber: 'all',
       deadline: defaultDeadline,
     })
     this.handleChange(true)
   }
 
-  handleTypeChange = (value) => {
-    if (value === 'month') {
-      this.props.form.setFieldsValue({
-        deadline: defaultDeadline,
-      })
-    }
+  handleNameChange = () => {
     this.handleChange(false)
   }
 
   handleDeadlineChange = () => {
-    this.handleChange(false)
+    this.handleChange(true)
   }
 
   render () {
-    const { form: { getFieldDecorator }, schools, searchQuery: { school, type, deadline } } = this.props
-
+    const { form: { getFieldDecorator }, schools, data, searchQuery: { school, idNumber, deadline } } = this.props
+    const idNumbers = Object.keys(data).filter(item => item !== 'all')
     return (
       <Form layout="inline" style={{ marginBottom: 20 }}>
         <FormItem label="校区">
@@ -68,13 +64,13 @@ class LessonCompleteSearch extends Component {
           </Select>)
           }
         </FormItem>
-        <FormItem label="类型">
-          {getFieldDecorator('type', {
-            initialValue: type,
-            onChange: this.handleTypeChange,
-          })(<Select style={{ width: 120 }}>
-            <Option value="month">按月份</Option>
-            <Option value="day">按天</Option>
+        <FormItem label="学生">
+          {getFieldDecorator('idNumber', {
+            initialValue: idNumber,
+            onChange: this.handleNameChange,
+          })(<Select style={{ width: 150 }}>
+            <Option value="all">全部</Option>
+            {idNumbers.map((item, key) => <Option key={key} value={item}>{data[item].student_name}</Option>)}
           </Select>)
           }
         </FormItem>
@@ -83,7 +79,7 @@ class LessonCompleteSearch extends Component {
             initialValue: moment.unix(deadline),
             onChange: this.handleDeadlineChange,
           })(
-            <MonthPicker disabled={type === 'month'} allowClear={false} disabledDate={disabledDate} placeholder="--请选择月份--" />
+            <MonthPicker allowClear={false} disabledDate={disabledDate} placeholder="--请选择月份--" />
           )}
         </FormItem>
       </Form>
