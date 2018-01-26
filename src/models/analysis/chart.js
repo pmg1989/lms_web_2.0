@@ -26,41 +26,19 @@ const renderTeacherChart = (list) => {
 
 const renderLessonCompleteChart = (list) => {
   return list.reduce((dic, item) => {
-    const avaliable = item.contract_available
-    const yearMonth = avaliable.match(/.*\d\/.*(?=\/.*)/)[0]
-    if (!dic[yearMonth]) {
-      dic[yearMonth] = {
-        all: {
-          count: 1,
-          profession: item.pro_ontrack,
-          hd: item.hd_ontrack,
-          jl: item.jl_ontrack,
-        },
-        [avaliable]: {
-          count: 1,
-          profession: item.pro_ontrack,
-          hd: item.hd_ontrack,
-          jl: item.jl_ontrack,
-        },
-      }
+    if (!dic[item.student_idnumber]) {
+      dic[item.student_idnumber] = item
     } else {
-      dic[yearMonth].all.count += 1
-      dic[yearMonth].all.profession += item.pro_ontrack
-      dic[yearMonth].all.hd += item.hd_ontrack
-      dic[yearMonth].all.jl += item.jl_ontrack
-      if (!dic[yearMonth][avaliable]) {
-        dic[yearMonth][avaliable] = {
-          count: 1,
-          profession: item.pro_ontrack,
-          hd: item.hd_ontrack,
-          jl: item.jl_ontrack,
-        }
-      } else {
-        dic[yearMonth][avaliable].count += 1
-        dic[yearMonth][avaliable].profession += item.pro_ontrack
-        dic[yearMonth][avaliable].hd += item.hd_ontrack
-        dic[yearMonth][avaliable].jl += item.jl_ontrack
-      }
+      dic[item.student_idnumber].pro_ontrack = (dic[item.student_idnumber].pro_ontrack + item.pro_ontrack) / 2
+      dic[item.student_idnumber].hd_ontrack = (dic[item.student_idnumber].hd_ontrack + item.hd_ontrack) / 2
+      dic[item.student_idnumber].jl_ontrack = (dic[item.student_idnumber].jl_ontrack + item.jl_ontrack) / 2
+    }
+    if (!dic.all) {
+      dic.all = { ...item }
+    } else {
+      dic.all.pro_ontrack = (dic.all.pro_ontrack + item.pro_ontrack) / 2
+      dic.all.hd_ontrack = (dic.all.hd_ontrack + item.hd_ontrack) / 2
+      dic.all.jl_ontrack = (dic.all.jl_ontrack + item.jl_ontrack) / 2
     }
     return dic
   }, {})
@@ -70,14 +48,14 @@ const searchTeacherQuery = {
   isPostBack: true,
   school: getSchool(),
   name: 'all',
-  deadline: moment().subtract(1, 'month').endOf('month').format('X'),
+  deadline: moment().endOf('month').format('X'),
 }
 
 const searchLessonCompleteQuery = {
   isPostBack: true,
-  school: 'cd01', // getSchool(),
-  type: 'month',
-  deadline: moment().endOf('day').format('X'),
+  school: getSchool(),
+  idNumber: 'all',
+  deadline: moment().endOf('month').format('X'),
 }
 
 export default {
@@ -142,7 +120,7 @@ export default {
     },
     * queryLessonComplete ({ payload }, { call, put }) {
       if (payload.isPostBack) {
-        const { isPostBack, type, ...params } = payload
+        const { isPostBack, idNumber, ...params } = payload
         const { data, success } = yield call(queryLessonCompleteChart, params)
         if (success) {
           yield put({

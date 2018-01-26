@@ -29,6 +29,7 @@ function Chart ({ dispatch, analysisChart, loading, commonModel: { schools, teac
 
   const lessonCompleteSearchProps = {
     schools,
+    data: analysisChart.lessonComplete.data,
     searchQuery: analysisChart.lessonComplete.searchQuery,
     onQuery (fieldsValue) {
       dispatch({

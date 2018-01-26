@@ -6,6 +6,8 @@ import ListTeacher from './Teacher/List'
 import SearchTeacher from './Teacher/Search'
 import ListLessonComplete from './LessonComplete/List'
 import SearchLessonComplete from './LessonComplete/Search'
+import ListProTeacher from './ProTeacher/List'
+import SearchProTeacher from './ProTeacher/Search'
 
 const TabPane = Tabs.TabPane
 
@@ -89,6 +91,27 @@ class Report extends Component {
       },
     }
 
+    const searchProTeacherProps = {
+      schools: commonModel.schools,
+      onSearch (fieldsValue) {
+        dispatch({
+          type: `${namespace}/queryProTeacherReport`,
+          payload: { current: 1, ...fieldsValue },
+        })
+      },
+    }
+
+    const listProTeacherProps = {
+      proTeacher: analysisReport.proTeacher,
+      loading: loading.effects[`${namespace}/queryProTeacherReport`],
+      onPageChange (fieldsValue) {
+        dispatch({
+          type: `${namespace}/queryProTeacherReport`,
+          payload: { ...fieldsValue, isPostBack: false },
+        })
+      },
+    }
+
     return (
       <div className="content-inner">
         <Tabs defaultActiveKey="tab1" onChange={this.handleTabChange}>
@@ -101,8 +124,8 @@ class Report extends Component {
             <ListLessonComplete {...listLessonCompleteProps} />
           </TabPane>
           <TabPane tab="专业课老师开课中的合同报表" key="tab3">
-            <SearchTeacher {...searchTeacherProps} />
-            <ListTeacher {...listTeacherProps} />
+            <SearchProTeacher {...searchProTeacherProps} />
+            <ListProTeacher {...listProTeacherProps} />
           </TabPane>
         </Tabs>
 

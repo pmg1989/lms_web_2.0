@@ -1,72 +1,112 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Spin } from 'antd'
-import moment from 'moment'
 import ReactEcharts from 'echarts-for-react'
 
-const renderXAxisData = (data, type, curMonth) => {
-  if (type === 'month') {
-    return Object.keys(data).map(item => item)
-  } else if (type === 'day') {
-    return Object.keys((data[curMonth] || {})).filter(item => item !== 'all')
+const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { idNumber }, data } }) => {
+  const item = data[idNumber] || {
+    pro_ontrack: 0,
+    hd_ontrack: 0,
+    jl_ontrack: 0,
   }
-  return []
-}
-
-const renderSeriesData = (data, type, subject, curMonth) => {
-  if (type === 'month') {
-    return Object.keys(data).map(item => (data[item].all[subject] / data[item].all.count).toFixed(2))
-  } else if (type === 'day') {
-    return Object.keys((data[curMonth] || {})).filter(item => item !== 'all')
-      .map(item => (data[curMonth][item][subject] / data[curMonth][item].count).toFixed(2))
-  }
-  return []
-}
-
-const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { type, deadline }, data } }) => {
-  const curMonth = moment.unix(deadline).format('YYYY/MM')
-
   const option = {
     title: {
-      text: '学生合同 On Track',
+      text: '学生合同On Track',
       subtext: '进行中的学生消课率统计',
       x: 'left',
     },
     tooltip: {
-      trigger: 'axis',
+      formatter: '{b} : {c}',
     },
-    legend: {
-      data: ['专业课', '互动课', '交流课'],
-    },
-    grid: {
-      left: '2%',
-      right: '2%',
-      bottom: '2%',
-      containLabel: true,
-    },
-    xAxis: {
-      type: 'category',
-      boundaryGap: false,
-      data: renderXAxisData(data, type, curMonth),
-    },
-    yAxis: {
-      type: 'value',
+    toolbox: {
+      feature: {
+        restore: {},
+        saveAsImage: {},
+      },
     },
     series: [
       {
-        name: '专业课',
-        type: 'line',
-        data: renderSeriesData(data, type, 'profession', curMonth),
+        name: '专业课onTrack',
+        type: 'gauge',
+        min: 0,
+        max: 5,
+        radius: '100%',
+        axisLine: { // 坐标轴线
+          lineStyle: { // 属性lineStyle控制线条样式
+            width: 20,
+          },
+        },
+        axisTick: { // 坐标轴小标记
+          length: 30, // 属性length控制线长
+          lineStyle: { // 属性lineStyle控制线条样式
+            color: 'auto',
+          },
+        },
+        splitLine: { // 分隔线
+          length: 40, // 属性length控制线长
+          lineStyle: { // 属性lineStyle（详见lineStyle）控制线条样式
+            color: 'auto',
+          },
+        },
+        data: [{ value: item.pro_ontrack.toFixed(2), name: '专业课onTrack' }],
       },
       {
-        name: '互动课',
-        type: 'line',
-        data: renderSeriesData(data, type, 'hd', curMonth),
+        name: '互动课onTrack',
+        type: 'gauge',
+        min: 0,
+        max: 5,
+        center: ['20%', '53%'], // 默认全局居中
+        radius: '80%',
+        axisLine: { // 坐标轴线
+          lineStyle: { // 属性lineStyle控制线条样式
+            width: 10,
+          },
+        },
+        axisTick: { // 坐标轴小标记
+          length: 20, // 属性length控制线长
+          lineStyle: { // 属性lineStyle控制线条样式
+            color: 'auto',
+          },
+        },
+        splitLine: { // 分隔线
+          length: 30, // 属性length控制线长
+          lineStyle: { // 属性lineStyle（详见lineStyle）控制线条样式
+            color: 'auto',
+          },
+        },
+        pointer: {
+          width: 5,
+        },
+        data: [{ value: item.hd_ontrack.toFixed(2), name: '互动课onTrack' }],
       },
       {
-        name: '交流课',
-        type: 'line',
-        data: renderSeriesData(data, type, 'jl', curMonth),
+        name: '交流课onTrack',
+        type: 'gauge',
+        min: 0,
+        max: 5,
+        center: ['80%', '53%'], // 默认全局居中
+        radius: '80%',
+        axisLine: { // 坐标轴线
+          lineStyle: { // 属性lineStyle控制线条样式
+            width: 10,
+          },
+        },
+        axisTick: { // 坐标轴小标记
+          length: 20, // 属性length控制线长
+          lineStyle: { // 属性lineStyle控制线条样式
+            color: 'auto',
+          },
+        },
+        splitLine: { // 分隔线
+          length: 30, // 属性length控制线长
+          lineStyle: { // 属性lineStyle（详见lineStyle）控制线条样式
+            color: 'auto',
+          },
+        },
+        pointer: {
+          width: 5,
+        },
+        data: [{ value: item.jl_ontrack.toFixed(2), name: '交流课onTrack' }],
       },
     ],
   }

@@ -23,7 +23,6 @@ const Search = ({
     selectOptions: [
       { value: 'name', name: '老师姓名' },
       { value: 'teacher_level', name: '等级' },
-      { value: 'teacher_category', name: '类别' },
       { value: 'teacher_subject', name: '科目' },
     ],
     selectProps: {
