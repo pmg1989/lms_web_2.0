@@ -18,12 +18,6 @@ const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { idNumbe
     tooltip: {
       formatter: '{b} : {c}',
     },
-    toolbox: {
-      feature: {
-        restore: {},
-        saveAsImage: {},
-      },
-    },
     series: [
       {
         name: '专业课onTrack',
