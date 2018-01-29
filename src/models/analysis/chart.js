@@ -58,7 +58,7 @@ const searchTeacherQuery = {
 
 const searchLessonCompleteQuery = {
   isPostBack: true,
-  school: 'cd01', // getSchool(),
+  school: getSchool(),
   idNumber: 'all',
   deadline: moment().endOf('month').format('X'),
 }
