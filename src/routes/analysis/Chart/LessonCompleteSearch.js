@@ -74,7 +74,7 @@ class LessonCompleteSearch extends Component {
           </Select>)
           }
         </FormItem>
-        <FormItem label="日期">
+        <FormItem label="合同开始日期至">
           {getFieldDecorator('deadline', {
             initialValue: moment.unix(deadline),
             onChange: this.handleDeadlineChange,

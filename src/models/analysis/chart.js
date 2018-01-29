@@ -26,6 +26,7 @@ const renderTeacherChart = (list) => {
 
 const renderLessonCompleteChart = (list) => {
   return list.reduce((dic, item) => {
+    const subject = item.category_idnumber.split('-')[0]
     if (!dic[item.student_idnumber]) {
       dic[item.student_idnumber] = item
     } else {
@@ -37,8 +38,12 @@ const renderLessonCompleteChart = (list) => {
       dic.all = { ...item }
     } else {
       dic.all.pro_ontrack = (dic.all.pro_ontrack + item.pro_ontrack) / 2
-      dic.all.hd_ontrack = (dic.all.hd_ontrack + item.hd_ontrack) / 2
-      dic.all.jl_ontrack = (dic.all.jl_ontrack + item.jl_ontrack) / 2
+      if (['vocal', 'piano', 'guitar'].includes(subject)) {
+        dic.all.hd_ontrack = (dic.all.hd_ontrack + item.hd_ontrack) / 2
+      }
+      if (['vocal'].includes(subject)) {
+        dic.all.jl_ontrack = (dic.all.jl_ontrack + item.jl_ontrack) / 2
+      }
     }
     return dic
   }, {})
@@ -53,7 +58,7 @@ const searchTeacherQuery = {
 
 const searchLessonCompleteQuery = {
   isPostBack: true,
-  school: getSchool(),
+  school: 'cd01', // getSchool(),
   idNumber: 'all',
   deadline: moment().endOf('month').format('X'),
 }
