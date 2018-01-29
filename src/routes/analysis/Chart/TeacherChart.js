@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Spin } from 'antd'
+import { Spin, Row, Col } from 'antd'
 import ReactEcharts from 'echarts-for-react'
 
 const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
@@ -46,7 +46,8 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
     },
     legend: {
       orient: 'vertical',
-      x: 'right',
+      x: 'left',
+      top: '30%',
       data: legendData || [],
       selected: {
         // [legendData[0]]: values.pro_vip > 0,
@@ -81,13 +82,39 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
     ],
   }
 
+  const option2 = {
+    xAxis: {
+      type: 'category',
+      data: ['已代课时', '被代课时'],
+    },
+    yAxis: {
+      type: 'value',
+    },
+    series: [{
+      data: [values.substitutee, values.substituter],
+      type: 'bar',
+      barWidth: '35%',
+    }],
+  }
+
   return (
     <Spin spinning={loading}>
       <div style={{ height: 300 }}>
-        {!loading && <ReactEcharts
-          option={option}
-          style={{ height: 300 }}
-        />}
+        {!loading &&
+        <Row>
+          <Col span={12}>
+            <ReactEcharts
+              option={option}
+              style={{ height: 300 }}
+            />
+          </Col>
+          <Col span={12}>
+            <ReactEcharts
+              option={option2}
+              style={{ height: 300 }}
+            />
+          </Col>
+        </Row>}
       </div>
     </Spin>
   )
