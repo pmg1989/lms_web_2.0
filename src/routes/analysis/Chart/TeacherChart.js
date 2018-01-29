@@ -47,7 +47,7 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
     legend: {
       orient: 'vertical',
       x: 'left',
-      top: '30%',
+      top: '25%',
       data: legendData || [],
       selected: {
         // [legendData[0]]: values.pro_vip > 0,
@@ -83,6 +83,11 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
   }
 
   const option2 = {
+    title: {
+      text: '课时统计',
+      subtext: '已代课时/被代课时统计',
+      x: 'center',
+    },
     xAxis: {
       type: 'category',
       data: ['已代课时', '被代课时'],
