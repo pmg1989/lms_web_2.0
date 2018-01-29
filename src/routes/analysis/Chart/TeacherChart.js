@@ -48,13 +48,20 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
       orient: 'vertical',
       x: 'right',
       data: legendData || [],
-      selected: { [legendData[5]]: false, [legendData[6]]: false },
+      selected: {
+        // [legendData[0]]: values.pro_vip > 0,
+        // [legendData[1]]: values.pro_jp > 0,
+        // [legendData[2]]: values.pro_other > 0,
+        // [legendData[3]]: values.hd > 0,
+        // [legendData[4]]: values.jl > 0,
+        [legendData[5]]: false,
+        [legendData[6]]: false },
     },
     series: [
       {
         name: '课时统计',
         type: 'pie',
-        radius: ['60%', '75%'],
+        // radius: ['60%', '75%'],
         label: {
           emphasis: {
             show: true,
