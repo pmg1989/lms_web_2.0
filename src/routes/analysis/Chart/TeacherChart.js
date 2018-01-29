@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Spin } from 'antd'
+import { Spin, Row, Col } from 'antd'
 import ReactEcharts from 'echarts-for-react'
 
 const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
@@ -46,15 +46,23 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
     },
     legend: {
       orient: 'vertical',
-      x: 'right',
+      x: 'left',
+      top: '25%',
       data: legendData || [],
-      selected: { [legendData[5]]: false, [legendData[6]]: false },
+      selected: {
+        [legendData[0]]: values.pro_vip > 0,
+        [legendData[1]]: values.pro_jp > 0,
+        [legendData[2]]: values.pro_other > 0,
+        [legendData[3]]: values.hd > 0,
+        [legendData[4]]: values.jl > 0,
+        [legendData[5]]: false,
+        [legendData[6]]: false },
     },
     series: [
       {
         name: '课时统计',
         type: 'pie',
-        radius: ['60%', '75%'],
+        // radius: ['60%', '75%'],
         label: {
           emphasis: {
             show: true,
@@ -74,13 +82,44 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
     ],
   }
 
+  const option2 = {
+    title: {
+      text: '课时统计',
+      subtext: '已代课时/被代课时统计',
+      x: 'center',
+    },
+    xAxis: {
+      type: 'category',
+      data: ['已代课时', '被代课时'],
+    },
+    yAxis: {
+      type: 'value',
+    },
+    series: [{
+      data: [values.substitutee, values.substituter],
+      type: 'bar',
+      barWidth: '35%',
+    }],
+  }
+
   return (
     <Spin spinning={loading}>
       <div style={{ height: 300 }}>
-        {!loading && <ReactEcharts
-          option={option}
-          style={{ height: 300 }}
-        />}
+        {!loading &&
+        <Row>
+          <Col span={12}>
+            <ReactEcharts
+              option={option}
+              style={{ height: 300 }}
+            />
+          </Col>
+          <Col span={12}>
+            <ReactEcharts
+              option={option2}
+              style={{ height: 300 }}
+            />
+          </Col>
+        </Row>}
       </div>
     </Spin>
   )

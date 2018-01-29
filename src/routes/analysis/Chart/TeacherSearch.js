@@ -20,6 +20,7 @@ class LessonSearch extends Component {
     searchQuery: PropTypes.object.isRequired,
     schools: PropTypes.array.isRequired,
     teachersDic: PropTypes.object.isRequired,
+    data: PropTypes.object.isRequired,
     onQuery: PropTypes.func.isRequired,
   }
 
@@ -52,9 +53,9 @@ class LessonSearch extends Component {
   }
 
   render () {
-    const { form: { getFieldDecorator }, schools, searchQuery: { school, name, deadline } } = this.props
-    const { teachers } = this.state
-
+    const { form: { getFieldDecorator }, schools, searchQuery: { school, name, deadline }, data } = this.props
+    // const { teachers } = this.state
+    const teachers = Object.keys(data).filter(item => item !== 'all')
     return (
       <Form layout="inline" style={{ marginBottom: 20 }}>
         <FormItem label="校区">
@@ -72,7 +73,8 @@ class LessonSearch extends Component {
             onChange: () => this.handleChange(false),
           })(<Select style={{ width: 150 }}>
             <Option value="all">全部</Option>
-            {teachers.map(item => <Option key={item.id} value={item.firstname}>{item.alternatename}</Option>)}
+            {teachers.map((item, key) => <Option key={key} value={item}>{item}</Option>)}
+            {/* {teachers.map(item => <Option key={item.id} value={item.firstname}>{item.alternatename}</Option>)} */}
           </Select>)
           }
         </FormItem>

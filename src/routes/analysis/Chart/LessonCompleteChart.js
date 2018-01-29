@@ -18,15 +18,9 @@ const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { idNumbe
     tooltip: {
       formatter: '{b} : {c}',
     },
-    toolbox: {
-      feature: {
-        restore: {},
-        saveAsImage: {},
-      },
-    },
     series: [
       {
-        name: '专业课onTrack',
+        name: '专业课',
         type: 'gauge',
         min: 0,
         max: 5,
@@ -48,7 +42,7 @@ const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { idNumbe
             color: 'auto',
           },
         },
-        data: [{ value: item.pro_ontrack.toFixed(2), name: '专业课onTrack' }],
+        data: [{ value: item.pro_ontrack.toFixed(2), name: `${item.category_summary || ''}\n\n专业课 ${item.due_note ? `- ${item.due_note}` : ''}` }],
       },
       {
         name: '互动课onTrack',
@@ -77,7 +71,7 @@ const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { idNumbe
         pointer: {
           width: 5,
         },
-        data: [{ value: item.hd_ontrack.toFixed(2), name: '互动课onTrack' }],
+        data: [{ value: item.hd_ontrack.toFixed(2), name: `${item.category_summary || ''}\n\n互动课` }],
       },
       {
         name: '交流课onTrack',
@@ -106,7 +100,7 @@ const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { idNumbe
         pointer: {
           width: 5,
         },
-        data: [{ value: item.jl_ontrack.toFixed(2), name: '交流课onTrack' }],
+        data: [{ value: item.jl_ontrack.toFixed(2), name: `${item.category_summary || ''}\n\n交流课` }],
       },
     ],
   }
