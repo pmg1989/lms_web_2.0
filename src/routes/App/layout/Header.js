@@ -8,7 +8,7 @@ import Menus from './Menu'
 
 const SubMenu = Menu.SubMenu
 
-function Header({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVisible, location, switchMenuPopover, navOpenKeys, userPower, changeOpenKeys, messageList, readMessage }) {
+function Header ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVisible, location, switchMenuPopover, navOpenKeys, userPower, changeOpenKeys, messageList, readMessage }) {
   let handleClickMenu = e => e.key === 'logout' && logout()
   const menusProps = {
     siderFold: false,
