@@ -1,28 +1,29 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Icon, Badge, Menu, Dropdown } from 'antd'
+import { Icon, Badge, Popover } from 'antd'
 import { Link } from 'dva/router'
 import styles from './BadgeBox.less'
 
 function BadgeBox ({ list, readMessage }) {
-  const menu = (
-    <Menu>
+  const content = (
+    <div>
       {list.map((item, key) => (
-        <Menu.Item key={key}>
+        <p key={key}>
           <Link onClick={() => readMessage(item.id)} to={item.linkTo}>{item.message}</Link>
-        </Menu.Item>
+        </p>
       ))}
-    </Menu>
+      {list.length === 0 && <p className={styles.text_center}>~~暂无消息通知~~</p>}
+    </div>
   )
 
   return (
     <div className={styles.badgeBox}>
       <div className={styles.badge}>
-        <Dropdown overlay={menu} placement="bottomCenter">
+        <Popover content={content} title="待处理消息列表" trigger="click">
           <Badge count={list.length} overflowCount={99}>
             <Icon type="message" className={styles.size} />
           </Badge>
-        </Dropdown>
+        </Popover>
       </div>
     </div>
   )
