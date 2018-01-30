@@ -7,7 +7,7 @@ import { Header, Bread, Footer, Sider, styles } from './layout'
 import './skin.less'
 
 function App ({ children, location, dispatch, app }) {
-  const { user, siderFold, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys, userPower, curPowers } = app
+  const { user, siderFold, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys, userPower, curPowers, messageList } = app
 
   const headerProps = {
     user,
@@ -17,6 +17,7 @@ function App ({ children, location, dispatch, app }) {
     menuPopoverVisible,
     navOpenKeys,
     userPower,
+    messageList,
     switchMenuPopover () {
       dispatch({ type: 'app/switchMenuPopver' })
     },
@@ -29,6 +30,9 @@ function App ({ children, location, dispatch, app }) {
     changeOpenKeys (openKeys) {
       localStorage.setItem('navOpenKeys', JSON.stringify(openKeys))
       dispatch({ type: 'app/handleNavOpenKeys', payload: { navOpenKeys: openKeys } })
+    },
+    readMessage (id) {
+      dispatch({ type: 'app/readMessage', payload: { id } })
     },
   }
 

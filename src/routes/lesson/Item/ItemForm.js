@@ -137,6 +137,10 @@ class ItemForm extends Component {
   }
 
   disabledDate = (current) => {
+    const { lessonItem: { type } } = this.props
+    if (type === 'update') {
+      return false
+    }
     const weekdays = this.props.form.getFieldValue('openweekday')
     if (current && weekdays) {
       const curTimeSpan = current.valueOf()

@@ -8,7 +8,7 @@ import Menus from './Menu'
 
 const SubMenu = Menu.SubMenu
 
-function Header ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVisible, location, switchMenuPopover, navOpenKeys, userPower, changeOpenKeys }) {
+function Header({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVisible, location, switchMenuPopover, navOpenKeys, userPower, changeOpenKeys, messageList, readMessage }) {
   let handleClickMenu = e => e.key === 'logout' && logout()
   const menusProps = {
     siderFold: false,
@@ -32,7 +32,7 @@ function Header ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVi
           <Icon type={siderFold ? 'menu-unfold' : 'menu-fold'} />
         </div>}
       <div className={styles.right}>
-        <BadgeBox />
+        <BadgeBox list={messageList} readMessage={readMessage} />
         <Menu className="header-menu" mode="horizontal" onClick={handleClickMenu} style={{ textAlign: 'center' }}>
           <SubMenu title={<span><Icon type="user" />{user.uname}({roleNames[user.rolename]})</span>}>
             <Menu.Item key="logout">
@@ -58,6 +58,8 @@ Header.propTypes = {
   navOpenKeys: PropTypes.array,
   changeOpenKeys: PropTypes.func,
   userPower: PropTypes.object,
+  messageList: PropTypes.array,
+  readMessage: PropTypes.func,
 }
 
 export default Header

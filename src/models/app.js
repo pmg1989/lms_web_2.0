@@ -1,7 +1,7 @@
 import { routerRedux } from 'dva/router'
 import { navOpenKeys } from 'config'
-import { Cookie, isLogin, getUserInfo, setLoginOut } from 'utils'
-import { logout } from 'services/app'
+import { Cookie, isLogin, getUserInfo, setLoginOut, renderMessages } from 'utils'
+import { logout, queryMessageList, readMessage } from 'services/app'
 
 const initPower = Cookie.getJSON('user_power')
 
@@ -17,9 +17,10 @@ export default {
     navOpenKeys: JSON.parse(localStorage.getItem('navOpenKeys') || navOpenKeys), // 侧边栏菜单打开的keys,
     userPower: initPower,
     curPowers: [],
+    messageList: [],
   },
   subscriptions: {
-    setup ({ dispatch }) {
+    setup ({ dispatch, history }) {
       window.onresize = function () {
         dispatch({ type: 'changeNavbar' })
       }
@@ -30,6 +31,12 @@ export default {
           state: { nextPathname: location.pathname !== '/login' ? location.pathname : '/lesson/calendar', nextSearch: location.search },
         }))
       }
+
+      history.listen(({ pathname }) => {
+        if (!['/login', '/no-power'].includes(pathname)) {
+          dispatch({ type: 'queryMessageList' })
+        }
+      })
     },
   },
   effects: {
@@ -41,6 +48,26 @@ export default {
         pathname: '/login',
         state: { nextPathname: location.pathname, nextSearch: location.search },
       }))
+    },
+    * queryMessageList ({}, { call, put }) {
+      const { data, success } = yield call(queryMessageList, { read: 0 })
+      if (success) {
+        yield put({
+          type: 'queryMessageListSuccess',
+          payload: {
+            messageList: renderMessages(data),
+          },
+        })
+      }
+    },
+    * readMessage ({ payload }, { call, put }) {
+      const { success } = yield call(readMessage, payload)
+      if (success) {
+        yield put({
+          type: 'readMessageSuccess',
+          payload,
+        })
+      }
     },
   },
   reducers: {
@@ -69,6 +96,14 @@ export default {
     },
     changeCurPowers (state, action) {
       return { ...state, ...action.payload }
+    },
+    queryMessageListSuccess (state, action) {
+      return { ...state, ...action.payload }
+    },
+    readMessageSuccess (state, action) {
+      const { id } = action.payload
+      const messageList = state.messageList.filter(item => item.id !== id)
+      return { ...state, messageList }
     },
   },
 }

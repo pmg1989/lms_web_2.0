@@ -1,28 +1,36 @@
 import React from 'react'
-import { Icon, Badge } from 'antd'
+import PropTypes from 'prop-types'
+import { Icon, Badge, Menu, Dropdown } from 'antd'
 import { Link } from 'dva/router'
 import styles from './BadgeBox.less'
 
-function BadgeBox () {
+function BadgeBox ({ list, readMessage }) {
+  const menu = (
+    <Menu>
+      {list.map((item, key) => (
+        <Menu.Item key={key}>
+          <Link onClick={() => readMessage(item.id)} to={item.linkTo}>{item.message}</Link>
+        </Menu.Item>
+      ))}
+    </Menu>
+  )
+
   return (
     <div className={styles.badgeBox}>
-      <Link to="/" className={styles.badge}>
-        <Badge count={5} style={{ backgroundColor: '#108ee9' }}>
-          <Icon type="message" className={styles.size} />
-        </Badge>
-      </Link>
-      <Link to="/" className={styles.badge}>
-        <Badge count={10} style={{ backgroundColor: '#87d068' }}>
-          <Icon type="mail" className={styles.size} />
-        </Badge>
-      </Link>
-      <Link to="/" className={styles.badge}>
-        <Badge count={100} overflowCount={99}>
-          <Icon type="notification" className={styles.size} />
-        </Badge>
-      </Link>
+      <div className={styles.badge}>
+        <Dropdown overlay={menu} placement="bottomCenter">
+          <Badge count={list.length} overflowCount={99}>
+            <Icon type="message" className={styles.size} />
+          </Badge>
+        </Dropdown>
+      </div>
     </div>
   )
+}
+
+BadgeBox.propTypes = {
+  list: PropTypes.array.isRequired,
+  readMessage: PropTypes.func.isRequired,
 }
 
 export default BadgeBox
