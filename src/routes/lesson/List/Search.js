@@ -26,7 +26,7 @@ class Search extends Component {
 
   componentWillReceiveProps () {
     if (!this.state.teachers.length && Object.keys(this.props.teachersDic).length) {
-      const teachersState = this.props.teachersDic[getSchool()] || []
+      const teachersState = this.props.teachersDic[this.props.searchQuery.school] || []
       teachersState.length && this.setState({ teachers: teachersState })
     }
   }
