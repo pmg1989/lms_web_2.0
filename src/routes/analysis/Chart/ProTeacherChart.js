@@ -52,7 +52,7 @@ const ProTeacherChart = ({ loading, proTeacher: { data } }) => {
       },
       {
         name: '第一阶段精品',
-        type: 'bar', 
+        type: 'bar',
         stack: '精品',
         data: data.stage1Jp,
       },
