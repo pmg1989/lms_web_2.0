@@ -2,17 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Icon, Badge, Popover } from 'antd'
 import { Link } from 'dva/router'
+import classnames from 'classnames'
 import styles from './BadgeBox.less'
 
 function BadgeBox ({ list, readMessage }) {
   const content = (
-    <div>
+    <div className={styles.body}>
       {list.map((item, key) => (
-        <p key={key}>
+        <p key={key} className={styles.row}>
           <Link onClick={() => readMessage(item.id)} to={item.linkTo}>{item.message}</Link>
         </p>
       ))}
-      {list.length === 0 && <p className={styles.text_center}>~~暂无消息通知~~</p>}
+      {list.length === 0 && <p className={classnames(styles.row, styles.text_center)}>~~暂无消息通知~~</p>}
     </div>
   )
 
