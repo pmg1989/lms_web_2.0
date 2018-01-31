@@ -15,7 +15,7 @@ const MonthEvent = ({ event }) => {
   const Title = (
     <div>
       {moment.unix(event.available).format('HH:mm')} -- {moment.unix(event.deadline).format('HH:mm')}<br />
-      {event.category_summary}<br />老师: {event.alternatename}<br />教室: {event.classroom}
+      {event.category_summary}<br />老师: {event.teacher_alternatename}<br />教室: {event.classroom}
     </div>
   )
 
