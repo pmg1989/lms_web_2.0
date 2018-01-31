@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { getCurPowers, getSchool } from 'utils'
+import { getCurPowers } from 'utils'
 import { queryTeacherReport, queryLessonCompleteReport, queryProTeacherReport } from 'services/analysis/report'
 
 const page = {
@@ -9,14 +9,14 @@ const page = {
 
 const searchTeacherQuery = {
   isPostBack: true,
-  school: getSchool(),
+  school: 'sh01',
   name: 'all',
   deadline: moment().endOf('month').format('X'),
 }
 
 const lessonCompleteQuery = {
   isPostBack: true,
-  school: getSchool(),
+  school: 'sh01',
   name: 'all',
   deadline: moment().endOf('month').format('X'),
 }

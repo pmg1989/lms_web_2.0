@@ -63,6 +63,7 @@ class LessonSearch extends Component {
             initialValue: school,
             onChange: this.handleSchoolChange,
           })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
+            <Option value="">全国</Option>
             {schools.map(item => <Option key={item.id} value={item.school}>{item.name}</Option>)}
           </Select>)
           }
