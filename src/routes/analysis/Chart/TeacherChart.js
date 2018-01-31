@@ -62,6 +62,7 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
       {
         name: '课时统计',
         type: 'pie',
+        center: ['70%', '50%'], // 默认全局居中
         // radius: ['60%', '75%'],
         label: {
           emphasis: {
@@ -107,13 +108,13 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
       <div style={{ height: 300 }}>
         {!loading &&
         <Row>
-          <Col span={12}>
+          <Col span={14}>
             <ReactEcharts
               option={option}
               style={{ height: 300 }}
             />
           </Col>
-          <Col span={12}>
+          <Col span={10}>
             <ReactEcharts
               option={option2}
               style={{ height: 300 }}

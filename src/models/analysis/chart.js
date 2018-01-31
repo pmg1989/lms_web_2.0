@@ -52,9 +52,9 @@ const renderLessonCompleteChart = (list) => {
 const renderProTeacherChart = (list) => {
   return list.reduce((dic, item) => {
     if (!dic.name) {
-      dic.name = [item.name]
+      dic.name = [item.name.substr(0, 3)]
     } else {
-      dic.name.push(item.name)
+      dic.name.push(item.name.substr(0, 3))
     }
     if (!dic.stage1Contract) {
       dic.stage1Contract = [item.stage_1]
