@@ -6,6 +6,8 @@ import TeacherSearch from './TeacherSearch'
 import TeacherChart from './TeacherChart'
 import LessonCompleteChart from './LessonCompleteChart'
 import LessonCompleteSearch from './LessonCompleteSearch'
+import ProTeacherSearch from './ProTeacherSearch'
+import ProTeacherChart from './ProTeacherChart'
 
 const namespace = 'analysisChart'
 
@@ -45,6 +47,24 @@ function Chart ({ dispatch, analysisChart, loading, commonModel: { schools, teac
     lessonComplete: analysisChart.lessonComplete,
   }
 
+  const proTeacherSearchProps = {
+    schools,
+    teachersDic,
+    data: analysisChart.proTeacher.data,
+    searchQuery: analysisChart.proTeacher.searchQuery,
+    onQuery (fieldsValue) {
+      dispatch({
+        type: `${namespace}/queryProTeacherChart`,
+        payload: fieldsValue,
+      })
+    },
+  }
+
+  const proTeacherChartProps = {
+    loading: loading.effects[`${namespace}/queryProTeacherChart`],
+    proTeacher: analysisChart.proTeacher,
+  }
+
   return (
     <div className="content-inner">
       <Card>
@@ -54,6 +74,10 @@ function Chart ({ dispatch, analysisChart, loading, commonModel: { schools, teac
       <Card>
         <LessonCompleteSearch {...lessonCompleteSearchProps} />
         <LessonCompleteChart {...lessonCompleteChartProps} />
+      </Card>
+      <Card>
+        <ProTeacherSearch {...proTeacherSearchProps} />
+        <ProTeacherChart {...proTeacherChartProps} />
       </Card>
     </div>
   )

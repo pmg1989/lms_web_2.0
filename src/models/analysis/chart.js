@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { getCurPowers } from 'utils'
-import { queryTeacherChart, queryLessonCompleteChart } from 'services/analysis/chart'
+import { queryTeacherChart, queryLessonCompleteChart, queryProTeacherChart } from 'services/analysis/chart'
 
 const renderTeacherChart = (list) => {
   return list.reduce((dic, item) => {
@@ -49,6 +49,64 @@ const renderLessonCompleteChart = (list) => {
   }, {})
 }
 
+const renderProTeacherChart = (list) => {
+  return list.reduce((dic, item) => {
+    if (!dic.name) {
+      dic.name = [item.name]
+    } else {
+      dic.name.push(item.name)
+    }
+    if (!dic.stage1Contract) {
+      dic.stage1Contract = [item.stage_1]
+    } else {
+      dic.stage1Contract.push(item.stage_1)
+    }
+    if (!dic.stage2Contract) {
+      dic.stage2Contract = [item.stage_2]
+    } else {
+      dic.stage2Contract.push(item.stage_2)
+    }
+    if (!dic.stage3Contract) {
+      dic.stage3Contract = [item.stage_3]
+    } else {
+      dic.stage3Contract.push(item.stage_3)
+    }
+
+    if (!dic.stage1Jp) {
+      dic.stage1Jp = [item.stage_1_jp]
+    } else {
+      dic.stage1Jp.push(item.stage_1_jp)
+    }
+    if (!dic.stage2Jp) {
+      dic.stage2Jp = [item.stage_2_jp]
+    } else {
+      dic.stage2Jp.push(item.stage_2_jp)
+    }
+    if (!dic.stage3Jp) {
+      dic.stage3Jp = [item.stage_3_jp]
+    } else {
+      dic.stage3Jp.push(item.stage_3_jp)
+    }
+
+    if (!dic.stage1Vip) {
+      dic.stage1Vip = [item.stage_1_vip]
+    } else {
+      dic.stage1Vip.push(item.stage_1_vip)
+    }
+    if (!dic.stage2Vip) {
+      dic.stage2Vip = [item.stage_2_vip]
+    } else {
+      dic.stage2Vip.push(item.stage_2_vip)
+    }
+    if (!dic.stage3Vip) {
+      dic.stage3Vip = [item.stage_3_vip]
+    } else {
+      dic.stage3Vip.push(item.stage_3_vip)
+    }
+    return dic
+  }, {})
+}
+
 const searchTeacherQuery = {
   isPostBack: true,
   school: 'sh01',
@@ -63,6 +121,13 @@ const searchLessonCompleteQuery = {
   deadline: moment().endOf('month').format('X'),
 }
 
+const searchProTeacherQuery = {
+  isPostBack: true,
+  school: 'sh01',
+  name: 'all',
+  deadline: moment().endOf('month').format('X'),
+}
+
 export default {
   namespace: 'analysisChart',
   state: {
@@ -72,6 +137,10 @@ export default {
     },
     lessonComplete: {
       searchQuery: searchLessonCompleteQuery,
+      data: {},
+    },
+    proTeacher: {
+      searchQuery: searchProTeacherQuery,
       data: {},
     },
   },
@@ -101,6 +170,10 @@ export default {
       yield put({
         type: 'queryLessonComplete',
         payload: searchLessonCompleteQuery,
+      })
+      yield put({
+        type: 'queryProTeacherChart',
+        payload: searchProTeacherQuery,
       })
     },
     * queryTeacherChart ({ payload }, { call, put }) {
@@ -143,6 +216,26 @@ export default {
         })
       }
     },
+    * queryProTeacherChart ({ payload }, { call, put }) {
+      if (payload.isPostBack) {
+        const { isPostBack, name, ...params } = payload
+        const { data, success } = yield call(queryProTeacherChart, params)
+        if (success) {
+          yield put({
+            type: 'queryProTeacherChartSuccess',
+            payload: {
+              data: renderProTeacherChart(data),
+              searchQuery: payload,
+            },
+          })
+        }
+      } else {
+        yield put({
+          type: 'setProTeacherChartSuccess',
+          payload: { searchQuery: payload },
+        })
+      }
+    },
   },
 
   reducers: {
@@ -159,6 +252,13 @@ export default {
     setLessonCompleteChartSuccess (state, action) {
       const { searchQuery } = action.payload
       return { ...state, lessonComplete: { ...state.lessonComplete, searchQuery } }
+    },
+    queryProTeacherChartSuccess (state, action) {
+      return { ...state, proTeacher: action.payload }
+    },
+    setProTeacherChartSuccess (state, action) {
+      const { searchQuery } = action.payload
+      return { ...state, proTeacher: { ...state.proTeacher, searchQuery } }
     },
   },
 }
