@@ -17,7 +17,7 @@ function CalendarHome ({ dispatch, lessonCalendar, loading, commonModel }) {
     onSearch (fieldsValue) {
       dispatch({
         type: `${namespace}/getLessons`,
-        payload: fieldsValue,
+        payload: { ...fieldsValue, needMerge: false },
       })
     },
   }
@@ -28,7 +28,7 @@ function CalendarHome ({ dispatch, lessonCalendar, loading, commonModel }) {
     onNavigate (query) {
       dispatch({
         type: `${namespace}/getLessons`,
-        payload: query,
+        payload: { ...query, needMerge: true },
       })
     },
     onResetLessons (available) {

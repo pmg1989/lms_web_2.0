@@ -32,7 +32,7 @@ export default {
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             dispatch({ type: 'querySearch' })
-            dispatch({ type: 'getLessons', payload: { isPostBack: true } })
+            dispatch({ type: 'getLessons', payload: { isPostBack: true, needMerge: false } })
           }
         }
       })
@@ -46,7 +46,7 @@ export default {
     },
     * getLessons ({ payload }, { select, call, put }) {
       const { searchQuery } = yield select(({ lessonCalendar }) => lessonCalendar)
-      const { isPostBack, ...queryParams } = payload
+      const { isPostBack, needMerge, ...queryParams } = payload
       const querys = renderQuery(searchQuery, queryParams)
       console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
       console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
@@ -76,6 +76,7 @@ export default {
             searchQuery: querys,
             lessons,
             isPostBack: false,
+            needMerge,
           },
         })
       }
@@ -83,8 +84,11 @@ export default {
   },
   reducers: {
     getLessonsSuccess (state, action) {
-      const { lessons, ...newState } = action.payload
-      return { ...state, ...newState, lessons: [...state.lessons, ...lessons] }
+      const { lessons, needMerge, ...newState } = action.payload
+      if (needMerge) {
+        return { ...state, ...newState, needMerge, lessons: [...state.lessons, ...lessons] }
+      }
+      return { ...state, ...newState, needMerge, lessons }
     },
     resetLessons (state, action) {
       const { available } = action.payload

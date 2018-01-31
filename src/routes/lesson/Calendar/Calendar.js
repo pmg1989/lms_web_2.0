@@ -65,6 +65,15 @@ class Calendar extends Component {
     }, // 缓存获取过的月份数据
   }
 
+  componentWillReceiveProps (nextProps) {
+    const { lessonCalendar: { needMerge } } = this.props
+    if (needMerge && !nextProps.lessonCalendar.needMerge) {
+      this.setState({ dicMonth: {
+        [moment(nextProps.lessonCalendar.searchQuery.available * 1000).format('YYYY-MM')]: true,
+      } })
+    }
+  }
+
   componentWillUnmount () {
     this.props.onResetLessons(this.state.curDate)
   }
