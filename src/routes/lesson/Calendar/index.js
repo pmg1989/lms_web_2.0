@@ -37,6 +37,12 @@ function CalendarHome ({ dispatch, lessonCalendar, loading, commonModel }) {
         payload: { available },
       })
     },
+    onChangeDate (searchQuery) {
+      dispatch({
+        type: `${namespace}/changeDate`,
+        payload: searchQuery,
+      })
+    },
   }
 
   return (

@@ -55,6 +55,7 @@ class Calendar extends Component {
     loading: PropTypes.bool,
     onNavigate: PropTypes.func.isRequired,
     onResetLessons: PropTypes.func.isRequired,
+    onChangeDate: PropTypes.func.isRequired,
   }
 
   state = {
@@ -95,63 +96,105 @@ class Calendar extends Component {
       const prevMomentDate = moment(available * 1000).subtract(1, 'month')
       const nextMomentDate = moment(available * 1000).add(1, 'month')
       this.setState({ weekClicked: true, curDate: momentDate.format('X') })
-      if (curDate < 7 && this.checkCacheMonth(prevMomentDate)) {
-        this.props.onNavigate({
-          available: prevMomentDate.startOf('month').format('X'),
-          deadline: prevMomentDate.endOf('month').format('X'),
-        })
-        this.handleCacheMonth(prevMomentDate)
-      } else if (daysInMonth - curDate < 7 && this.checkCacheMonth(nextMomentDate)) {
-        this.props.onNavigate({
-          available: nextMomentDate.startOf('month').format('X'),
-          deadline: nextMomentDate.endOf('month').format('X'),
-        })
-        this.handleCacheMonth(nextMomentDate)
+      if (curDate < 7) {
+        if (this.checkCacheMonth(prevMomentDate)) {
+          this.props.onNavigate({
+            available: prevMomentDate.startOf('month').format('X'),
+            deadline: prevMomentDate.endOf('month').format('X'),
+          })
+          this.handleCacheMonth(prevMomentDate)
+        } else {
+          this.props.onChangeDate({
+            available: prevMomentDate.startOf('month').format('X'),
+            deadline: prevMomentDate.endOf('month').format('X'),
+          })
+        }
+      } else if (daysInMonth - curDate < 7) {
+        if (this.checkCacheMonth(nextMomentDate)) {
+          this.props.onNavigate({
+            available: nextMomentDate.startOf('month').format('X'),
+            deadline: nextMomentDate.endOf('month').format('X'),
+          })
+          this.handleCacheMonth(nextMomentDate)
+        } else {
+          this.props.onChangeDate({
+            available: nextMomentDate.startOf('month').format('X'),
+            deadline: nextMomentDate.endOf('month').format('X'),
+          })
+        }
       }
     }
   }
 
   handleNavigate = (date, curView, curNavigate) => {
-    const { onNavigate } = this.props
+    const { onNavigate, onChangeDate } = this.props
     const momentDate = moment(date)
     if (curNavigate === 'DATE') {
       // 点击 + more 按钮时，不做任何请求
       return
     }
     this.setState({ curDate: momentDate.format('X') })
-    if ((curView === 'month' || curView === 'agenda') && this.checkCacheMonth(momentDate)) {
-      // 加载当前月的数据
-      onNavigate({
-        available: momentDate.startOf('month').format('X'),
-        deadline: momentDate.endOf('month').format('X'),
-      })
-      this.handleCacheMonth(momentDate)
-    } else if (curView === 'day' && this.checkCacheMonth(momentDate)) {
-      if ((momentDate.date() === 1 && curNavigate === 'NEXT') // 加载后一个月的数据
-        || (momentDate.date() === momentDate.daysInMonth() && curNavigate === 'PREV')) { // 加载前一个月的数据
+    if (curView === 'month' || curView === 'agenda') {
+      if (this.checkCacheMonth(momentDate)) {
+        // 加载当前月的数据
         onNavigate({
           available: momentDate.startOf('month').format('X'),
           deadline: momentDate.endOf('month').format('X'),
         })
         this.handleCacheMonth(momentDate)
+      } else {
+        onChangeDate({
+          available: momentDate.startOf('month').format('X'),
+          deadline: momentDate.endOf('month').format('X'),
+        })
+      }
+    } else if (curView === 'day') {
+      if (this.checkCacheMonth(momentDate)) {
+        if ((momentDate.date() === 1 && curNavigate === 'NEXT') // 加载后一个月的数据
+          || (momentDate.date() === momentDate.daysInMonth() && curNavigate === 'PREV')) { // 加载前一个月的数据
+          onNavigate({
+            available: momentDate.startOf('month').format('X'),
+            deadline: momentDate.endOf('month').format('X'),
+          })
+          this.handleCacheMonth(momentDate)
+        }
+      } else {
+        onChangeDate({
+          available: momentDate.startOf('month').format('X'),
+          deadline: momentDate.endOf('month').format('X'),
+        })
       }
     } else if (curView === 'week') {
       const daysInMonth = momentDate.daysInMonth()
       const curDate = momentDate.date()
       const prevMomentDate = moment(date).subtract(1, 'month')
       const nextMomentDate = moment(date).add(1, 'month')
-      if (curNavigate === 'PREV' && curDate < 7 && this.checkCacheMonth(prevMomentDate)) {
-        onNavigate({
-          available: prevMomentDate.startOf('month').format('X'),
-          deadline: prevMomentDate.endOf('month').format('X'),
-        })
-        this.handleCacheMonth(prevMomentDate)
-      } else if (curNavigate === 'NEXT' && daysInMonth - curDate < 7 && this.checkCacheMonth(nextMomentDate)) {
-        onNavigate({
-          available: nextMomentDate.startOf('month').format('X'),
-          deadline: nextMomentDate.endOf('month').format('X'),
-        })
-        this.handleCacheMonth(nextMomentDate)
+      if (curNavigate === 'PREV' && curDate < 7) {
+        if (this.checkCacheMonth(prevMomentDate)) {
+          onNavigate({
+            available: prevMomentDate.startOf('month').format('X'),
+            deadline: prevMomentDate.endOf('month').format('X'),
+          })
+          this.handleCacheMonth(prevMomentDate)
+        } else {
+          onChangeDate({
+            available: prevMomentDate.startOf('month').format('X'),
+            deadline: prevMomentDate.endOf('month').format('X'),
+          })
+        }
+      } else if (curNavigate === 'NEXT' && daysInMonth - curDate < 7) {
+        if (this.checkCacheMonth(nextMomentDate)) {
+          onNavigate({
+            available: nextMomentDate.startOf('month').format('X'),
+            deadline: nextMomentDate.endOf('month').format('X'),
+          })
+          this.handleCacheMonth(nextMomentDate)
+        } else {
+          onChangeDate({
+            available: nextMomentDate.startOf('month').format('X'),
+            deadline: nextMomentDate.endOf('month').format('X'),
+          })
+        }
       }
     }
   }

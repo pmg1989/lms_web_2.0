@@ -94,5 +94,9 @@ export default {
       const { available } = action.payload
       return { ...state, lessons: [], searchQuery: { ...state.searchQuery, available } }
     },
+    changeDate (state, action) {
+      const { available, deadline } = action.payload
+      return { ...state, searchQuery: { ...state.searchQuery, available, deadline } }
+    },
   },
 }
