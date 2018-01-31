@@ -141,6 +141,25 @@ const getSchool = () => {
   // return user.school !== 'global' ? user.school : 'bj01'
 }
 
+const renderMessages = (list) => {
+  return list.map((item) => {
+    const params = JSON.parse(item.fullmessage)
+    const dic = {
+      TEACHER_FEEDBACK: {
+        id: item.id,
+        linkTo: `/lesson/update?lessonid=${params.lesson_id}`,
+        message: '你的课已经开始，记得去给你的学生写评论。',
+      },
+      TEACHER_ATTENDANCE: {
+        id: item.id,
+        linkTo: `/lesson/update?lessonid=${params.lesson_id}`,
+        message: '您的课已开始，记得去打考勤哦。',
+      },
+    }
+    return dic[item.subject]
+  })
+}
+
 export {
   Cookie,
   menu,
@@ -156,4 +175,5 @@ export {
   renderQuery,
   getSchool,
   getUserInfo,
+  renderMessages,
 }

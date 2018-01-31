@@ -124,7 +124,7 @@ class ItemForm extends Component {
               initialValue: teacherDaiId || undefined,
               onChange: handleDaiTeacherChange,
             })(<Select size="large" disabled={disabled || !addDaiTeacherPower} placeholder="--请选择添加代课老师--">
-              {teachers.filter(cur => cur.id !== teacherId).map(teacher => <Option key={teacher.id} value={teacher.id.toString()}>{teacher.teacher_substitute_alternatename}</Option>)}
+              {teachers.filter(cur => cur.id !== teacherId).map(teacher => <Option key={teacher.id} value={teacher.id.toString()}>{teacher.alternatename}</Option>)}
             </Select>)
             }
           </Col>
@@ -137,6 +137,10 @@ class ItemForm extends Component {
   }
 
   disabledDate = (current) => {
+    const { lessonItem: { type } } = this.props
+    if (type === 'update') {
+      return false
+    }
     const weekdays = this.props.form.getFieldValue('openweekday')
     if (current && weekdays) {
       const curTimeSpan = current.valueOf()
@@ -376,7 +380,7 @@ class ItemForm extends Component {
           </FormItem>
           <FormItem label="老师" hasFeedback {...formItemLayout}>
             {getFieldDecorator('teacherid', {
-              initialValue: teacherId || undefined,
+              initialValue: item.teacher,
               rules: [
                 {
                   required: true,
@@ -384,7 +388,7 @@ class ItemForm extends Component {
                 },
               ],
             })(<Select disabled={disabled || disabledEdit} placeholder="--请选择老师--">
-              {teachers.map(teacher => <Option key={teacher.id} value={teacher.id.toString()}>{teacher.teacher_alternatename}</Option>)}
+              {teachers.map(teacher => <Option key={teacher.id} value={teacher.id.toString()}>{teacher.alternatename}</Option>)}
             </Select>)
             }
           </FormItem>

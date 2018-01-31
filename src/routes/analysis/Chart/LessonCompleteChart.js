@@ -12,7 +12,7 @@ const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { idNumbe
   const option = {
     title: {
       text: '学生合同On Track',
-      subtext: '进行中的学生消课率统计',
+      subtext: `进行中的学生消课率统计 ${item.category_summary || ''}`,
       x: 'left',
     },
     tooltip: {
@@ -24,33 +24,33 @@ const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { idNumbe
         type: 'gauge',
         min: 0,
         max: 5,
-        radius: '100%',
+        radius: '85%',
         axisLine: { // 坐标轴线
           lineStyle: { // 属性lineStyle控制线条样式
-            width: 20,
+            width: 15,
           },
         },
         axisTick: { // 坐标轴小标记
-          length: 30, // 属性length控制线长
+          length: 20, // 属性length控制线长
           lineStyle: { // 属性lineStyle控制线条样式
             color: 'auto',
           },
         },
         splitLine: { // 分隔线
-          length: 40, // 属性length控制线长
+          length: 25, // 属性length控制线长
           lineStyle: { // 属性lineStyle（详见lineStyle）控制线条样式
             color: 'auto',
           },
         },
-        data: [{ value: item.pro_ontrack.toFixed(2), name: `${item.category_summary || ''}\n\n专业课 ${item.due_note ? `- ${item.due_note}` : ''}` }],
+        data: [{ value: item.pro_ontrack.toFixed(2), name: `专业课\n\n ${item.due_note ? `${item.due_note}` : ''}` }],
       },
       {
         name: '互动课onTrack',
         type: 'gauge',
         min: 0,
         max: 5,
-        center: ['20%', '53%'], // 默认全局居中
-        radius: '80%',
+        center: ['15%', '53%'], // 默认全局居中
+        radius: '68%',
         axisLine: { // 坐标轴线
           lineStyle: { // 属性lineStyle控制线条样式
             width: 10,
@@ -71,15 +71,15 @@ const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { idNumbe
         pointer: {
           width: 5,
         },
-        data: [{ value: item.hd_ontrack.toFixed(2), name: `${item.category_summary || ''}\n\n互动课` }],
+        data: [{ value: item.hd_ontrack.toFixed(2), name: '互动课' }],
       },
       {
         name: '交流课onTrack',
         type: 'gauge',
         min: 0,
         max: 5,
-        center: ['80%', '53%'], // 默认全局居中
-        radius: '80%',
+        center: ['85%', '53%'], // 默认全局居中
+        radius: '68%',
         axisLine: { // 坐标轴线
           lineStyle: { // 属性lineStyle控制线条样式
             width: 10,
@@ -100,17 +100,17 @@ const LessonCompleteChart = ({ loading, lessonComplete: { searchQuery: { idNumbe
         pointer: {
           width: 5,
         },
-        data: [{ value: item.jl_ontrack.toFixed(2), name: `${item.category_summary || ''}\n\n交流课` }],
+        data: [{ value: item.jl_ontrack.toFixed(2), name: '交流课' }],
       },
     ],
   }
 
   return (
     <Spin spinning={loading}>
-      <div style={{ height: 400 }}>
+      <div style={{ height: 300 }}>
         {!loading && <ReactEcharts
           option={option}
-          style={{ height: 400 }}
+          style={{ height: 300 }}
         />}
       </div>
     </Spin>

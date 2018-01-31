@@ -53,6 +53,14 @@ class LessonCompleteSearch extends Component {
   render () {
     const { form: { getFieldDecorator }, schools, data, searchQuery: { school, idNumber, deadline } } = this.props
     const idNumbers = Object.keys(data).filter(item => item !== 'all')
+
+    const studentsProps = {
+      showSearch: true,
+      placeholder: '--请选择学生--',
+      optionFilterProp: 'children',
+      filterOption: (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0,
+    }
+
     return (
       <Form layout="inline" style={{ marginBottom: 20 }}>
         <FormItem label="校区">
@@ -68,7 +76,7 @@ class LessonCompleteSearch extends Component {
           {getFieldDecorator('idNumber', {
             initialValue: idNumber,
             onChange: this.handleNameChange,
-          })(<Select style={{ width: 150 }}>
+          })(<Select style={{ width: 150 }} {...studentsProps}>
             <Option value="all">全部</Option>
             {idNumbers.map((item, key) => <Option key={key} value={item}>{data[item].student_name}</Option>)}
           </Select>)
