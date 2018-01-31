@@ -52,7 +52,7 @@ class Search extends Component {
         getFieldDecorator,
       },
     } = this.props
-  
+
     const { teachers } = this.state
 
     const renderUserId = () => {
