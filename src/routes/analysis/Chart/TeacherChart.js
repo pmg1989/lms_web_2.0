@@ -4,15 +4,18 @@ import { Spin, Row, Col } from 'antd'
 import ReactEcharts from 'echarts-for-react'
 
 const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
+  const item = data[name]
+  const leftCal = item && (item.monthly - item.all)
+  const left = leftCal > 0 ? leftCal : 0
   const values = {
-    pro_vip: (data[name] && data[name].pro_vip) || 0,
-    pro_jp: (data[name] && data[name].pro_jp) || 0,
-    pro_other: (data[name] && data[name].pro_other) || 0,
-    hd: (data[name] && data[name].hd) || 0,
-    jl: (data[name] && data[name].jl) || 0,
-    left: (data[name] && data[name].left) || 0,
-    substitutee: (data[name] && data[name].substitutee) || 0,
-    substituter: (data[name] && data[name].substituter) || 0,
+    pro_vip: (item && item.pro_vip) || 0,
+    pro_jp: (item && item.pro_jp) || 0,
+    pro_other: (item && item.pro_other) || 0,
+    hd: (item && item.hd) || 0,
+    jl: (item && item.jl) || 0,
+    left,
+    substitutee: (item && item.substitutee) || 0,
+    substituter: (item && item.substituter) || 0,
   }
 
   const legendData = [
@@ -40,7 +43,7 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
   const option = {
     title: {
       text: '课时统计',
-      subtext: `老师课时统计月报表(保底课时：${(data[name] && data[name].monthly) || 0})`,
+      subtext: `老师课时统计月报表(保底课时：${(item && item.monthly) || 0})`,
       x: 'left',
     },
     tooltip: {
