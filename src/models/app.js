@@ -1,7 +1,7 @@
 import { routerRedux } from 'dva/router'
 import { navOpenKeys } from 'config'
 import { Cookie, isLogin, getUserInfo, setLoginOut, renderMessages } from 'utils'
-import { logout, queryMessageList, readMessage } from 'services/app'
+import { logout, queryMessageList, readMessage, queryComingLessons } from 'services/app'
 
 const initPower = Cookie.getJSON('user_power')
 
@@ -18,6 +18,7 @@ export default {
     userPower: initPower,
     curPowers: [],
     messageList: [],
+    comingLessons: [],
   },
   subscriptions: {
     setup ({ dispatch, history }) {
@@ -69,6 +70,17 @@ export default {
         })
       }
     },
+    * queryComingLessons ({ }, { call, put }) {
+      const { data, success } = yield call(queryComingLessons)
+      if (success) {
+        yield put({
+          type: 'queryComingLessonsSuccess',
+          payload: {
+            comingLessons: (data[0] && data[0].list) || [],
+          },
+        })
+      }
+    },
   },
   reducers: {
     loginSuccess (state, action) {
@@ -104,6 +116,9 @@ export default {
       const { id } = action.payload
       const messageList = state.messageList.filter(item => item.id !== id)
       return { ...state, messageList }
+    },
+    queryComingLessonsSuccess (state, action) {
+      return { ...state, ...action.payload }
     },
   },
 }
