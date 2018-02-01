@@ -14,31 +14,15 @@ function disabledDate (current) {
   return current && current.valueOf() > curMonth
 }
 
-class LessonSearch extends Component {
+class ProTeacherSearch extends Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
     searchQuery: PropTypes.object.isRequired,
     schools: PropTypes.array.isRequired,
-    teachersDic: PropTypes.object.isRequired,
-    data: PropTypes.object.isRequired,
     onQuery: PropTypes.func.isRequired,
   }
 
-  state = {
-    teachers: this.props.teachersDic[this.props.searchQuery.school] || [],
-  }
-
-  componentWillReceiveProps () {
-    if (!this.state.teachers.length && Object.keys(this.props.teachersDic).length) {
-      const teachersState = this.props.teachersDic[getSchool()] || []
-      teachersState.length && this.setState({ teachers: teachersState })
-    }
-  }
-
-  handleSchoolChange = (school) => {
-    const { form: { setFieldsValue }, teachersDic } = this.props
-    setFieldsValue({ name: 'all' })
-    this.setState({ teachers: teachersDic[school] || [] })
+  handleSchoolChange = () => {
     this.handleChange()
   }
 
@@ -53,9 +37,7 @@ class LessonSearch extends Component {
   }
 
   render () {
-    const { form: { getFieldDecorator }, schools, searchQuery: { school, name, deadline }, data } = this.props
-    // const { teachers } = this.state
-    const teachers = Object.keys(data).filter(item => item !== 'all')
+    const { form: { getFieldDecorator }, schools, searchQuery: { school, deadline } } = this.props
     return (
       <Form layout="inline" style={{ marginBottom: 20 }}>
         <FormItem label="校区">
@@ -63,23 +45,12 @@ class LessonSearch extends Component {
             initialValue: school,
             onChange: this.handleSchoolChange,
           })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
-            <Option value="">全国</Option>
+            {/* <Option value="">全国</Option> */}
             {schools.map(item => <Option key={item.id} value={item.school}>{item.name}</Option>)}
           </Select>)
           }
         </FormItem>
-        <FormItem label="老师">
-          {getFieldDecorator('name', {
-            initialValue: name,
-            onChange: () => this.handleChange(false),
-          })(<Select style={{ width: 150 }}>
-            <Option value="all">全部</Option>
-            {teachers.map((item, key) => <Option key={key} value={item}>{item}</Option>)}
-            {/* {teachers.map(item => <Option key={item.id} value={item.firstname}>{item.alternatename}</Option>)} */}
-          </Select>)
-          }
-        </FormItem>
-        <FormItem label="日期">
+        <FormItem label="合同开始日期至">
           {getFieldDecorator('deadline', {
             initialValue: moment.unix(deadline),
             onChange: this.handleChange,
@@ -92,4 +63,4 @@ class LessonSearch extends Component {
   }
 }
 
-export default Form.create()(LessonSearch)
+export default Form.create()(ProTeacherSearch)
