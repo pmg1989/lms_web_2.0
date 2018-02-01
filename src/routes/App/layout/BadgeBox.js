@@ -1,19 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'dva'
 import { Icon, Badge, Popover } from 'antd'
 import { Link } from 'dva/router'
 import classnames from 'classnames'
 import styles from './BadgeBox.less'
 
-function BadgeBox ({ list, readMessage }) {
+function BadgeBox ({ dispatch, messageList }) {
+  const handleReadMessage = (id) => {
+    dispatch({ type: 'app/readMessage', payload: { id } })
+  }
+
   const content = (
     <div className={styles.body}>
-      {list.map((item, key) => (
+      {messageList.map((item, key) => (
         <p key={key} className={styles.row}>
-          <Link onClick={() => readMessage(item.id)} to={item.linkTo}>{item.message}</Link>
+          <Link onClick={() => handleReadMessage(item.id)} to={item.linkTo}>{item.message}</Link>
         </p>
       ))}
-      {list.length === 0 && <p className={classnames(styles.row, styles.text_center)}>~~暂无消息通知~~</p>}
+      {messageList.length === 0 && <p className={classnames(styles.row, styles.text_center)}>~~暂无消息通知~~</p>}
     </div>
   )
 
@@ -21,7 +26,7 @@ function BadgeBox ({ list, readMessage }) {
     <div className={styles.badgeBox}>
       <div className={styles.badge}>
         <Popover content={content} title="待处理消息列表" trigger="click">
-          <Badge count={list.length} overflowCount={99}>
+          <Badge count={messageList.length} overflowCount={99}>
             <Icon type="message" className={styles.size} />
           </Badge>
         </Popover>
@@ -31,8 +36,12 @@ function BadgeBox ({ list, readMessage }) {
 }
 
 BadgeBox.propTypes = {
-  list: PropTypes.array.isRequired,
-  readMessage: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  messageList: PropTypes.array.isRequired,
 }
 
-export default BadgeBox
+function mapStateToProps ({ app: { messageList } }) {
+  return { messageList }
+}
+
+export default connect(mapStateToProps)(BadgeBox)
