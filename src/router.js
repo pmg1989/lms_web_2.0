@@ -188,6 +188,16 @@ const Routers = function ({ history, app }) {
                 }, 'analysis-chart')
               },
             },
+            {
+              path: 'my-chart',
+              name: 'my-chart',
+              getComponent (nextState, cb) {
+                require.ensure([], (require) => {
+                  registerModel(app, require('./models/analysis/my-chart'))
+                  cb(null, require('./routes/analysis/MyChart'))
+                }, 'analysis-my-chart')
+              },
+            },
           ],
         },
         // no-power
