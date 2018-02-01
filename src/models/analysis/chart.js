@@ -25,8 +25,7 @@ const renderTeacherChart = (list) => {
 }
 
 const renderLessonCompleteChart = (list) => {
-  return list.reduce((dic, item) => {
-    const subject = item.category_idnumber.split('-')[0]
+  const dicList = list.reduce((dic, item) => {
     if (!dic[item.student_idnumber]) {
       dic[item.student_idnumber] = item
     } else {
@@ -34,19 +33,18 @@ const renderLessonCompleteChart = (list) => {
       dic[item.student_idnumber].hd_ontrack = (dic[item.student_idnumber].hd_ontrack + item.hd_ontrack) / 2
       dic[item.student_idnumber].jl_ontrack = (dic[item.student_idnumber].jl_ontrack + item.jl_ontrack) / 2
     }
-    if (!dic.all) {
-      dic.all = { ...item }
-    } else {
-      dic.all.pro_ontrack = (dic.all.pro_ontrack + item.pro_ontrack) / 2
-      if (['vocal', 'piano', 'guitar'].includes(subject)) {
-        dic.all.hd_ontrack = (dic.all.hd_ontrack + item.hd_ontrack) / 2
-      }
-      if (['vocal'].includes(subject)) {
-        dic.all.jl_ontrack = (dic.all.jl_ontrack + item.jl_ontrack) / 2
-      }
-    }
     return dic
   }, {})
+  dicList.all = {}
+  const sumPro = list.reduce((sum, item) => sum + item.pro_ontrack, 0)
+  dicList.all.pro_ontrack = sumPro / list.length
+  const hdList = list.filter(item => ['vocal', 'piano', 'guitar'].includes(item.category_idnumber.split('-')[0]))
+  const sumHd = hdList.reduce((sum, item) => sum + item.hd_ontrack, 0)
+  dicList.all.hd_ontrack = sumHd / hdList.length
+  const jlList = list.filter(item => ['vocal'].includes(item.category_idnumber.split('-')[0]))
+  const sumJl = jlList.reduce((sum, item) => sum + item.jl_ontrack, 0)
+  dicList.all.jl_ontrack = sumJl / jlList.length
+  return dicList
 }
 
 const renderProTeacherChart = (list) => {
