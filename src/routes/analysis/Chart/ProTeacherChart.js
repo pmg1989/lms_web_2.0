@@ -5,11 +5,11 @@ import ReactEcharts from 'echarts-for-react'
 
 const ProTeacherChart = ({ loading, proTeacher: { data } }) => {
   const option = {
-    title: {
-      text: '老师合同进展统计',
-      subtext: '专业课老师开课中的合同报表',
-      x: 'left',
-    },
+    // title: {
+    //   text: '老师合同进展统计',
+    //   subtext: '专业课老师开课中的合同报表',
+    //   x: 'left',
+    // },
     tooltip: {
       trigger: 'axis',
       axisPointer: { // 坐标轴指示器，坐标轴触发有效
@@ -96,7 +96,9 @@ const ProTeacherChart = ({ loading, proTeacher: { data } }) => {
 
   return (
     <Spin spinning={loading}>
-      <div style={{ height: 500 }}>
+      <div style={{ height: 550 }}>
+        <h2 style={{ fontWeight: 'bold', marginBottom: 5 }}>老师合同进展统计</h2>
+        <p style={{ color: '#999' }}>专业课老师开课中的合同报表</p>
         {!loading &&
           <ReactEcharts
             option={option}

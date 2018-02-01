@@ -26,13 +26,8 @@ const renderTeacherChart = (list) => {
 
 const renderLessonCompleteChart = (list) => {
   const dicList = list.reduce((dic, item) => {
-    if (!dic[item.student_idnumber]) {
-      dic[item.student_idnumber] = item
-    } else {
-      dic[item.student_idnumber].pro_ontrack = (dic[item.student_idnumber].pro_ontrack + item.pro_ontrack) / 2
-      dic[item.student_idnumber].hd_ontrack = (dic[item.student_idnumber].hd_ontrack + item.hd_ontrack) / 2
-      dic[item.student_idnumber].jl_ontrack = (dic[item.student_idnumber].jl_ontrack + item.jl_ontrack) / 2
-    }
+    const key = `${item.student_idnumber}_${item.category_idnumber}`
+    dic[key] = item
     return dic
   }, {})
   dicList.all = {}
