@@ -10,6 +10,7 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
     pro_other: (data[name] && data[name].pro_other) || 0,
     hd: (data[name] && data[name].hd) || 0,
     jl: (data[name] && data[name].jl) || 0,
+    left: (data[name] && data[name].left) || 0,
     substitutee: (data[name] && data[name].substitutee) || 0,
     substituter: (data[name] && data[name].substituter) || 0,
   }
@@ -20,6 +21,7 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
     `专业其他课时 | ${values.pro_other}`,
     `互动课时 | ${values.hd}`,
     `交流课时 | ${values.jl}`,
+    `未完成课时 | ${values.left}`,
     `被代课时 | ${values.substitutee}`,
     `已代课时 | ${values.substituter}`,
   ]
@@ -30,14 +32,15 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
     { value: values.pro_other, name: legendData[2] },
     { value: values.hd, name: legendData[3] },
     { value: values.jl, name: legendData[4] },
-    { value: values.substitutee, name: legendData[5] },
-    { value: values.substituter, name: legendData[6] },
+    { value: values.left, name: legendData[5] },
+    { value: values.substitutee, name: legendData[6] },
+    { value: values.substituter, name: legendData[7] },
   ]
 
   const option = {
     title: {
       text: '课时统计',
-      subtext: '老师课时统计月报表',
+      subtext: `老师课时统计月报表(保底课时：${(data[name] && data[name].monthly) || 0})`,
       x: 'left',
     },
     tooltip: {
@@ -55,8 +58,9 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
         [legendData[2]]: values.pro_other > 0,
         [legendData[3]]: values.hd > 0,
         [legendData[4]]: values.jl > 0,
-        [legendData[5]]: false,
-        [legendData[6]]: false },
+        [legendData[5]]: values.left > 0,
+        [legendData[6]]: false,
+        [legendData[7]]: false },
     },
     series: [
       {

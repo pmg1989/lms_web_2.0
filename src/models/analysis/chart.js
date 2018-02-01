@@ -4,11 +4,13 @@ import { queryTeacherChart, queryLessonCompleteChart, queryProTeacherChart } fro
 
 const renderTeacherChart = (list) => {
   return list.reduce((dic, item) => {
+    const leftCal = item.monthly - item.all
+    const left = leftCal > 0 ? leftCal : 0
     if (!dic[item.name]) {
-      dic[item.name] = item
+      dic[item.name] = { ...item, left }
     }
     if (!dic.all) {
-      dic.all = { ...item }
+      dic.all = { ...item, left }
     } else {
       dic.all.profession += item.profession
       dic.all.pro_vip += item.pro_vip
@@ -19,6 +21,8 @@ const renderTeacherChart = (list) => {
       dic.all.substitutee += item.substitutee
       dic.all.substituter += item.substituter
       dic.all.all += item.all
+      dic.all.monthly += item.monthly
+      dic.all.left += left
     }
     return dic
   }, {})
