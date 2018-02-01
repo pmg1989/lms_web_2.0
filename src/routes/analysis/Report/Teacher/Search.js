@@ -53,7 +53,7 @@ const Search = ({
         <Form layout="inline">
           <FormItem label="校区" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('school', {
-              initialValue: getSchool(),
+              initialValue: 'sh01',
               onChange: handleChange,
             })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
               <Option value="">全部</Option>

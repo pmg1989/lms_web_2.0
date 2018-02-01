@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { DatePicker, Form, Select } from 'antd'
+import { DatePicker, Form, Select, Tooltip, Icon } from 'antd'
 import moment from 'moment'
 import { getSchool } from 'utils'
 
@@ -83,7 +83,15 @@ class LessonCompleteSearch extends Component {
           </Select>)
           }
         </FormItem>
-        <FormItem label="合同开始日期至">
+        <FormItem label={(
+          <span>
+            合同开始日期至&nbsp;
+            <Tooltip title="截止到当前选择月份的进行中的学生消课率">
+              <Icon type="question-circle-o" />
+            </Tooltip>
+          </span>
+        )}
+        >
           {getFieldDecorator('deadline', {
             initialValue: moment.unix(deadline),
             onChange: this.handleDeadlineChange,
