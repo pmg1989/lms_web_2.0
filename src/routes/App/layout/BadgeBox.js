@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Icon, Badge, Popover, Row, Col, Tooltip } from 'antd'
+import { Icon, Badge, Popover, Row, Col } from 'antd'
 import moment from 'moment'
 import { Link } from 'dva/router'
 import classnames from 'classnames'
@@ -27,9 +27,7 @@ const ScheduleBox = ({ list }) => {
   return (
     <div className={styles.badge}>
       <Popover content={contentSchedule} title="即将到来的课程" trigger="click">
-        <Tooltip title="即将到来的课程">
-          <Icon type="schedule" className={styles.size} />
-        </Tooltip>
+        <Icon type="schedule" className={styles.size} />
       </Popover>
     </div>
   )
