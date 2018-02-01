@@ -7,7 +7,6 @@ import TeacherChart from './TeacherChart'
 const namespace = 'analysisMyChart'
 
 function MyChart ({ analysisMyChart, loading }) {
-
   const teacherChartProps = {
     loading: loading.effects[`${namespace}/queryTeacherChart`],
     teacher: analysisMyChart.teacher,
