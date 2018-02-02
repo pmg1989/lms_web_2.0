@@ -32,7 +32,9 @@ export const roleNames = {
   coursecreator: '校长',
   hr: 'HR专员',
   specialist: '课程专家',
-  // student: '学生',
+  student: '学生',
+  assitant: '校助',
+  director: '教学主管',
 }
 
 export function getRoleName (rolename = '') {
