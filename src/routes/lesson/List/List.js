@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu, Modal, Tag, Icon } from 'antd'
 import moment from 'moment'
+import classnames from 'classnames'
 import { Link } from 'dva/router'
 import { DataTable, DropMenu } from 'components'
 import { UPDATE, DETAIL, DELETE } from 'constants/options'
@@ -103,11 +104,6 @@ function List ({
       key: 'num_student',
       render: (numStudent, record) => <span>{numStudent} / {record.category_upperlimit}</span>,
     }, {
-      title: '校区',
-      dataIndex: 'school',
-      key: 'school',
-      // render: school => <span>{schools.find(item => item.school === school).name}</span>,
-    }, {
       title: '操作',
       key: 'operation',
       // width: 80,
@@ -127,13 +123,14 @@ function List ({
 
   return (
     <DataTable
-      className={styles.table}
+      className={classnames(styles.table, !deletePower && styles.no_row)}
       columns={columns}
       dataSource={list}
       loading={loading}
       pagination={pagination}
       onPageChange={onPageChange}
-      rowSelection={rowSelection}
+      rowSelection={deletePower ? rowSelection : null}
+      scroll={{ x: 600 }}
       rowKey={record => record.id}
     />
   )

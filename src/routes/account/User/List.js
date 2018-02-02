@@ -29,11 +29,6 @@ function List ({
 
   const columns = [
     {
-      title: '用户名',
-      dataIndex: 'username',
-      key: 'username',
-      sorter: (a, b) => a.username.localeCompare(b.username),
-    }, {
       title: '真实姓名',
       dataIndex: 'firstname',
       key: 'firstname',
@@ -102,6 +97,7 @@ function List ({
       loading={loading}
       pagination={{ ...pagination, total }}
       onPageChange={onPageChange}
+      scroll={{ x: 600 }}
       rowKey={record => record.id}
     />
   )

@@ -13,7 +13,7 @@ export default {
     menuPopoverVisible: false,
     siderFold: localStorage.getItem('antdAdminSiderFold') === 'true',
     darkTheme: localStorage.getItem('antdAdminDarkTheme') !== 'false',
-    isNavbar: document.body.clientWidth < 769,
+    isNavbar: document.body.clientWidth < 1050,
     navOpenKeys: JSON.parse(localStorage.getItem('navOpenKeys') || navOpenKeys), // 侧边栏菜单打开的keys,
     userPower: initPower,
     curPowers: [],
@@ -98,7 +98,7 @@ export default {
       return { ...state, darkTheme: !state.darkTheme }
     },
     changeNavbar (state) {
-      return { ...state, isNavbar: document.body.clientWidth < 769 }
+      return { ...state, isNavbar: document.body.clientWidth < 1050 }
     },
     switchMenuPopver (state) {
       return { ...state, menuPopoverVisible: !state.menuPopoverVisible }
