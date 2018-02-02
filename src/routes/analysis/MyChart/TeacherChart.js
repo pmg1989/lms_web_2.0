@@ -4,10 +4,12 @@ import { Spin, Row, Col } from 'antd'
 import ReactEcharts from 'echarts-for-react'
 
 const LessonChart = ({ loading, teacher: { data } }) => {
-  console.log(data)
+  const leftCal = data && (data.teacher_lessonsum_monthly - data.monthlycnt_ok)
+  const left = leftCal > 0 ? leftCal : 0
   const values = {
     pro_vip: data.monthlycnt_ok_vip || 0,
     pro_jp: data.monthlycnt_ok_jp || 0,
+    left,
     substitutee: data.monthlycnt_substitutee || 0,
     substituter: data.monthlycnt_substituter || 0,
   }
@@ -15,6 +17,7 @@ const LessonChart = ({ loading, teacher: { data } }) => {
   const legendData = [
     `专业VIP课时 | ${values.pro_vip}`,
     `专业精品课时 | ${values.pro_jp}`,
+    `未完成课时 | ${values.left}`,
     `被代课时 | ${values.substitutee}`,
     `已代课时 | ${values.substituter}`,
   ]
@@ -22,8 +25,9 @@ const LessonChart = ({ loading, teacher: { data } }) => {
   const seriesData = [
     { value: values.pro_vip, name: legendData[0] },
     { value: values.pro_jp, name: legendData[1] },
-    { value: values.substitutee, name: legendData[2] },
-    { value: values.substituter, name: legendData[3] },
+    { value: values.left, name: legendData[2] },
+    { value: values.substitutee, name: legendData[3] },
+    { value: values.substituter, name: legendData[4] },
   ]
 
   const option = {
@@ -42,8 +46,8 @@ const LessonChart = ({ loading, teacher: { data } }) => {
       top: '25%',
       data: legendData || [],
       selected: {
-        [legendData[2]]: false,
         [legendData[3]]: false,
+        [legendData[4]]: false,
       },
     },
     series: [
