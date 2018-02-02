@@ -5,13 +5,13 @@ import { praceticeDoman } from 'utils/config'
 
 const menu = [
   // dashboard
-  {
-    id: 1,
-    key: 'dashboard',
-    icon: 'desktop',
-    name: '管理平台',
-    power: [1, 2],
-  },
+  // {
+  //   id: 1,
+  //   key: 'dashboard',
+  //   icon: 'desktop',
+  //   name: '管理平台',
+  //   power: [1, 2],
+  // },
   // lesson
   {
     id: 2,
