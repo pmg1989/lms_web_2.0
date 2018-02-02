@@ -3,27 +3,20 @@ import PropTypes from 'prop-types'
 import { Spin, Row, Col } from 'antd'
 import ReactEcharts from 'echarts-for-react'
 
-const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
-  const item = data[name]
-  const leftCal = item && (item.monthly - item.all)
+const LessonChart = ({ loading, teacher: { data } }) => {
+  const leftCal = data && (data.teacher_lessonsum_monthly - data.monthlycnt_ok)
   const left = leftCal > 0 ? leftCal : 0
   const values = {
-    pro_vip: (item && item.pro_vip) || 0,
-    pro_jp: (item && item.pro_jp) || 0,
-    pro_other: (item && item.pro_other) || 0,
-    hd: (item && item.hd) || 0,
-    jl: (item && item.jl) || 0,
+    pro_vip: data.monthlycnt_ok_vip || 0,
+    pro_jp: data.monthlycnt_ok_jp || 0,
     left,
-    substitutee: (item && item.substitutee) || 0,
-    substituter: (item && item.substituter) || 0,
+    substitutee: data.monthlycnt_substitutee || 0,
+    substituter: data.monthlycnt_substituter || 0,
   }
 
   const legendData = [
     `专业VIP课时 | ${values.pro_vip}`,
     `专业精品课时 | ${values.pro_jp}`,
-    `专业其他课时 | ${values.pro_other}`,
-    `互动课时 | ${values.hd}`,
-    `交流课时 | ${values.jl}`,
     `未完成课时 | ${values.left}`,
     `被代课时 | ${values.substitutee}`,
     `已代课时 | ${values.substituter}`,
@@ -32,18 +25,15 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
   const seriesData = [
     { value: values.pro_vip, name: legendData[0] },
     { value: values.pro_jp, name: legendData[1] },
-    { value: values.pro_other, name: legendData[2] },
-    { value: values.hd, name: legendData[3] },
-    { value: values.jl, name: legendData[4] },
-    { value: values.left, name: legendData[5] },
-    { value: values.substitutee, name: legendData[6] },
-    { value: values.substituter, name: legendData[7] },
+    { value: values.left, name: legendData[2] },
+    { value: values.substitutee, name: legendData[3] },
+    { value: values.substituter, name: legendData[4] },
   ]
 
   const option = {
     title: {
-      text: '课时统计',
-      subtext: `老师课时统计月报表(保底课时：${(item && item.monthly) || 0})`,
+      text: '本月课时统计',
+      subtext: '老师本月课时统计报表',
       x: 'left',
     },
     tooltip: {
@@ -56,14 +46,9 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
       top: '25%',
       data: legendData || [],
       selected: {
-        [legendData[0]]: values.pro_vip > 0,
-        [legendData[1]]: values.pro_jp > 0,
-        [legendData[2]]: values.pro_other > 0,
-        [legendData[3]]: values.hd > 0,
-        [legendData[4]]: values.jl > 0,
-        [legendData[5]]: values.left > 0,
-        [legendData[6]]: false,
-        [legendData[7]]: false },
+        [legendData[3]]: false,
+        [legendData[4]]: false,
+      },
     },
     series: [
       {
@@ -92,9 +77,9 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
 
   const option2 = {
     title: {
-      text: '课时统计',
+      text: '本月课时统计',
       subtext: '已代课时/被代课时统计',
-      x: 'center',
+      x: 'left',
     },
     xAxis: {
       type: 'category',
@@ -114,20 +99,20 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
     <Spin spinning={loading}>
       <div style={{ height: 300 }}>
         {!loading &&
-        <Row>
-          <Col md={{ span: 14 }} xs={{ span: 24 }}>
-            <ReactEcharts
-              option={option}
-              style={{ height: 300 }}
-            />
-          </Col>
-          <Col md={{ span: 10 }} xs={{ span: 24 }}>
-            <ReactEcharts
-              option={option2}
-              style={{ height: 300 }}
-            />
-          </Col>
-        </Row>}
+          <Row>
+            <Col md={{ span: 14 }} xs={{ span: 24 }}>
+              <ReactEcharts
+                option={option}
+                style={{ height: 300 }}
+              />
+            </Col>
+            <Col md={{ span: 10 }} xs={{ span: 24 }}>
+              <ReactEcharts
+                option={option2}
+                style={{ height: 300 }}
+              />
+            </Col>
+          </Row>}
       </div>
     </Spin>
   )

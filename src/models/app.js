@@ -1,7 +1,7 @@
 import { routerRedux } from 'dva/router'
 import { navOpenKeys } from 'config'
 import { Cookie, isLogin, getUserInfo, setLoginOut, renderMessages } from 'utils'
-import { logout, queryMessageList, readMessage } from 'services/app'
+import { logout, queryMessageList, readMessage, queryComingLessons } from 'services/app'
 
 const initPower = Cookie.getJSON('user_power')
 
@@ -13,11 +13,12 @@ export default {
     menuPopoverVisible: false,
     siderFold: localStorage.getItem('antdAdminSiderFold') === 'true',
     darkTheme: localStorage.getItem('antdAdminDarkTheme') !== 'false',
-    isNavbar: document.body.clientWidth < 769,
+    isNavbar: document.body.clientWidth < 1050,
     navOpenKeys: JSON.parse(localStorage.getItem('navOpenKeys') || navOpenKeys), // 侧边栏菜单打开的keys,
     userPower: initPower,
     curPowers: [],
     messageList: [],
+    comingLessons: [],
   },
   subscriptions: {
     setup ({ dispatch, history }) {
@@ -69,6 +70,17 @@ export default {
         })
       }
     },
+    * queryComingLessons ({ }, { call, put }) {
+      const { data, success } = yield call(queryComingLessons)
+      if (success) {
+        yield put({
+          type: 'queryComingLessonsSuccess',
+          payload: {
+            comingLessons: (data[0] && data[0].list) || [],
+          },
+        })
+      }
+    },
   },
   reducers: {
     loginSuccess (state, action) {
@@ -86,7 +98,7 @@ export default {
       return { ...state, darkTheme: !state.darkTheme }
     },
     changeNavbar (state) {
-      return { ...state, isNavbar: document.body.clientWidth < 769 }
+      return { ...state, isNavbar: document.body.clientWidth < 1050 }
     },
     switchMenuPopver (state) {
       return { ...state, menuPopoverVisible: !state.menuPopoverVisible }
@@ -104,6 +116,9 @@ export default {
       const { id } = action.payload
       const messageList = state.messageList.filter(item => item.id !== id)
       return { ...state, messageList }
+    },
+    queryComingLessonsSuccess (state, action) {
+      return { ...state, ...action.payload }
     },
   },
 }

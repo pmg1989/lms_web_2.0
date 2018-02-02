@@ -18,7 +18,7 @@ function redirectToLogin (nextState, replace) {
 
 function redirectToDashboard (nextState, replace) {
   if (isLogin()) {
-    replace('/dashboard')
+    replace('/')
   }
 }
 
@@ -36,8 +36,8 @@ const Routers = function ({ history, app }) {
       onEnter: redirectToLogin,
       getIndexRoute (nextState, cb) {
         require.ensure([], (require) => {
-          registerModel(app, require('./models/dashboard'))
-          cb(null, { component: require('./routes/Dashboard') })
+          registerModel(app, require('./models/lesson/calendar'))
+          cb(null, { component: require('./routes/lesson/Calendar') })
         }, 'dashboard')
       },
       childRoutes: [
@@ -186,6 +186,16 @@ const Routers = function ({ history, app }) {
                   registerModel(app, require('./models/analysis/chart'))
                   cb(null, require('./routes/analysis/Chart'))
                 }, 'analysis-chart')
+              },
+            },
+            {
+              path: 'my-chart',
+              name: 'my-chart',
+              getComponent (nextState, cb) {
+                require.ensure([], (require) => {
+                  registerModel(app, require('./models/analysis/my-chart'))
+                  cb(null, require('./routes/analysis/MyChart'))
+                }, 'analysis-my-chart')
               },
             },
           ],

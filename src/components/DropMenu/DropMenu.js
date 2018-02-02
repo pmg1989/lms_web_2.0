@@ -6,6 +6,7 @@ function DropMenu ({ border, dropDownProps, children }) {
   const dropProps = {
     overlay: children,
     placement: 'bottomCenter',
+    trigger: ['click'],
     ...dropDownProps,
   }
 

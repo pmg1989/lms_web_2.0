@@ -4,6 +4,7 @@ import { Breadcrumb, Icon } from 'antd'
 import { Helmet } from 'react-helmet'
 import { Link } from 'dva/router'
 import { menu } from 'utils'
+import { dashboard } from 'config'
 import styles from './Bread.less'
 
 let pathSet = []
@@ -35,7 +36,7 @@ function Bread ({ location }) {
   })
   const breads = pathNames.map((item, key) => {
     if (!(item in pathSet)) {
-      item = 'Dashboard'
+      item = 'LessonCalendar' // 'Dashboard'
     }
     return (
       <Breadcrumb.Item key={key} {...((pathNames.length - 1 === key) || !pathSet[item].clickable) ? '' : { href: pathSet[item].path }}>
@@ -49,7 +50,7 @@ function Bread ({ location }) {
 
   const title = pathNames.map((item) => {
     if (!(item in pathSet)) {
-      item = 'Dashboard'
+      item = 'LessonCalendar' // 'Dashboard'
     }
     return pathSet[item].name
   })
@@ -59,7 +60,7 @@ function Bread ({ location }) {
       <Helmet><title>{title.join(' - ')}</title></Helmet>
       <Breadcrumb>
         <Breadcrumb.Item>
-          <Link to="/"><Icon type="home" /><span>主页</span></Link>
+          <Link to={dashboard}><Icon type="home" /><span>主页</span></Link>
         </Breadcrumb.Item>
         {breads}
       </Breadcrumb>

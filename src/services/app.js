@@ -12,3 +12,7 @@ export async function queryMessageList (params) {
 export async function readMessage (params) {
   return request({ wsfunction: 'mod_frontservice_readmessage', ...params })
 }
+
+export async function queryComingLessons (params) {
+  return request({ wsfunction: 'mod_frontservice_getupcominglessons', ...params })
+}

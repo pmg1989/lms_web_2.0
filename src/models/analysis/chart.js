@@ -19,6 +19,7 @@ const renderTeacherChart = (list) => {
       dic.all.substitutee += item.substitutee
       dic.all.substituter += item.substituter
       dic.all.all += item.all
+      dic.all.monthly += item.monthly
     }
     return dic
   }, {})
