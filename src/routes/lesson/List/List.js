@@ -49,6 +49,9 @@ function List ({
     onChange: (selectedRowKeys) => {
       selectedKeys = selectedRowKeys
     },
+    getCheckboxProps: record => ({
+      disabled: record.category_idnumber.includes('-jp-'),
+    }),
     selections: [{
       key: 'deleteAll',
       text: <Tag color="#f50"><Icon type="delete" /> 批量删除</Tag>,
