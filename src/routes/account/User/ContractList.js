@@ -39,6 +39,16 @@ const Contract = ({ type, status, item, onShowTeacherModal, onShowHistoryListMod
   const hasNext = !!currentAvailable
   const isBeginning = hasNext && (currentAvailable - (now / 1000) < 60 * 60 * 24)
 
+  const handleShowContractLessonModal = (_item) => {
+    if (type === 'profession') {
+      onShowContractLessonModal({ ccid: _item.contractid, category_idnumber: _item.category_idnumber })
+    } else if (type === 'hd') {
+      onShowContractLessonModal({ ccid: _item.hdid, category_idnumber: _item.category_idnumber })
+    } else if (type === 'jl') {
+      onShowContractLessonModal({ ccid: _item.jlid, category_idnumber: _item.category_idnumber })
+    }
+  }
+
   return (
     <div className={classnames(styles.item, !isProfession && styles.flex_item)}>
       <div className={styles.left}>
@@ -58,7 +68,7 @@ const Contract = ({ type, status, item, onShowTeacherModal, onShowHistoryListMod
       <div className={styles.right}>
         <span>
           已完成 · <Tooltip title="查看课程记录">
-            <span className={styles.link} onClick={() => onShowContractLessonModal(item)}>{item.attended_lesson_cnt}</span>
+            <span className={styles.link} onClick={() => handleShowContractLessonModal(item)}>{item.attended_lesson_cnt}</span>
           </Tooltip>
            / {item.constract_lesson_cnt}</span>
         {isProfession && status === 1 &&
