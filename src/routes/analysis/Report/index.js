@@ -57,6 +57,12 @@ class Report extends Component {
           payload: { current: 1, ...fieldsValue },
         })
       },
+      onExport (fieldsValue) {
+        dispatch({
+          type: `${namespace}/exportTeacherReport`,
+          payload: fieldsValue,
+        })
+      },
     }
 
     const listTeacherProps = {
@@ -78,6 +84,12 @@ class Report extends Component {
           payload: { current: 1, ...fieldsValue },
         })
       },
+      onExport (fieldsValue) {
+        dispatch({
+          type: `${namespace}/exportLessonCompleteReport`,
+          payload: fieldsValue,
+        })
+      },
     }
 
     const listLessonCompleteProps = {
@@ -97,6 +109,12 @@ class Report extends Component {
         dispatch({
           type: `${namespace}/queryProTeacherReport`,
           payload: { current: 1, ...fieldsValue },
+        })
+      },
+      onExport (fieldsValue) {
+        dispatch({
+          type: `${namespace}/exportProTeacherReport`,
+          payload: fieldsValue,
         })
       },
     }

@@ -1,6 +1,9 @@
 import moment from 'moment'
 import { getCurPowers } from 'utils'
-import { queryTeacherReport, queryLessonCompleteReport, queryProTeacherReport } from 'services/analysis/report'
+import {
+  queryTeacherReport, queryLessonCompleteReport, queryProTeacherReport,
+  exportTeacherReport, exportLessonCompleteReport, exportProTeacherReport,
+} from 'services/analysis/report'
 
 const page = {
   current: 1,
@@ -158,6 +161,24 @@ export default {
             searchQuery: payload,
           },
         })
+      }
+    },
+    * exportTeacherReport ({ payload }, { call }) {
+      const { data, success } = yield call(exportTeacherReport, { school: payload.school, deadline: payload.deadline })
+      if (success) {
+        window.location.href = data.url
+      }
+    },
+    * exportLessonCompleteReport ({ payload }, { call }) {
+      const { data, success } = yield call(exportLessonCompleteReport, { school: payload.school, deadline: payload.deadline })
+      if (success) {
+        window.location.href = data.url
+      }
+    },
+    * exportProTeacherReport ({ payload }, { call }) {
+      const { data, success } = yield call(exportProTeacherReport, { school: payload.school, deadline: payload.deadline })
+      if (success) {
+        window.location.href = data.url
       }
     },
   },

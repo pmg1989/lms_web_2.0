@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Row, Col, Select, DatePicker } from 'antd'
+import { Form, Row, Col, Select, DatePicker, Button, Icon } from 'antd'
 import moment from 'moment'
 import { SearchGroup } from 'components'
 import { getSchool } from 'utils'
@@ -12,6 +12,7 @@ const { MonthPicker } = DatePicker
 const Search = ({
   schools,
   onSearch,
+  onExport,
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -47,6 +48,12 @@ const Search = ({
     }, 0)
   }
 
+  const handleExport = () => {
+    const params = getFieldsValue()
+    params.deadline = params.deadline.endOf('month').format('X')
+    onExport(params)
+  }
+
   return (
     <Row gutter={24}>
       <Col>
@@ -72,6 +79,9 @@ const Search = ({
           <FormItem style={{ marginBottom: 20, marginRight: 0 }}>
             <SearchGroup {...searchGroupProps} />
           </FormItem>
+          <FormItem style={{ marginBottom: 20, float: 'right', marginRight: 0 }}>
+            <Button size="large" type="ghost" onClick={handleExport}><Icon type="download" />下载</Button>
+          </FormItem>
         </Form>
       </Col>
     </Row>
@@ -82,6 +92,7 @@ Search.propTypes = {
   form: PropTypes.object.isRequired,
   schools: PropTypes.array.isRequired,
   onSearch: PropTypes.func.isRequired,
+  onExport: PropTypes.func.isRequired,
 }
 
 export default Form.create()(Search)
