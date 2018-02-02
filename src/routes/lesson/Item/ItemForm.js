@@ -518,7 +518,7 @@ class ItemForm extends Component {
           {type !== 'create' &&
           <FormItem label="添加学员" {...formItemLayout}>
             {getFieldDecorator('studentInfo', {
-            })(type === 'update' ?
+            })(type === 'update' && addDeleteStudentPower ?
               <Row style={{ marginBottom: '24px' }}>
                 <Col span={16}>
                   <Select

@@ -131,7 +131,7 @@ export default {
       const { type, id, contract } = payload
       yield put({ type: 'modal/showModal', payload: { type, id } })
 
-      const { data, success } = yield call(queryContractLesson, { ccid: contract.contractid, category_idnumber: contract.category_idnumber })
+      const { data, success } = yield call(queryContractLesson, { ccid: contract.ccid, category_idnumber: contract.category_idnumber })
       if (success) {
         yield put({ type: 'modal/setSubItem', payload: { lessons: data.lessons } })
       }

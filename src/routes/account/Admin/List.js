@@ -53,7 +53,7 @@ function List ({
 
   const handleResetPasswordItem = (record) => {
     confirm({
-      title: `您确定要重置${record.firstname}的登录密码吗?`,
+      title: `重置后的密码统一为 Newb@nd123, 您确定要重置${record.firstname}的登录密码吗?`,
       onOk () {
         onResetPasswordItem({ userid: record.id })
       },
