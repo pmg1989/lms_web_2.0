@@ -79,7 +79,7 @@ export default {
           payload: {
             lessons: renderList(data),
             isPostBack: false,
-            curDate,
+            searchQuery: querys,
           },
         })
 
@@ -148,8 +148,8 @@ export default {
   },
   reducers: {
     querySuccess (state, action) {
-      const { lessons, isPostBack, curDate } = action.payload
-      return { ...state, isPostBack, curDate, lessons }
+      const { lessons, isPostBack, searchQuery: { curDate, ...otherQuery } } = action.payload
+      return { ...state, isPostBack, curDate, searchQuery: otherQuery, lessons }
     },
     queryPrevSuccess (state, action) {
       const { lessons, available, curDate } = action.payload
