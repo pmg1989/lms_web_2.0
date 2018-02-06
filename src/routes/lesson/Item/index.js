@@ -9,7 +9,7 @@ import ResultListModal from './ResultListModal'
 
 const namespace = 'lessonItem'
 
-const LessonItem = ({ dispatch, location, curPowers, lessonItem, loading, modal, commonModel }) => {
+const LessonItem = ({ dispatch, curPowers, lessonItem, loading, modal, commonModel }) => {
   const addPower = checkPower(ADD, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
   const addDaiTeacherPower = checkPower(ADD_DAI_TEACHER, curPowers)
@@ -63,15 +63,7 @@ const LessonItem = ({ dispatch, location, curPowers, lessonItem, loading, modal,
       })
     },
     onGoBack () {
-      const { query } = location
-      if (query.from) {
-        dispatch(routerRedux.push({
-          pathname: query.from,
-          query: { back: 1 },
-        }))
-      } else {
-        dispatch(routerRedux.goBack())
-      }
+      dispatch(routerRedux.goBack())
     },
     onResetItem () {
       dispatch({ type: `${namespace}/resetItem` })
@@ -96,7 +88,6 @@ const LessonItem = ({ dispatch, location, curPowers, lessonItem, loading, modal,
 
 LessonItem.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  location: PropTypes.object.isRequired,
   curPowers: PropTypes.array.isRequired,
   lessonItem: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,

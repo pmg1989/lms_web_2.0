@@ -11,8 +11,6 @@ import styles from './Calendar.less'
 moment.locale('zh_CN')
 BigCalendar.momentLocalizer(moment) // or globalizeLocalizer
 
-const pathname = location.pathname
-
 const MonthEvent = ({ event }) => {
   const Title = (
     <div>
@@ -23,7 +21,7 @@ const MonthEvent = ({ event }) => {
 
   return (
     <Tooltip title={Title} mouseLeaveDelay={0}>
-      <Link to={`/lesson/update?lessonid=${event.id}&from=${pathname}`} className={styles.title_box}>
+      <Link to={`/lesson/update?lessonid=${event.id}`} className={styles.title_box}>
         <span className={`icon ${event.category}-${event.iconType}`} />
         <span className={styles.title}>{event.text}</span>
       </Link>
@@ -37,7 +35,7 @@ MonthEvent.propTypes = {
 
 const AgendaEvent = ({ event }) => {
   return (
-    <Link to={`/lesson/update?lessonid=${event.id}&from=${pathname}`} className={classnames(styles.title_box, styles.dark)}>
+    <Link to={`/lesson/update?lessonid=${event.id}`} className={classnames(styles.title_box, styles.dark)}>
       <span className={`icon ${event.category}-${event.iconType}`} />
       <span className={styles.title}>{`${event.teacher_alternatename} - ${event.category_summary} - ${event.classroom}教室`}</span>
     </Link>
@@ -57,9 +55,14 @@ class Calendar extends Component {
     loading: PropTypes.bool,
     onPrev: PropTypes.func.isRequired,
     onNext: PropTypes.func.isRequired,
+    resetQuery: PropTypes.func.isRequired,
   }
 
   state = {
+  }
+
+  componentWillUnmount () {
+    this.props.resetQuery()
   }
 
   handleNavigate = (date, curView, curNavigate) => {

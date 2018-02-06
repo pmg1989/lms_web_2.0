@@ -37,6 +37,11 @@ function CalendarHome ({ dispatch, lessonCalendar, loading, commonModel }) {
         payload: query,
       })
     },
+    resetQuery () {
+      dispatch({
+        type: `${namespace}/resetQuery`,
+      })
+    },
   }
 
   return (

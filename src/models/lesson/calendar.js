@@ -46,17 +46,13 @@ export default {
   },
   subscriptions: {
     setup ({ dispatch, history }) {
-      history.listen(({ pathname, query: { back } }) => {
+      history.listen(({ pathname }) => {
         if (pathname === '/' || pathname === '/lesson/calendar') {
           const curPowers = getCurPowers('/lesson/calendar')
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             dispatch({ type: 'querySearch' })
-            if (!back) {
-              dispatch({ type: 'query', payload: { ...initParams, isPostBack: true } })
-            } else {
-              dispatch({ type: 'reQuery', payload: { isPostBack: true } })
-            }
+            dispatch({ type: 'query', payload: { isPostBack: true } })
           }
         }
       })
@@ -162,6 +158,12 @@ export default {
     queryNextSuccess (state, action) {
       const { lessons, deadline, curDate } = action.payload
       return { ...state, curDate, lessons: [...state.lessons, ...lessons], searchQuery: { ...state.searchQuery, deadline } }
+    },
+    resetQuery (state) {
+      const { curDate } = state
+      const available = moment.unix(curDate).startOf('month').format('X')
+      const deadline = moment.unix(curDate).add(1, 'month').startOf('month').format('X')
+      return { ...state, searchQuery: { ...state.searchQuery, available, deadline } }
     },
   },
 }
