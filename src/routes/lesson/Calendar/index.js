@@ -23,24 +23,18 @@ function CalendarHome ({ dispatch, lessonCalendar, loading, commonModel }) {
   }
 
   const calendarProps = {
-    loading: loading.effects[`${namespace}/getLessons`],
+    loading: loading.effects[`${namespace}/query`],
     lessonCalendar,
-    onNavigate (query) {
+    onPrev (query) {
       dispatch({
-        type: `${namespace}/getLessons`,
-        payload: { ...query, needMerge: true },
+        type: `${namespace}/queryPrev`,
+        payload: query,
       })
     },
-    onResetLessons (available) {
+    onNext (query) {
       dispatch({
-        type: `${namespace}/resetLessons`,
-        payload: { available },
-      })
-    },
-    onChangeDate (searchQuery) {
-      dispatch({
-        type: `${namespace}/changeDate`,
-        payload: searchQuery,
+        type: `${namespace}/queryNext`,
+        payload: query,
       })
     },
   }
