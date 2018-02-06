@@ -115,6 +115,10 @@ function queryString (value) {
   return null
 }
 
+function getUserInfo () {
+  return userInfo
+}
+
 function renderQuery (storeQuery, payload) {
   const searchQuery = { ...storeQuery, ...payload }
   for (let key in searchQuery) {
@@ -124,10 +128,6 @@ function renderQuery (storeQuery, payload) {
     }
   }
   return searchQuery
-}
-
-function getUserInfo () {
-  return userInfo
 }
 
 const getSchool = () => {
