@@ -10,6 +10,7 @@ const namespace = 'lessonCalendar'
 
 function CalendarHome ({ dispatch, lessonCalendar, loading, commonModel }) {
   const searchProps = {
+    loading,
     searchQuery: lessonCalendar.searchQuery,
     schools: commonModel.schools,
     categorys: commonModel.categorys,
