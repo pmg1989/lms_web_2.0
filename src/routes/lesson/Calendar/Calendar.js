@@ -58,7 +58,14 @@ class Calendar extends Component {
     resetQuery: PropTypes.func.isRequired,
   }
 
-  state = {
+  constructor (props) {
+    super(props)
+    const { lessonCalendar: { curDate } } = props
+    this.state = {
+      dicMonth: {
+        [moment(curDate * 1000).format('YYYY-MM')]: true,
+      }, // 缓存获取过的月份数据
+    }
   }
 
   componentWillUnmount () {
@@ -67,9 +74,13 @@ class Calendar extends Component {
 
   handleNavigate = (date, curView, curNavigate) => {
     const { lessonCalendar: { searchQuery: { available, deadline, ...params } }, onPrev, onNext } = this.props
+    const curMonth = moment(date).format('YYYY-MM')
     if (curNavigate === 'DATE') {
       // 点击 + more 按钮时，不做任何请求
       return
+    }
+    if (this.state.dicMonth[curMonth]) {
+      return // 排除重复请求一些正在请求中的数据，防止重复渲染数据
     }
     const prevMonth = moment(date).subtract(1, 'month').startOf('month').format('X')
     const nextMonth = moment(date).add(2, 'months').startOf('month').format('X')
@@ -88,6 +99,9 @@ class Calendar extends Component {
         curDate: moment(date).format('X'),
       })
     }
+    this.setState(({ dicMonth }) => ({
+      dicMonth: { ...dicMonth, [moment(date).format('YYYY-MM')]: true },
+    }))
   }
 
   render () {
