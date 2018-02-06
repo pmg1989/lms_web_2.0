@@ -1,11 +1,11 @@
 import moment from 'moment'
-import { getCurPowers, getSchool } from 'utils'
+import { getCurPowers, renderQuery, getSchool } from 'utils'
 import { query } from 'services/lesson/list'
 
 const initParams = {
   school: getSchool(),
-  available: +moment().startOf('month').format('X'),
-  deadline: +moment().add(1, 'month').startOf('month').format('X'),
+  available: moment().startOf('month').format('X'),
+  deadline: moment().add(1, 'month').startOf('month').format('X'),
 }
 
 function getCateIcon (lesson) {
@@ -41,6 +41,7 @@ export default {
   state: {
     isPostBack: true, // 判断是否是首次加载页面，修复 + more bug
     searchQuery: initParams,
+    curDate: moment().format('X'),
     lessons: [],
   },
   subscriptions: {
@@ -63,8 +64,10 @@ export default {
       yield put({ type: 'commonModel/queryCategorys' })
       yield put({ type: 'commonModel/queryTeachers' })
     },
-    * query ({ payload }, { call, put }) {
-      const { isPostBack, ...querys } = payload
+    * query ({ payload }, { select, call, put }) {
+      const { searchQuery } = yield select(({ lessonCalendar }) => lessonCalendar)
+      const { isPostBack, ...queryParams } = payload
+      const querys = renderQuery(searchQuery, queryParams)
       console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
       console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
       console.log(querys)
@@ -75,6 +78,23 @@ export default {
           payload: {
             lessons: renderList(data),
             isPostBack: false,
+          },
+        })
+
+        yield put({
+          type: 'queryPrev',
+          payload: {
+            ...querys,
+            available: moment.unix(querys.available).subtract(1, 'month').startOf('month').format('X'),
+            deadline: moment.unix(querys.available).startOf('month').format('X'),
+          },
+        })
+        yield put({
+          type: 'queryNext',
+          payload: {
+            ...querys,
+            available: querys.deadline,
+            deadline: moment.unix(querys.deadline).add(1, 'months').startOf('month').format('X'),
           },
         })
       }
@@ -109,11 +129,21 @@ export default {
         })
       }
     },
+    * reQuery ({ payload }, { select, put }) {
+      const { searchQuery } = yield select(({ lessonCalendar }) => lessonCalendar)
+      // payload.available = initParams.available
+      // payload.deadline = initParams.deadline
+      const querys = renderQuery(searchQuery, payload)
+      yield put({
+        type: 'query',
+        payload: querys,
+      })
+    },
   },
   reducers: {
     querySuccess (state, action) {
       const { lessons, isPostBack } = action.payload
-      return { ...state, isPostBack, lessons: [...state.lessons, ...lessons] }
+      return { ...state, isPostBack, lessons }
     },
     queryPrevSuccess (state, action) {
       const { lessons, available } = action.payload

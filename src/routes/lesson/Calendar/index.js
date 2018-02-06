@@ -16,8 +16,8 @@ function CalendarHome ({ dispatch, lessonCalendar, loading, commonModel }) {
     teachersDic: commonModel.teachersDic,
     onSearch (fieldsValue) {
       dispatch({
-        type: `${namespace}/getLessons`,
-        payload: { ...fieldsValue, needMerge: false },
+        type: `${namespace}/reQuery`,
+        payload: fieldsValue,
       })
     },
   }

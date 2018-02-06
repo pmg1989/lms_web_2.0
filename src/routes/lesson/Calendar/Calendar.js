@@ -60,37 +60,23 @@ class Calendar extends Component {
   state = {
   }
 
-  componentDidMount () {
-    const { lessonCalendar: { searchQuery: { school, available } }, onPrev, onNext } = this.props
-    onPrev({
-      school,
-      available: +moment.unix(available).subtract(1, 'month').startOf('month').format('X'),
-      deadline: +moment.unix(available).startOf('month').format('X'),
-    })
-    onNext({
-      school,
-      available: +moment.unix(available).add(1, 'month').startOf('month').format('X'),
-      deadline: +moment.unix(available).add(2, 'months').startOf('month').format('X'),
-    })
-  }
-
   handleNavigate = (date, curView, curNavigate) => {
-    const { lessonCalendar: { searchQuery: { school, available, deadline } }, onPrev, onNext } = this.props
+    const { lessonCalendar: { searchQuery: { available, deadline, ...params } }, onPrev, onNext } = this.props
     if (curNavigate === 'DATE') {
       // 点击 + more 按钮时，不做任何请求
       return
     }
-    const prevMonth = +moment(date).subtract(1, 'month').startOf('month').format('X')
-    const nextMonth = +moment(date).add(2, 'months').startOf('month').format('X')
+    const prevMonth = moment(date).subtract(1, 'month').startOf('month').format('X')
+    const nextMonth = moment(date).add(2, 'months').startOf('month').format('X')
     if (prevMonth < available && nextMonth < deadline) {
       onPrev({
-        school,
+        ...params,
         available: prevMonth,
         deadline: available,
       })
     } else if (prevMonth > available && nextMonth > deadline) {
       onNext({
-        school,
+        ...params,
         available: deadline,
         deadline: nextMonth,
       })
