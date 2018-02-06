@@ -88,13 +88,13 @@ class Calendar extends Component {
       onPrev({
         ...params,
         available: prevMonth,
-        deadline: available,
+        deadline: moment(date).startOf('month').format('X'), // available,
         curDate: moment(date).format('X'),
       })
     } else if (prevMonth > available && nextMonth > deadline) {
       onNext({
         ...params,
-        available: deadline,
+        available: moment(date).add(1, 'month').startOf('month').format('X'), // deadline,
         deadline: nextMonth,
         curDate: moment(date).format('X'),
       })
