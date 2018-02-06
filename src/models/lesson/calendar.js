@@ -46,13 +46,17 @@ export default {
   },
   subscriptions: {
     setup ({ dispatch, history }) {
-      history.listen(({ pathname }) => {
+      history.listen(({ pathname, query: { back } }) => {
         if (pathname === '/' || pathname === '/lesson/calendar') {
           const curPowers = getCurPowers('/lesson/calendar')
           if (curPowers) {
             dispatch({ type: 'app/changeCurPowers', payload: { curPowers } })
             dispatch({ type: 'querySearch' })
-            dispatch({ type: 'query', payload: { ...initParams, isPostBack: true } })
+            if (!back) {
+              dispatch({ type: 'query', payload: { ...initParams, isPostBack: true } })
+            } else {
+              dispatch({ type: 'reQuery', payload: { isPostBack: true } })
+            }
           }
         }
       })
