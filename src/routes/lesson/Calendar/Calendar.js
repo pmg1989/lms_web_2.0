@@ -73,18 +73,20 @@ class Calendar extends Component {
         ...params,
         available: prevMonth,
         deadline: available,
+        curDate: moment(date).format('X'),
       })
     } else if (prevMonth > available && nextMonth > deadline) {
       onNext({
         ...params,
         available: deadline,
         deadline: nextMonth,
+        curDate: moment(date).format('X'),
       })
     }
   }
 
   render () {
-    const { lessonCalendar: { lessons, searchQuery, isPostBack }, loading } = this.props
+    const { lessonCalendar: { lessons, isPostBack, curDate }, loading } = this.props
 
     return (
       <Spin spinning={loading} size="large">
@@ -95,7 +97,7 @@ class Calendar extends Component {
               events={lessons}
               views={allViews}
               step={30}
-              defaultDate={new Date(searchQuery.available * 1000)}
+              defaultDate={new Date(curDate * 1000)}
               onNavigate={this.handleNavigate}
               components={{
                 event: MonthEvent,

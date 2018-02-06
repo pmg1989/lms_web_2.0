@@ -65,19 +65,21 @@ export default {
       yield put({ type: 'commonModel/queryTeachers' })
     },
     * query ({ payload }, { select, call, put }) {
-      const { searchQuery } = yield select(({ lessonCalendar }) => lessonCalendar)
+      const { searchQuery, curDate } = yield select(({ lessonCalendar }) => lessonCalendar)
       const { isPostBack, ...queryParams } = payload
       const querys = renderQuery(searchQuery, queryParams)
       console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
       console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
       console.log(querys)
       const { data, success } = yield call(query, querys)
+      querys.curDate = curDate
       if (success) {
         yield put({
           type: 'querySuccess',
           payload: {
             lessons: renderList(data),
             isPostBack: false,
+            curDate,
           },
         })
 
@@ -100,39 +102,43 @@ export default {
       }
     },
     * queryPrev ({ payload }, { call, put }) {
-      console.log(moment.unix(payload.available).format('YYYY-MM-DD HH:mm:ss'))
-      console.log(moment.unix(payload.deadline).format('YYYY-MM-DD HH:mm:ss'))
-      console.log(payload)
-      const { data, success } = yield call(query, payload)
+      const { curDate, ...querys } = payload
+      console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
+      console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
+      console.log(querys)
+      const { data, success } = yield call(query, querys)
       if (success) {
         yield put({
           type: 'queryPrevSuccess',
           payload: {
-            available: payload.available,
+            available: querys.available,
+            curDate,
             lessons: renderList(data),
           },
         })
       }
     },
     * queryNext ({ payload }, { call, put }) {
-      console.log(moment.unix(payload.available).format('YYYY-MM-DD HH:mm:ss'))
-      console.log(moment.unix(payload.deadline).format('YYYY-MM-DD HH:mm:ss'))
-      console.log(payload)
-      const { data, success } = yield call(query, payload)
+      const { curDate, ...querys } = payload
+      console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
+      console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
+      console.log(querys)
+      const { data, success } = yield call(query, querys)
       if (success) {
         yield put({
           type: 'queryNextSuccess',
           payload: {
-            deadline: payload.deadline,
+            deadline: querys.deadline,
+            curDate,
             lessons: renderList(data),
           },
         })
       }
     },
     * reQuery ({ payload }, { select, put }) {
-      const { searchQuery } = yield select(({ lessonCalendar }) => lessonCalendar)
-      // payload.available = initParams.available
-      // payload.deadline = initParams.deadline
+      const { searchQuery, curDate } = yield select(({ lessonCalendar }) => lessonCalendar)
+      payload.available = moment.unix(curDate).startOf('month').format('X')
+      payload.deadline = moment.unix(curDate).add(1, 'month').startOf('month').format('X')
       const querys = renderQuery(searchQuery, payload)
       yield put({
         type: 'query',
@@ -142,16 +148,16 @@ export default {
   },
   reducers: {
     querySuccess (state, action) {
-      const { lessons, isPostBack } = action.payload
-      return { ...state, isPostBack, lessons }
+      const { lessons, isPostBack, curDate } = action.payload
+      return { ...state, isPostBack, curDate, lessons }
     },
     queryPrevSuccess (state, action) {
-      const { lessons, available } = action.payload
-      return { ...state, lessons: [...state.lessons, ...lessons], searchQuery: { ...state.searchQuery, available } }
+      const { lessons, available, curDate } = action.payload
+      return { ...state, curDate, lessons: [...state.lessons, ...lessons], searchQuery: { ...state.searchQuery, available } }
     },
     queryNextSuccess (state, action) {
-      const { lessons, deadline } = action.payload
-      return { ...state, lessons: [...state.lessons, ...lessons], searchQuery: { ...state.searchQuery, deadline } }
+      const { lessons, deadline, curDate } = action.payload
+      return { ...state, curDate, lessons: [...state.lessons, ...lessons], searchQuery: { ...state.searchQuery, deadline } }
     },
   },
 }
