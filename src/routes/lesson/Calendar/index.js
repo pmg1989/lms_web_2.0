@@ -10,37 +10,37 @@ const namespace = 'lessonCalendar'
 
 function CalendarHome ({ dispatch, lessonCalendar, loading, commonModel }) {
   const searchProps = {
+    loading,
     searchQuery: lessonCalendar.searchQuery,
     schools: commonModel.schools,
     categorys: commonModel.categorys,
     teachersDic: commonModel.teachersDic,
     onSearch (fieldsValue) {
       dispatch({
-        type: `${namespace}/getLessons`,
-        payload: { ...fieldsValue, needMerge: false },
+        type: `${namespace}/reQuery`,
+        payload: fieldsValue,
       })
     },
   }
 
   const calendarProps = {
-    loading: loading.effects[`${namespace}/getLessons`],
+    loading: loading.effects[`${namespace}/query`],
     lessonCalendar,
-    onNavigate (query) {
+    onPrev (query) {
       dispatch({
-        type: `${namespace}/getLessons`,
-        payload: { ...query, needMerge: true },
+        type: `${namespace}/queryPrev`,
+        payload: query,
       })
     },
-    onResetLessons (available) {
+    onNext (query) {
       dispatch({
-        type: `${namespace}/resetLessons`,
-        payload: { available },
+        type: `${namespace}/queryNext`,
+        payload: query,
       })
     },
-    onChangeDate (searchQuery) {
+    resetQuery () {
       dispatch({
-        type: `${namespace}/changeDate`,
-        payload: searchQuery,
+        type: `${namespace}/resetQuery`,
       })
     },
   }

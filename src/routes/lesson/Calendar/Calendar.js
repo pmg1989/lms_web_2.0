@@ -53,154 +53,59 @@ class Calendar extends Component {
   static propTypes = {
     lessonCalendar: PropTypes.object.isRequired,
     loading: PropTypes.bool,
-    onNavigate: PropTypes.func.isRequired,
-    onResetLessons: PropTypes.func.isRequired,
-    onChangeDate: PropTypes.func.isRequired,
+    onPrev: PropTypes.func.isRequired,
+    onNext: PropTypes.func.isRequired,
+    resetQuery: PropTypes.func.isRequired,
   }
 
-  state = {
-    weekClicked: false, // 首次查看week信息时需要验证当前时间是否需要上个月/下个月的获取
-    curDate: this.props.lessonCalendar.searchQuery.available,
-    dicMonth: {
-      [moment(this.props.lessonCalendar.searchQuery.available * 1000).format('YYYY-MM')]: true,
-    }, // 缓存获取过的月份数据
-  }
-
-  componentWillReceiveProps (nextProps) {
-    const { lessonCalendar: { needMerge } } = this.props
-    if (needMerge && !nextProps.lessonCalendar.needMerge) {
-      this.setState({ dicMonth: {
-        [moment(nextProps.lessonCalendar.searchQuery.available * 1000).format('YYYY-MM')]: true,
-      } })
+  constructor (props) {
+    super(props)
+    const { lessonCalendar: { curDate } } = props
+    this.state = {
+      dicMonth: {
+        [moment(curDate * 1000).format('YYYY-MM')]: true,
+      }, // 缓存获取过的月份数据
     }
   }
 
   componentWillUnmount () {
-    this.props.onResetLessons(this.state.curDate)
-  }
-
-  handleCacheMonth = (momentDate) => {
-    this.setState(({ dicMonth }) => ({ dicMonth: { ...dicMonth, [momentDate.format('YYYY-MM')]: true } }))
-  }
-
-  checkCacheMonth = (momentDate) => {
-    return !this.state.dicMonth[momentDate.format('YYYY-MM')]
-  }
-
-  handleViews = (view) => {
-    if (view === 'week' && !this.state.weekClicked) {
-      const { lessonCalendar: { searchQuery: { available } } } = this.props
-      const momentDate = moment(available * 1000)
-      const daysInMonth = momentDate.daysInMonth()
-      const curDate = momentDate.date()
-      const prevMomentDate = moment(available * 1000).subtract(1, 'month')
-      const nextMomentDate = moment(available * 1000).add(1, 'month')
-      this.setState({ weekClicked: true, curDate: momentDate.format('X') })
-      if (curDate < 7) {
-        if (this.checkCacheMonth(prevMomentDate)) {
-          this.props.onNavigate({
-            available: prevMomentDate.startOf('month').format('X'),
-            deadline: prevMomentDate.endOf('month').format('X'),
-          })
-          this.handleCacheMonth(prevMomentDate)
-        } else {
-          this.props.onChangeDate({
-            available: prevMomentDate.startOf('month').format('X'),
-            deadline: prevMomentDate.endOf('month').format('X'),
-          })
-        }
-      } else if (daysInMonth - curDate < 7) {
-        if (this.checkCacheMonth(nextMomentDate)) {
-          this.props.onNavigate({
-            available: nextMomentDate.startOf('month').format('X'),
-            deadline: nextMomentDate.endOf('month').format('X'),
-          })
-          this.handleCacheMonth(nextMomentDate)
-        } else {
-          this.props.onChangeDate({
-            available: nextMomentDate.startOf('month').format('X'),
-            deadline: nextMomentDate.endOf('month').format('X'),
-          })
-        }
-      }
-    }
+    this.props.resetQuery()
   }
 
   handleNavigate = (date, curView, curNavigate) => {
-    const { onNavigate, onChangeDate } = this.props
-    const momentDate = moment(date)
+    const { lessonCalendar: { searchQuery: { available, deadline, ...params } }, onPrev, onNext } = this.props
+    const curMonth = moment(date).format('YYYY-MM')
     if (curNavigate === 'DATE') {
       // 点击 + more 按钮时，不做任何请求
       return
     }
-    this.setState({ curDate: momentDate.format('X') })
-    if (curView === 'month' || curView === 'agenda') {
-      if (this.checkCacheMonth(momentDate)) {
-        // 加载当前月的数据
-        onNavigate({
-          available: momentDate.startOf('month').format('X'),
-          deadline: momentDate.endOf('month').format('X'),
-        })
-        this.handleCacheMonth(momentDate)
-      } else {
-        onChangeDate({
-          available: momentDate.startOf('month').format('X'),
-          deadline: momentDate.endOf('month').format('X'),
-        })
-      }
-    } else if (curView === 'day') {
-      if (this.checkCacheMonth(momentDate)) {
-        if ((momentDate.date() === 1 && curNavigate === 'NEXT') // 加载后一个月的数据
-          || (momentDate.date() === momentDate.daysInMonth() && curNavigate === 'PREV')) { // 加载前一个月的数据
-          onNavigate({
-            available: momentDate.startOf('month').format('X'),
-            deadline: momentDate.endOf('month').format('X'),
-          })
-          this.handleCacheMonth(momentDate)
-        }
-      } else {
-        onChangeDate({
-          available: momentDate.startOf('month').format('X'),
-          deadline: momentDate.endOf('month').format('X'),
-        })
-      }
-    } else if (curView === 'week') {
-      const daysInMonth = momentDate.daysInMonth()
-      const curDate = momentDate.date()
-      const prevMomentDate = moment(date).subtract(1, 'month')
-      const nextMomentDate = moment(date).add(1, 'month')
-      if (curNavigate === 'PREV' && curDate < 7) {
-        if (this.checkCacheMonth(prevMomentDate)) {
-          onNavigate({
-            available: prevMomentDate.startOf('month').format('X'),
-            deadline: prevMomentDate.endOf('month').format('X'),
-          })
-          this.handleCacheMonth(prevMomentDate)
-        } else {
-          onChangeDate({
-            available: prevMomentDate.startOf('month').format('X'),
-            deadline: prevMomentDate.endOf('month').format('X'),
-          })
-        }
-      } else if (curNavigate === 'NEXT' && daysInMonth - curDate < 7) {
-        if (this.checkCacheMonth(nextMomentDate)) {
-          onNavigate({
-            available: nextMomentDate.startOf('month').format('X'),
-            deadline: nextMomentDate.endOf('month').format('X'),
-          })
-          this.handleCacheMonth(nextMomentDate)
-        } else {
-          onChangeDate({
-            available: nextMomentDate.startOf('month').format('X'),
-            deadline: nextMomentDate.endOf('month').format('X'),
-          })
-        }
-      }
+    if (this.state.dicMonth[curMonth]) {
+      return // 排除重复请求一些正在请求中的数据，防止重复渲染数据
     }
+    const prevMonth = moment(date).subtract(1, 'month').startOf('month').format('X')
+    const nextMonth = moment(date).add(2, 'months').startOf('month').format('X')
+    if (prevMonth < available && nextMonth < deadline) {
+      onPrev({
+        ...params,
+        available: prevMonth,
+        deadline: moment(date).startOf('month').format('X'), // available,
+        curDate: moment(date).format('X'),
+      })
+    } else if (prevMonth > available && nextMonth > deadline) {
+      onNext({
+        ...params,
+        available: moment(date).add(1, 'month').startOf('month').format('X'), // deadline,
+        deadline: nextMonth,
+        curDate: moment(date).format('X'),
+      })
+    }
+    this.setState(({ dicMonth }) => ({
+      dicMonth: { ...dicMonth, [moment(date).format('YYYY-MM')]: true },
+    }))
   }
 
   render () {
-    const { lessonCalendar: { lessons, searchQuery, isPostBack }, loading } = this.props
+    const { lessonCalendar: { lessons, isPostBack, curDate }, loading } = this.props
 
     return (
       <Spin spinning={loading} size="large">
@@ -211,8 +116,7 @@ class Calendar extends Component {
               events={lessons}
               views={allViews}
               step={30}
-              defaultDate={new Date(searchQuery.available * 1000)}
-              onView={this.handleViews}
+              defaultDate={new Date(curDate * 1000)}
               onNavigate={this.handleNavigate}
               components={{
                 event: MonthEvent,
