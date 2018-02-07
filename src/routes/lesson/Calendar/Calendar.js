@@ -68,6 +68,17 @@ class Calendar extends Component {
     }
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (!this.props.lessonCalendar.clearDicMonth && nextProps.lessonCalendar.clearDicMonth) {
+      console.log('clear dicMonth')
+      this.setState({
+        dicMonth: {
+          [moment(nextProps.lessonCalendar.curDate * 1000).format('YYYY-MM')]: true,
+        },
+      })
+    }
+  }
+
   componentWillUnmount () {
     this.props.resetQuery()
   }
