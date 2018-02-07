@@ -5,7 +5,7 @@ export const categorys = {
 }
 
 export function getCategory (category = '') {
-  return categorys[category.toLowerCase()] || '未知'
+  return categorys[category.toLowerCase()] || '-'
 }
 
 export const subjects = {
@@ -23,7 +23,7 @@ export const subjects = {
 }
 
 export function getSubject (subject = '') {
-  return subjects[subject.toLowerCase()] || '未知'
+  return subjects[subject.toLowerCase()] || '-'
 }
 
 export const roleNames = {
