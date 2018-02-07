@@ -8,8 +8,9 @@ import FeedbackModal from './FeedbackModal'
 
 const namespace = 'lessonStudent'
 
-const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId }, addDeletePower, otherPower, lessonStudent, loading, modal }) => {
+const LessonItemStudent = ({ dispatch, user, lessonInfo: { lessonid, categoryId, available, deadline }, addDeletePower, otherPower, lessonStudent, loading, modal }) => {
   const listProps = {
+    lessonInfo: { available, deadline },
     loading: loading.models.lessonStudent,
     addDeletePower,
     otherPower,

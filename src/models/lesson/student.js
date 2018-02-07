@@ -22,11 +22,14 @@ export default {
         })
       }
     },
-    * attendance ({ payload }, { call }) {
+    * attendance ({ payload }, { call, put }) {
       const { params } = payload
       const { success } = yield call(attendance, params)
-      if (!success) {
-        message.error('对不起，考勤失败！')
+      if (success) {
+        yield put({
+          type: 'attendanceSuccess',
+          payload: { id: params.userid, acronym: params.status },
+        })
       }
     },
     * addStudent ({ payload }, { call, put }) {
@@ -113,6 +116,11 @@ export default {
   reducers: {
     querySuccess (state, action) {
       return { ...state, ...action.payload }
+    },
+    attendanceSuccess (state, action) {
+      const { id, acronym } = action.payload
+      const list = state.list.map(item => (item.id === id ? { ...item, acronym } : item))
+      return { ...state, list }
     },
     removeSuccess (state, action) {
       const list = state.list.filter(item => item.id !== action.payload.id)

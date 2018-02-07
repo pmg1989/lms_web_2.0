@@ -26,7 +26,7 @@ const menu = [
         key: 'calendar',
         icon: 'calendar',
         name: '日历管理',
-        power: [1, 2, 3, 4, 5],
+        power: [1, 2, 3],
       },
       {
         id: 22,
