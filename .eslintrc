@@ -77,6 +77,7 @@
         "sessionStorage": true,
         "document": true,
         "newband": true,
-        "zhuge": true
+        "zhuge": true,
+        "navigator": true
     }
 }

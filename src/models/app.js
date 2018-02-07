@@ -1,9 +1,10 @@
 import { routerRedux } from 'dva/router'
 import { navOpenKeys } from 'config'
-import { Cookie, isLogin, getUserInfo, setLoginOut, renderMessages } from 'utils'
+import { Cookie, isLogin, getUserInfo, setLoginOut, renderMessages, isMobile } from 'utils'
 import { logout, queryMessageList, readMessage, queryComingLessons } from 'services/app'
 
 const initPower = Cookie.getJSON('user_power')
+const _isMobile = isMobile()
 
 export default {
   namespace: 'app',
@@ -13,7 +14,7 @@ export default {
     menuPopoverVisible: false,
     siderFold: localStorage.getItem('antdAdminSiderFold') === 'true',
     darkTheme: localStorage.getItem('antdAdminDarkTheme') !== 'false',
-    isNavbar: document.body.clientWidth < 1050,
+    isNavbar: _isMobile || document.body.clientWidth < 769,
     navOpenKeys: JSON.parse(localStorage.getItem('navOpenKeys') || navOpenKeys), // 侧边栏菜单打开的keys,
     userPower: initPower,
     curPowers: [],
@@ -23,7 +24,7 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       window.onresize = function () {
-        dispatch({ type: 'changeNavbar' })
+        !_isMobile && dispatch({ type: 'changeNavbar' })
       }
 
       if (!isLogin()) {
@@ -98,7 +99,7 @@ export default {
       return { ...state, darkTheme: !state.darkTheme }
     },
     changeNavbar (state) {
-      return { ...state, isNavbar: document.body.clientWidth < 1050 }
+      return { ...state, isNavbar: _isMobile || document.body.clientWidth < 769 }
     },
     switchMenuPopver (state) {
       return { ...state, menuPopoverVisible: !state.menuPopoverVisible }

@@ -1,12 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Dropdown, Icon, Button } from 'antd'
+import { isMobile } from 'utils'
+
+const _isMobile = isMobile()
 
 function DropMenu ({ border, dropDownProps, children }) {
   const dropProps = {
     overlay: children,
     placement: 'bottomCenter',
-    trigger: ['click'],
+    trigger: _isMobile ? ['click'] : ['hover'],
     ...dropDownProps,
   }
 
