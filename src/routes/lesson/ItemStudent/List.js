@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu, Modal, Radio, Row, Col, Tag, Table } from 'antd'
 import { DropMenu } from 'components'
+import moment from 'moment'
 import AudioPlayer from 'components/MediaPlayer/AudioPlayer'
 import { ADD, UPDATE, DETAIL, DELETE } from 'constants/options'
 import styles from './List.less'
@@ -9,6 +10,7 @@ import styles from './List.less'
 const confirm = Modal.confirm
 
 function List ({
+  lessonInfo: { available, deadline },
   lessonStudent: {
     list,
   },
@@ -36,6 +38,20 @@ function List ({
     }
   }
 
+  const handleAttendance = (record, e) => {
+    const startTime = moment.unix(available).subtract(0.5, 'hour').format('X')
+    const endTime = moment.unix(deadline).add(0.5, 'hour').format('X')
+    const now = moment().format('X')
+    if (now > startTime && now < endTime) {
+      onAttendance({ status: e.target.value, userid: record.id })
+    } else {
+      Modal.warning({
+        title: '警告',
+        content: '开课前半小时至课程结束后的半小时内才可以考勤，当前时间不在考勤时间范围内！',
+      })
+    }
+  }
+
   const handleMenuClick = (key, record) => {
     return {
       [DELETE]: handleDeleteItem,
@@ -55,7 +71,7 @@ function List ({
       dataIndex: 'acronym',
       key: 'acronym',
       render: (acronym, record) => (
-        <Radio.Group size="small" disabled={!otherPower} defaultValue={acronym} onChange={e => onAttendance({ status: e.target.value, userid: record.id })}>
+        <Radio.Group size="small" disabled={!otherPower} value={acronym} onChange={e => handleAttendance(record, e)}>
           <Radio.Button value="P"><span className={styles.primary}>出席</span></Radio.Button>
           <Radio.Button value="L"><span className={styles.warning}>迟到</span></Radio.Button>
           <Radio.Button value="A"><span className={styles.danger}>缺席</span></Radio.Button>
@@ -134,6 +150,7 @@ function List ({
 
 List.propTypes = {
   uploadRecordStatus: PropTypes.bool.isRequired,
+  lessonInfo: PropTypes.object.isRequired,
   lessonStudent: PropTypes.object.isRequired,
   loading: PropTypes.bool,
   addDeletePower: PropTypes.bool.isRequired,

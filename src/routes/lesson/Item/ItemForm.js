@@ -538,7 +538,7 @@ class ItemForm extends Component {
                   <Button onClick={this.handleAddStudent} disabled={addDisabled} type="primary" size="large" icon="plus-circle-o">添加</Button>
                 </Col>
               </Row> : <div />)}
-            <ItemStudent lessonInfo={{ lessonid: item.id, categoryId: item.category_idnumber }} addDeletePower={addDeleteStudentPower} otherPower={otherStudentPower} />
+            <ItemStudent lessonInfo={{ lessonid: item.id, categoryId: item.category_idnumber, available: item.available, deadline: item.deadline }} addDeletePower={addDeleteStudentPower} otherPower={otherStudentPower} />
           </FormItem>}
           <FormItem wrapperCol={{ span: 17, offset: 4 }}>
             {addPower &&
