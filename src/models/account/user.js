@@ -128,12 +128,17 @@ export default {
       }
     },
     * showContractLessonModal ({ payload }, { call, put }) {
+      const now = new Date().getTime() / 1000
       const { type, id, contract } = payload
       yield put({ type: 'modal/showModal', payload: { type, id } })
 
       const { data, success } = yield call(queryContractLesson, { ccid: contract.ccid, category_idnumber: contract.category_idnumber })
       if (success) {
-        yield put({ type: 'modal/setSubItem', payload: { lessons: data.lessons } })
+        yield put({ type: 'modal/setSubItem',
+          payload: {
+            lessons: data.lessons.filter(item => now >= item.available),
+            lessons2: data.lessons.filter(item => now < item.available),
+          } })
       }
     },
   },
