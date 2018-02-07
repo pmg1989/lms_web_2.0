@@ -402,7 +402,7 @@ class ItemForm extends Component {
                   message: '请选择教室',
                 },
               ],
-            })(<Select disabled={disabled} placeholder="--请选择教室--">
+            })(<Select disabled={disabled || !updatePower} placeholder="--请选择教室--">
               {classrooms.map(classroom => <Option key={classroom.id} value={classroom.id.toString()}>{classroom.name}</Option>)}
             </Select>)
             }
@@ -454,7 +454,7 @@ class ItemForm extends Component {
                   message: '请选择上课日期',
                 },
               ],
-            })(<DatePicker disabled={disabled}
+            })(<DatePicker disabled={disabled || !updatePower}
               className={styles.date_picker}
               placeholder="请选择上课日期"
               disabledDate={this.disabledDate}
@@ -473,7 +473,7 @@ class ItemForm extends Component {
                       message: '请选择上课时间',
                     },
                   ],
-                })(<Select className={styles.date_picker} disabled={disabled} placeholder="--请选择上课时间--">
+                })(<Select className={styles.date_picker} disabled={disabled || !updatePower} placeholder="--请选择上课时间--">
                   {timeStarts.map(time => <Option key={time} value={time}>{time}</Option>)}
                 </Select>)
                 }
@@ -492,7 +492,7 @@ class ItemForm extends Component {
                       message: '请选择下课时间',
                     },
                   ],
-                })(<Select className={styles.date_picker} disabled={disabled} placeholder="--请选择下课时间--">
+                })(<Select className={styles.date_picker} disabled={disabled || !updatePower} placeholder="--请选择下课时间--">
                   {timeEnds.map(time => <Option key={time} value={time}>{time}</Option>)}
                 </Select>)
                 }
