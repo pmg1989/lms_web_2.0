@@ -2,14 +2,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import classnames from 'classnames'
+import { ADD } from 'constants/options'
+import { checkPower } from 'utils'
 import Search from './Search'
 import Calendar from './Calendar'
 import styles from './Calendar.less'
 
 const namespace = 'lessonCalendar'
 
-function CalendarHome ({ dispatch, lessonCalendar, loading, commonModel }) {
+function CalendarHome ({ curPowers, dispatch, lessonCalendar, loading, commonModel }) {
+  const addPower = checkPower(ADD, curPowers)
+
   const searchProps = {
+    addPower,
     loading,
     searchQuery: lessonCalendar.searchQuery,
     schools: commonModel.schools,
@@ -58,6 +63,7 @@ function CalendarHome ({ dispatch, lessonCalendar, loading, commonModel }) {
 }
 
 CalendarHome.propTypes = {
+  curPowers: PropTypes.array.isRequired,
   dispatch: PropTypes.func.isRequired,
   lessonCalendar: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,

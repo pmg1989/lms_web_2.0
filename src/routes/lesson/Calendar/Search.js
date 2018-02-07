@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Spin, Row, Col, Select } from 'antd'
+import { Form, Spin, Row, Col, Select, Button, Icon } from 'antd'
+import { Link } from 'dva/router'
 import classnames from 'classnames'
 import { getSchool, getUserInfo } from 'utils'
 import styles from './Search.less'
@@ -11,6 +12,7 @@ const Option = Select.Option
 class Search extends Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
+    addPower: PropTypes.bool.isRequired,
     loading: PropTypes.object.isRequired,
     searchQuery: PropTypes.object.isRequired,
     schools: PropTypes.array.isRequired,
@@ -46,6 +48,7 @@ class Search extends Component {
 
   render () {
     const {
+      addPower,
       loading,
       searchQuery,
       schools,
@@ -112,6 +115,9 @@ class Search extends Component {
                   <Option value="vip">VIP课</Option>
                 </Select>)
                 }
+              </FormItem>
+              <FormItem style={{ marginBottom: 20, float: 'right', marginRight: 0 }}>
+                {addPower && <Link to={'/lesson/create'}><Button size="large" type="ghost"><Icon type="plus-circle-o" />排课</Button></Link>}
               </FormItem>
             </Form>
           </Spin>
