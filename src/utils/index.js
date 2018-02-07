@@ -160,6 +160,10 @@ const renderMessages = (list) => {
   })
 }
 
+const isMobile = () => {
+  return /Android|webOS|iOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)
+}
+
 export {
   Cookie,
   menu,
@@ -176,4 +180,5 @@ export {
   getSchool,
   getUserInfo,
   renderMessages,
+  isMobile,
 }

@@ -7,6 +7,7 @@ import { Link } from 'dva/router'
 import { DataTable, DropMenu } from 'components'
 import { UPDATE, DETAIL, DELETE } from 'constants/options'
 import { getSubject } from 'utils/dictionary'
+import { isMobile } from 'utils'
 import styles from './List.less'
 
 const confirm = Modal.confirm
@@ -133,7 +134,7 @@ function List ({
       pagination={pagination}
       onPageChange={onPageChange}
       rowSelection={deletePower ? rowSelection : null}
-      scroll={{ x: 600 }}
+      scroll={{ x: isMobile() ? 600 : 1200 }}
       rowKey={record => record.id}
     />
   )

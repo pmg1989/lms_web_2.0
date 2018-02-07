@@ -40,6 +40,7 @@ export default {
   namespace: 'lessonCalendar',
   state: {
     isPostBack: true, // 判断是否是首次加载页面，修复 + more bug
+    clearDicMonth: false, // 是否需要清除dicMonth的标识符，搜索项改变时，需要清除dicMonth
     searchQuery: initParams,
     curDate: moment().format('X'),
     lessons: [],
@@ -144,6 +145,10 @@ export default {
         type: 'query',
         payload: querys,
       })
+      yield put({
+        type: 'resetDicMonth',
+        payload: false,
+      })
     },
   },
   reducers: {
@@ -164,6 +169,9 @@ export default {
       const available = moment.unix(curDate).startOf('month').format('X')
       const deadline = moment.unix(curDate).add(1, 'month').startOf('month').format('X')
       return { ...state, searchQuery: { ...state.searchQuery, available, deadline } }
+    },
+    resetDicMonth (state, action) {
+      return { ...state, clearDicMonth: action.payload }
     },
   },
 }

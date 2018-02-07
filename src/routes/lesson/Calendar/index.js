@@ -17,6 +17,10 @@ function CalendarHome ({ dispatch, lessonCalendar, loading, commonModel }) {
     teachersDic: commonModel.teachersDic,
     onSearch (fieldsValue) {
       dispatch({
+        type: `${namespace}/resetDicMonth`,
+        payload: true,
+      })
+      dispatch({
         type: `${namespace}/reQuery`,
         payload: fieldsValue,
       })

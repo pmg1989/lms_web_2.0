@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Icon, Table } from 'antd'
+import { Modal, Icon, Table, Tabs } from 'antd'
 import { Link } from 'dva/router'
 import moment from 'moment'
 import CirclePlayer from 'components/MediaPlayer/CirclePlayer'
 import { getModalType } from 'utils/dictionary'
 
-const now = new Date().getTime() / 1000
+const TabPane = Tabs.TabPane
 
 const ModalForm = ({
   modal: { curItem, type, visible },
@@ -45,7 +45,7 @@ const ModalForm = ({
       dataIndex: 'available',
       key: 'available',
       render (available, record) {
-        return <span>{moment.unix(available).format('YYYY-MM-DD HH:mm')} ~ {moment.unix(record.deadline).format('HH:mm')} {now > available && <Icon style={{ fontSize: 16, color: '#108ee9' }} type="check-circle-o" />}</span>
+        return <span>{moment.unix(available).format('YYYY-MM-DD HH:mm')} ~ {moment.unix(record.deadline).format('HH:mm')}</span>
       },
     }, {
       title: '教室',
@@ -63,12 +63,25 @@ const ModalForm = ({
 
   return (
     <Modal {...modalFormOpts}>
-      <Table
-        columns={columns}
-        dataSource={curItem.lessons}
-        loading={loading}
-        rowKey={record => record.id}
-      />
+      <Tabs defaultActiveKey="1">
+        <TabPane tab="已开课" key="1">
+          <Table
+            columns={columns}
+            dataSource={curItem.lessons}
+            loading={loading}
+            rowKey={record => record.id}
+          />
+        </TabPane>
+        <TabPane tab="预约中" key="2">
+          <Table
+            columns={columns}
+            dataSource={curItem.lessons2}
+            loading={loading}
+            rowKey={record => record.id}
+          />
+        </TabPane>
+      </Tabs>
+
     </Modal>
   )
 }

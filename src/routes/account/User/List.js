@@ -4,6 +4,7 @@ import { Menu } from 'antd'
 import moment from 'moment'
 import { DataTable, DropMenu } from 'components'
 import { DETAIL, UPDATE } from 'constants/options'
+import { isMobile } from 'utils'
 import styles from './List.less'
 
 function List ({
@@ -97,7 +98,7 @@ function List ({
       loading={loading}
       pagination={{ ...pagination, total }}
       onPageChange={onPageChange}
-      scroll={{ x: 600 }}
+      scroll={{ x: isMobile() ? 600 : 1200 }}
       rowKey={record => record.id}
     />
   )

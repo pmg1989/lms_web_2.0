@@ -43,9 +43,9 @@ const Contract = ({ type, status, item, onShowTeacherModal, onShowHistoryListMod
     if (type === 'profession') {
       onShowContractLessonModal({ ccid: _item.contractid, category_idnumber: _item.category_idnumber })
     } else if (type === 'hd') {
-      onShowContractLessonModal({ ccid: _item.hdid, category_idnumber: _item.category_idnumber })
+      onShowContractLessonModal({ ccid: _item.hdid, category_idnumber: 'hd' })
     } else if (type === 'jl') {
-      onShowContractLessonModal({ ccid: _item.jlid, category_idnumber: _item.category_idnumber })
+      onShowContractLessonModal({ ccid: _item.jlid, category_idnumber: _item.jl_category_idnumber })
     }
   }
 
