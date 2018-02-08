@@ -140,5 +140,8 @@ export default {
       const list = state.list.map(item => (item.id === userid ? { ...item, jl_song: { ...item.jl_song, song, original_singer: originalSinger } } : item))
       return { ...state, list }
     },
+    resetStudents (state) {
+      return { ...state, list: [] }
+    },
   },
 }

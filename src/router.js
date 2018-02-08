@@ -82,9 +82,9 @@ const Routers = function ({ history, app }) {
               name: 'create',
               getComponent (nextState, cb) {
                 require.ensure([], (require) => {
-                  registerModel(app, require('./models/lesson/item'))
-                  cb(null, require('./routes/lesson/Item'))
-                }, 'lesson-item')
+                  registerModel(app, require('./models/lesson/create'))
+                  cb(null, require('./routes/lesson/Create'))
+                }, 'lesson-create')
               },
             },
             {
