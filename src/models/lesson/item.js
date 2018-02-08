@@ -109,5 +109,8 @@ export default {
     resetStudents (state) {
       return { ...state, studentList: [] }
     },
+    resetItem (state) {
+      return { ...state, type: 'detail', item: {} }
+    },
   },
 }

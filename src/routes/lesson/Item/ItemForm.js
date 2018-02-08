@@ -40,6 +40,7 @@ class ItemForm extends Component {
     onQueryStudentList2: PropTypes.func.isRequired,
     onResetStudents: PropTypes.func.isRequired,
     onAddStudent: PropTypes.func.isRequired,
+    onResetItem: PropTypes.func.isRequired,
   }
 
   state = {
@@ -66,6 +67,10 @@ class ItemForm extends Component {
     if (this.props.queryStudents2Loading && !nextProps.queryStudents2Loading && !studentList.length) {
       this.setState({ fetching: false, errorMsg: '没有可匹配的学员列表！' })
     }
+  }
+
+  componentWillUnmount () {
+    this.props.onResetItem()
   }
 
   TeacherDaiFormItem = ({ teacherId, disabled }) => {

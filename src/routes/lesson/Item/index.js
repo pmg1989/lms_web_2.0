@@ -55,6 +55,10 @@ const LessonItem = ({ dispatch, curPowers, lessonItem, loading, commonModel }) =
     onGoBack () {
       dispatch(routerRedux.goBack())
     },
+    onResetItem () {
+      dispatch({ type: `${namespace}/resetItem` })
+      dispatch({ type: 'lessonStudent/resetStudents' })
+    },
   }
 
   return (
