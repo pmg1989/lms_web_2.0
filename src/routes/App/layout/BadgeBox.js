@@ -26,7 +26,7 @@ const ScheduleBox = ({ list }) => {
 
   return (
     <div className={styles.badge}>
-      <Popover content={contentSchedule} title="即将到来的课程" trigger="click">
+      <Popover placement="bottomLeft" content={contentSchedule} title="即将到来的课程" trigger="click">
         <Icon type="schedule" className={styles.size} />
       </Popover>
     </div>
