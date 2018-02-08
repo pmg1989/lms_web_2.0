@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Modal, Input, InputNumber, Select, Spin, Button, Row, Col, Checkbox, DatePicker, Tag } from 'antd'
+import { Form, Modal, Input, Select, Spin, Button, Row, Col, DatePicker, Tag } from 'antd'
 import moment from 'moment'
-// import { Link } from 'dva/router'
 import { getSchool, getUserInfo } from 'utils'
 import { timeList } from 'utils/dictionary'
 import ItemStudent from '../ItemStudent'
@@ -26,7 +25,6 @@ const formItemLayout = {
 
 class ItemForm extends Component {
   static propTypes = {
-    addPower: PropTypes.bool.isRequired,
     updatePower: PropTypes.bool.isRequired,
     addDaiTeacherPower: PropTypes.bool.isRequired,
     addDeleteStudentPower: PropTypes.bool.isRequired,
@@ -35,21 +33,17 @@ class ItemForm extends Component {
     commonModel: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
-    queryStudentsLoading: PropTypes.bool,
     queryStudents2Loading: PropTypes.bool,
     onSubmit: PropTypes.func.isRequired,
     onGoBack: PropTypes.func.isRequired,
     onChangeDaiTeacher: PropTypes.func.isRequired,
-    onQueryStudentList: PropTypes.func.isRequired,
     onQueryStudentList2: PropTypes.func.isRequired,
     onResetStudents: PropTypes.func.isRequired,
-    onResetItem: PropTypes.func.isRequired,
     onAddStudent: PropTypes.func.isRequired,
   }
 
   state = {
     schoolId: getUserInfo().school_id,
-    showStudentForm: true,
     timeStarts: timeList,
     timeEnds: timeList,
     teachers: [],
@@ -64,21 +58,14 @@ class ItemForm extends Component {
     const { lessonItem: { item, studentList }, commonModel: { teachers2Dic } } = nextProps
     if (!lessonItem.item.category_summary && item.category_summary) {
       this.handleSchoolChange(item.school_id || this.state.schoolId, false)
-      this.changeStudentForm(item.category_idnumber)
     }
     if (!this.state.teachers.length && Object.keys(teachers2Dic).length) {
       const teachersState = teachers2Dic[item.school_id || this.state.schoolId] || []
       teachersState.length && this.setState({ teachers: teachersState })
     }
-    if (((this.props.queryStudentsLoading && !nextProps.queryStudentsLoading) ||
-        (this.props.queryStudents2Loading && !nextProps.queryStudents2Loading)) &&
-        !studentList.length) {
+    if (this.props.queryStudents2Loading && !nextProps.queryStudents2Loading && !studentList.length) {
       this.setState({ fetching: false, errorMsg: '没有可匹配的学员列表！' })
     }
-  }
-
-  componentWillUnmount () {
-    this.props.onResetItem()
   }
 
   TeacherDaiFormItem = ({ teacherId, disabled }) => {
@@ -150,10 +137,6 @@ class ItemForm extends Component {
     return true
   }
 
-  changeStudentForm = (idnumber) => {
-    this.setState({ showStudentForm: !idnumber.includes('-vip-') })
-  }
-
   handleSchoolChange = (schoolId, needSetValue = true) => {
     this.setState({ schoolId })
     if (needSetValue) {
@@ -164,22 +147,6 @@ class ItemForm extends Component {
       this.setState({ teachers: teachers.filter(cur => courseCategory && courseCategory.idnumber.includes(cur.teacher_subject)) })
       setFieldsValue({ teacherid: undefined, classroomid: undefined })
     }
-  }
-
-  handleCategoryChange = (categoryid) => {
-    const { lessonItem: { courseCategorys }, commonModel: { teachers2Dic }, form: { getFieldValue, setFieldsValue } } = this.props
-    const courseCategory = courseCategorys.find(cur => cur.id === categoryid)
-    const schoolId = getFieldValue('school_id')
-    const teachers = teachers2Dic[schoolId] || []
-    this.setState({ teachers: teachers.filter(cur => courseCategory.idnumber.includes(cur.teacher_subject)) })
-
-    const oldCategoryid = getFieldValue('categoryid')
-    const oldCourseCategory = courseCategorys.find(cur => cur.id === oldCategoryid)
-    if (oldCourseCategory && oldCourseCategory.idnumber.split('-')[0] !== courseCategory.idnumber.split('-')[0]) {
-      setFieldsValue({ teacherid: undefined })
-    }
-
-    this.changeStudentForm(courseCategory.idnumber)
   }
 
   handleWeekdayChange = (weekdays) => {
@@ -201,40 +168,6 @@ class ItemForm extends Component {
         this.props.form.setFieldsValue({ deadline: timeList[index + 1] })
       }
     }
-  }
-
-  handleMultipleChange = () => {
-    this.setState({ fetching: false })
-  }
-
-  queryStudentList = (phone2) => {
-    const { form: { getFieldsValue }, lessonItem: { studentList }, onQueryStudentList, onResetStudents } = this.props
-    // const { school_id } = getFieldsValue(['school_id'])
-    const params = getFieldsValue(['categoryid', 'teacherid', 'classroomid', 'openweekday', 'numsections', 'startdate', 'available', 'deadline'])
-
-    if (params.categoryid && params.teacherid && params.classroomid && params.openweekday && params.openweekday.length && params.numsections && params.startdate && params.available && params.deadline) {
-      if (phone2.length < 11) {
-        studentList.length && onResetStudents()
-        this.setState({ fetching: false, errorMsg: '请继续输入手机号码！' })
-        return false
-      }
-      if (!(/^1(3|4|5|7|8)\d{9}$/.test(phone2))) {
-        this.setState({ fetching: false, errorMsg: '手机号码格式有误！' })
-        return false
-      }
-
-      this.setState({ fetching: true })
-      const stateDate = params.startdate
-      params.startdate = stateDate.startOf('day').format('X')
-      params.openweekday = params.openweekday.sort().join(',')
-      params.available = moment(`${stateDate.format('YYYY-MM-DD')} ${params.available}`).format('X')
-      params.deadline = moment(`${stateDate.format('YYYY-MM-DD')} ${params.deadline}`).format('X')
-      onQueryStudentList(params, phone2)
-    } else {
-      console.log('error')
-      this.setState({ fetching: false, errorMsg: '请先完善表单数据！' })
-    }
-    return true
   }
 
   queryStudentList2 = (phone2) => {
@@ -276,29 +209,6 @@ class ItemForm extends Component {
     onAddStudent({ lessonid: item.id, userid: this.state.studentid })
   }
 
-  handleAdd = (e) => {
-    const { form: { validateFieldsAndScroll }, onSubmit } = this.props
-    e.preventDefault()
-    validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        const stateDate = values.startdate
-        values.startdate = stateDate.startOf('day').format('X')
-        values.openweekday = values.openweekday.sort().join(',')
-        values.available = moment(`${stateDate.format('YYYY-MM-DD')} ${values.available}`).format('X')
-        values.deadline = moment(`${stateDate.format('YYYY-MM-DD')} ${values.deadline}`).format('X')
-        if (values.studentid && values.studentid.length) {
-          values.studentid = values.studentid.map(item => item.key).join(',')
-        } else {
-          delete values.studentid
-        }
-        delete values.studentid2
-        delete values.school_id
-
-        onSubmit(values)
-      }
-    })
-  }
-
   handleUpdate = (e) => {
     const { form: { validateFieldsAndScroll }, lessonItem: { item }, onSubmit } = this.props
     e.preventDefault()
@@ -318,57 +228,33 @@ class ItemForm extends Component {
 
   render () {
     const {
-      lessonItem: { type, item, courseCategorys, studentList },
+      lessonItem: { type, item, studentList },
       commonModel: { schools, classroomsDic },
-      addPower, updatePower, addDeleteStudentPower, otherStudentPower,
+      updatePower, addDeleteStudentPower, otherStudentPower,
       loading, onGoBack,
       form: { getFieldDecorator },
     } = this.props
-    const { schoolId, showStudentForm, teachers, timeStarts, timeEnds, fetching, errorMsg, addDisabled } = this.state
+    const { schoolId, teachers, timeStarts, timeEnds, fetching, errorMsg, addDisabled } = this.state
 
     const disabled = type === 'detail'
     const disabledEdit = type === 'update'
     const classrooms = classroomsDic[schoolId] || []
-
-    const courseCategorysProps = {
-      showSearch: true,
-      placeholder: '--请选择课程类型--',
-      optionFilterProp: 'children',
-      filterOption: (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0,
-    }
 
     const teacherId = teachers.length && item.teacher && teachers.find(cur => cur.firstname === item.teacher).id
 
     return (
       <Spin spinning={loading} size="large">
         <Form className={styles.form_box}>
-          <FormItem label="课程类型" hasFeedback {...formItemLayout} extra="支持输入关键字筛选">
-            {getFieldDecorator('categoryid', {
-              initialValue: item.categoryid && item.categoryid.toString(),
-              onChange: this.handleCategoryChange,
-              rules: [
-                {
-                  required: true,
-                  message: '请输入课程类型',
-                },
-              ],
-            })(<Select disabled={disabled || disabledEdit} {...courseCategorysProps}>
-              {courseCategorys.map(courseCategory => <Option key={courseCategory.id} value={courseCategory.id.toString()}>{courseCategory.description}</Option>)}
-            </Select>)}
+          <FormItem label="课程类型" hasFeedback {...formItemLayout}>
+            {getFieldDecorator('category_summary', {
+              initialValue: item.category_summary,
+            })(<Input disabled={disabled || disabledEdit} placeholder="请输入课程名称" />)}
           </FormItem>
-          {type !== 'create' &&
-            <FormItem label="课程编号" hasFeedbac {...formItemLayout}>
-              {getFieldDecorator('course_idnumber', {
-                initialValue: item.course_idnumber,
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入课程名称',
-                  },
-                ],
-              })(<Input disabled={disabled || disabledEdit} placeholder="请输入课程名称" />)}
-            </FormItem>
-          }
+          <FormItem label="课程编号" hasFeedbac {...formItemLayout}>
+            {getFieldDecorator('course_idnumber', {
+              initialValue: item.course_idnumber,
+            })(<Input disabled={disabled || disabledEdit} placeholder="请输入课程编号" />)}
+          </FormItem>
           <FormItem label="校区" hasFeedback {...formItemLayout}>
             {getFieldDecorator('school_id', {
               initialValue: (item.school_id && item.school_id.toString()) || getUserInfo().school_id.toString(),
@@ -379,20 +265,12 @@ class ItemForm extends Component {
             }
           </FormItem>
           <FormItem label="老师" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('teacherid', {
+            {getFieldDecorator('teacher', {
               initialValue: item.teacher,
-              rules: [
-                {
-                  required: true,
-                  message: '请选择老师',
-                },
-              ],
-            })(<Select disabled={disabled || disabledEdit} placeholder="--请选择老师--">
-              {teachers.map(teacher => <Option key={teacher.id} value={teacher.id.toString()}>{teacher.alternatename}</Option>)}
-            </Select>)
+            })(<Input disabled={disabled || disabledEdit} placeholder="请输入老师名称" />)
             }
           </FormItem>
-          {type !== 'create' && <this.TeacherDaiFormItem teacherId={teacherId} disabled={disabled} />}
+          <this.TeacherDaiFormItem teacherId={teacherId} disabled={disabled} />
           <FormItem label="教室" hasFeedback {...formItemLayout}>
             {getFieldDecorator('classroomid', {
               initialValue: item.classroomid && item.classroomid.toString(),
@@ -407,44 +285,6 @@ class ItemForm extends Component {
             </Select>)
             }
           </FormItem>
-          {type === 'create' &&
-            <FormItem label="每周" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('openweekday', {
-                initialValue: item.openweekday && item.openweekday.split(','),
-                onChange: this.handleWeekdayChange,
-                rules: [
-                  {
-                    required: true,
-                    message: '请选择每周工作日',
-                  },
-                ],
-              })(<Checkbox.Group disabled={disabled} placeholder="--请选择每周工作日--">
-                <Row>
-                  <Col span={6}><Checkbox value="1">周一</Checkbox></Col>
-                  <Col span={6}><Checkbox value="2">周二</Checkbox></Col>
-                  <Col span={6}><Checkbox value="3">周三</Checkbox></Col>
-                  <Col span={6}><Checkbox value="4">周四</Checkbox></Col>
-                  <Col span={6}><Checkbox value="5">周五</Checkbox></Col>
-                  <Col span={6}><Checkbox value="6">周六</Checkbox></Col>
-                  <Col span={6}><Checkbox value="0">周日</Checkbox></Col>
-                </Row>
-              </Checkbox.Group>)}
-            </FormItem>
-          }
-          {type === 'create' &&
-            <FormItem label="持续周数" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('numsections', {
-                initialValue: item.numsections || 4,
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入持续周数',
-                  },
-                ],
-              })(<InputNumber min={1} disabled={disabled} placeholder="请输入持续周数" />)
-              }
-            </FormItem>
-          }
           <FormItem label="上课日期" hasFeedback {...formItemLayout}>
             {getFieldDecorator('startdate', {
               initialValue: item.available && moment.unix(item.available),
@@ -499,23 +339,6 @@ class ItemForm extends Component {
               </FormItem>
             </Col>
           </FormItem>
-          {type === 'create' && showStudentForm &&
-          <FormItem label="添加学员" hasFeedback {...formItemLayout} >
-            {getFieldDecorator('studentid', {
-            })(<Select
-              disabled={disabled}
-              mode="multiple"
-              labelInValue
-              placeholder="请逐个输入学员手机号码进行验证"
-              notFoundContent={fetching ? <Spin size="small" /> : <Tag color="red">{errorMsg }</Tag>}
-              filterOption={false}
-              onChange={this.handleMultipleChange}
-              onSearch={this.queryStudentList}
-            >
-              {studentList.map(d => <Option key={d.id} value={d.id}>{d.firstname}</Option>)}
-            </Select>)}
-          </FormItem>}
-          {type !== 'create' &&
           <FormItem label="添加学员" {...formItemLayout}>
             {getFieldDecorator('studentInfo', {
             })(type === 'update' && addDeleteStudentPower ?
@@ -539,17 +362,11 @@ class ItemForm extends Component {
                 </Col>
               </Row> : <div />)}
             <ItemStudent lessonInfo={{ lessonid: item.id, categoryId: item.category_idnumber, available: item.available, deadline: item.deadline }} addDeletePower={addDeleteStudentPower} otherPower={otherStudentPower} />
-          </FormItem>}
+          </FormItem>
           <FormItem wrapperCol={{ span: 17, offset: 4 }}>
-            {addPower &&
-              <Button className={styles.btn} onClick={this.handleAdd} type="primary" htmlType="submit" size="large">创建</Button>
-            }
             {updatePower && type === 'update' &&
               <Button className={styles.btn} onClick={this.handleUpdate} type="primary" size="large">修改</Button>
             }
-            {/* {updatePower && type === 'detail' &&
-              <Link to={`/lesson/update?lessonid=${item.id}`}><Button className={styles.btn} type="primary" size="large">修改</Button></Link>
-            } */}
             <Button className={styles.btn} type="default" onClick={onGoBack} size="large">返回</Button>
           </FormItem>
         </Form>
