@@ -148,12 +148,12 @@ const renderMessages = (list) => {
       TEACHER_FEEDBACK: {
         id: item.id,
         linkTo: `/lesson/update?lessonid=${params.lesson_id}`,
-        message: '你的课已经开始，记得去给你的学生写评论。',
+        message: '你的课已经开始，记得去给你的学生写评论哦~',
       },
       TEACHER_ATTENDANCE: {
         id: item.id,
         linkTo: `/lesson/update?lessonid=${params.lesson_id}`,
-        message: '您的课已开始，记得去打考勤哦。',
+        message: '你的课已经开始，记得去打考勤哦~',
       },
     }
     return dic[item.subject]
