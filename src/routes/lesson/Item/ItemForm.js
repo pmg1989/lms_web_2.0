@@ -171,9 +171,11 @@ class ItemForm extends Component {
   }
 
   queryStudentList2 = (phone2) => {
-    const { form: { getFieldsValue }, lessonItem: { studentList }, onQueryStudentList2, onResetStudents } = this.props
-    const params = getFieldsValue(['categoryid', 'teacherid', 'classroomid', 'startdate', 'available'])
-
+    const { teachers } = this.state
+    const { form: { getFieldsValue }, lessonItem: { item, studentList }, onQueryStudentList2, onResetStudents } = this.props
+    const params = getFieldsValue(['classroomid', 'startdate', 'available'])
+    params.categoryid = item.categoryid
+    params.teacherid = teachers.find(cur => cur.firstname === item.teacher).id
     if (params.categoryid && params.teacherid && params.classroomid && params.startdate && params.available) {
       if (phone2.length < 11) {
         studentList.length && onResetStudents()
