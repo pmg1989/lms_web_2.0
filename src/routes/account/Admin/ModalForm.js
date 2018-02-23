@@ -197,7 +197,7 @@ class ModalForm extends Component {
                   validator: validPhone,
                 },
               ],
-            })(<Input disabled={disabled} placeholder="请输入手机号码" />)}
+            })(<Input disabled={disabled || type === 'update'} placeholder="请输入手机号码" />)}
           </FormItem>
           <FormItem label="邮箱" hasFeedback {...formItemLayout}>
             {getFieldDecorator('email', {
