@@ -1,45 +1,36 @@
-import React, { Component } from 'react'
-import { Select } from 'antd'
+import React from 'react'
+import PropTypes from 'prop-types'
+import styles from './index.less'
 
-const Option = Select.Option
+const data = [
+  { id: 1, title: 'title1' },
+  { id: 2, title: 'title2' },
+  { id: 3, title: 'title3' },
+]
 
-const provinceData = ['Zhejiang', 'Jiangsu']
-const cityData = {
-  Zhejiang: ['Hangzhou', 'Ningbo', 'Wenzhou'],
-  Jiangsu: ['Nanjing', 'Suzhou', 'Zhenjiang'],
+function Repeat ({ children, list, tag, ...props }) {
+  console.log(tag)
+  return (
+    <div {...props}>
+      {list.map((item, key) => children(item, key))}
+    </div>
+  )
 }
 
-class App extends Component {
-    state = {
-      cities: cityData[provinceData[0]],
-      secondCity: cityData[provinceData[0]][0],
-    }
-    onSecondCityChange = (value) => {
-      this.setState({
-        secondCity: value,
-      })
-    }
-    handleProvinceChange = (value) => {
-      this.setState({
-        cities: cityData[value],
-        secondCity: cityData[value][0],
-      })
-    }
-    render () {
-      console.log(this.state.cities, this.state.secondCity)
-      const provinceOptions = provinceData.map(province => <Option key={province}>{province}</Option>)
-      const cityOptions = this.state.cities.map(city => <Option key={city}>{city}</Option>)
-      return (
-        <div>
-          <Select defaultValue={provinceData[0]} style={{ width: 90 }} onChange={this.handleProvinceChange}>
-            {provinceOptions}
-          </Select>
-          <Select value={this.state.secondCity} style={{ width: 90 }} onChange={this.onSecondCityChange}>
-            {cityOptions}
-          </Select>
-        </div>
-      )
-    }
+Repeat.propTypes = {
+  children: PropTypes.func.isRequired,
+  list: PropTypes.array.isRequired,
+  tag: PropTypes.string,
 }
 
-export default App
+function ListOfTenThings () {
+  return (
+    <Repeat list={data} className={styles.list} tag="ul">
+      {(item, key) => (
+        <p className={styles.item} key={key}>This is item {item.title} in the list</p>
+      )}
+    </Repeat>
+  )
+}
+
+export default ListOfTenThings
