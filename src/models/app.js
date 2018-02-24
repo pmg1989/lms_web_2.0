@@ -46,10 +46,12 @@ export default {
       yield call(logout)
       yield setLoginOut()
       yield put({ type: 'logoutSuccess' })
-      yield put(routerRedux.push({
-        pathname: '/login',
-        state: { nextPathname: location.pathname, nextSearch: location.search },
-      }))
+      // yield put(routerRedux.push({
+      //   pathname: '/login',
+      //   state: { nextPathname: location.pathname, nextSearch: location.search },
+      // }))
+      // 修复校区筛选框在不同校区切换后默认选中bug
+      location.href = '/login'
     },
     * queryMessageList ({}, { call, put }) {
       const { data, success } = yield call(queryMessageList, { read: 0 })
