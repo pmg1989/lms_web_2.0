@@ -16,7 +16,7 @@ Empty.propTypes = {
   children: PropTypes.element.isRequired,
 }
 
-const TitleBanner = ({ title, image }) => {
+const TitleBanner = ({ children, image }) => {
   return (
     <div className={styles.title_image_box}
       style={{
@@ -24,12 +24,12 @@ const TitleBanner = ({ title, image }) => {
         backgroundSize: 'cover',
       }}
     >
-      <span>{title}</span>
+      <span>{children()}</span>
     </div>
   )
 }
 TitleBanner.propTypes = {
-  title: PropTypes.string,
+  children: PropTypes.func.isRequired,
   image: PropTypes.string.isRequired,
 }
 
@@ -62,7 +62,7 @@ const Contract = ({ type, status, item, onShowTeacherModal, onShowHistoryListMod
             </span>
           }
           {status === 2 && '已结课'}
-          {isProfession && <span>&nbsp;&nbsp;{!!item.modifylog.teacher_name.length && item.modifylog.teacher_name.reverse().map((cur, index) => (index === 0 ? cur.teacher_name : `<--${cur.teacher_name}`))}</span>}
+          {isProfession && <span>&nbsp;&nbsp;{!!item.modifylog.teacher_name.length && item.modifylog.teacher_name.sort((v1, v2) => (v2.modify_time - v1.modify_time)).map((cur, index) => (index === 0 ? cur.teacher_name : `<--${cur.teacher_name}`))}</span>}
         </span>
       </div>
       <div className={styles.right}>
@@ -99,7 +99,14 @@ const ContractList = ({ list, status, ...contractProps }) => {
         const categoryId = (item.profession.category_idnumber || '').split('-')[0]
         return (
           <div key={key} className={styles.list}>
-            <TitleBanner title={item.profession.category_summary} image={`/images/course-type/${categoryId}.png`} />
+            <TitleBanner image={`/images/course-type/${categoryId}.png`}>
+              {() => (
+                <span className={styles.title}>
+                  {item.profession.category_summary}
+                  <span>{item.profession.contract_status === 'FROZEN' && `-已冻结（${moment.unix(item.profession.freeze_start).format('YYYY-MM-DD')} ~ ${moment.unix(item.profession.freeze_end).format('YYYY-MM-DD')}）`}</span>
+                </span>
+              )}
+            </TitleBanner>
             <div className={styles.item}>
               <div className={styles.left}><span className={styles.title}>老师：{item.profession.teacher_alternatename || '未分配'}</span></div>
               <div className={styles.right}>{moment.unix(item.profession.available).format('YYYY-MM-DD')} - {moment.unix(item.profession.deadline).format('YYYY-MM-DD')}</div>

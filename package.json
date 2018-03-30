@@ -5,9 +5,9 @@
   "scripts": {
     "build:dll": "roadhog buildDll",
     "dev": "cross-env BROWSER=none HOST=edu.newband.cn PORT=8000 roadhog server",
-    "start": "cross-env PROXY_HOST=https://lmsapi.newband.com zhugeAppKey=123456789 BROWSER=none HOST=edu.newband.cn PORT=8000 roadhog server",
+    "start": "cross-env PROXY_HOST=https://lmsapi.newband.com zhugeAppKey=d3e2521de2b6411291c55b9f861f32fa BROWSER=none HOST=edu.newband.cn PORT=8000 roadhog server",
     "build-staging": "cross-env rimraf dist && roadhog build && node deploy",
-    "build-release": "cross-env rimraf dist && zhugeAppKey=123456789 roadhog build && node deploy",
+    "build-release": "cross-env rimraf dist && zhugeAppKey=d3e2521de2b6411291c55b9f861f32fa roadhog build && node deploy",
     "build:analyze": "cross-env rimraf dist && roadhog build && node deploy --analyze",
     "lint": "eslint --fix --ext .js src mock",
     "precommit": "npm run lint"

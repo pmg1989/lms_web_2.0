@@ -42,9 +42,7 @@ export default {
     },
     * queryStudents ({ payload }, { call, put }) {
       const { params, phone2 } = payload
-      console.log(params, phone2)
-      delete params.startdate
-      const { data, success } = yield call(queryCourseStudents, params)
+      const { data, success } = yield call(queryCourseStudents, { ...params, phone2 })
       if (success) {
         yield put({
           type: 'queryStudentsSuccess',

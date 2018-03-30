@@ -57,31 +57,31 @@ const ModalForm = ({
     },
   ]
 
-  const columns3 = [
-    {
-      title: '任课老师',
-      dataIndex: 'teacher',
-      key: 'teacher',
-    }, {
-      title: '上课时间',
-      dataIndex: 'available',
-      key: 'available',
-      render (available, record) {
-        return <span>{moment.unix(available).format('YYYY-MM-DD HH:mm')} ~ {moment.unix(record.deadline).format('HH:mm')}</span>
-      },
-    }, {
-      title: '教室',
-      dataIndex: 'classroom',
-      key: 'classroom',
-    }, {
-      title: '冲突原因',
-      dataIndex: 'msg',
-      key: 'msg',
-      render (status) {
-        return <span>{{ 10101: '教室冲突', 10102: '老师冲突', 10103: '学员冲突' }[status] || '未知原因'}</span>
-      },
-    },
-  ]
+  // const columns3 = [
+  //   {
+  //     title: '任课老师',
+  //     dataIndex: 'teacher',
+  //     key: 'teacher',
+  //   }, {
+  //     title: '上课时间',
+  //     dataIndex: 'available',
+  //     key: 'available',
+  //     render (available, record) {
+  //       return <span>{moment.unix(available).format('YYYY-MM-DD HH:mm')} ~ {moment.unix(record.deadline).format('HH:mm')}</span>
+  //     },
+  //   }, {
+  //     title: '教室',
+  //     dataIndex: 'classroom',
+  //     key: 'classroom',
+  //   }, {
+  //     title: '冲突原因',
+  //     dataIndex: 'msg',
+  //     key: 'msg',
+  //     render (status) {
+  //       return <span>{{ 10101: '教室冲突', 10102: '老师冲突', 10103: '学员冲突' }[status] || '未知原因'}</span>
+  //     },
+  //   },
+  // ]
 
   const columns4 = [
     {
@@ -91,13 +91,17 @@ const ModalForm = ({
       render (available, record) {
         return <span>{moment.unix(available).format('YYYY-MM-DD HH:mm')} ~ {moment.unix(record.deadline).format('HH:mm')}</span>
       },
+    }, {
+      title: '失败原因',
+      dataIndex: 'msg',
+      key: 'msg',
     },
   ]
 
   return (
     <Modal {...modalFormOpts}>
       <Tabs defaultActiveKey="1">
-        <TabPane tab={<span><Icon type="check-circle-o" />成功列表</span>} key="1">
+        <TabPane tab={<span><Icon type="check-circle-o" />查看成功列表</span>} key="1">
           <Table
             columns={columns1}
             dataSource={curItem.successlesson}
@@ -105,7 +109,7 @@ const ModalForm = ({
             pagination={false}
           />
         </TabPane>
-        <TabPane tab={<span><Icon type="close-circle-o" />添加学员失败列表</span>} key="2">
+        <TabPane tab={<span><Icon type="exclamation-circle-o" />查看学员添加失败列表</span>} key="2">
           <Table
             columns={columns2}
             dataSource={curItem.badenrollment}
@@ -113,15 +117,15 @@ const ModalForm = ({
             pagination={false}
           />
         </TabPane>
-        <TabPane tab={<span><Icon type="exclamation-circle-o" />冲突列表</span>} key="3">
+        {/* <TabPane tab={<span><Icon type="exclamation-circle-o" />查看冲突列表</span>} key="3">
           <Table
             columns={columns3}
             dataSource={curItem.conflictlesson}
             rowKey={record => record.available}
             pagination={false}
           />
-        </TabPane>
-        <TabPane tab={<span><Icon type="close-circle-o" />失败列表</span>} key="4">
+        </TabPane> */}
+        <TabPane tab={<span><Icon type="exclamation-circle-o" />失败列表</span>} key="4">
           <Table
             columns={columns4}
             dataSource={curItem.faillist}

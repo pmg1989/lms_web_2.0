@@ -51,6 +51,7 @@ class Report extends Component {
 
     const searchTeacherProps = {
       schools: commonModel.schools,
+      searchQuery: analysisReport.teacher.searchQuery,
       onSearch (fieldsValue) {
         dispatch({
           type: `${namespace}/queryTeacherReport`,
@@ -78,6 +79,7 @@ class Report extends Component {
 
     const searchLessonCompleteProps = {
       schools: commonModel.schools,
+      searchQuery: analysisReport.lessonComplete.searchQuery,
       onSearch (fieldsValue) {
         dispatch({
           type: `${namespace}/queryLessonCompleteReport`,
@@ -105,6 +107,7 @@ class Report extends Component {
 
     const searchProTeacherProps = {
       schools: commonModel.schools,
+      searchQuery: analysisReport.proTeacher.searchQuery,
       onSearch (fieldsValue) {
         dispatch({
           type: `${namespace}/queryProTeacherReport`,

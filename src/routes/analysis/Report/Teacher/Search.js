@@ -11,6 +11,7 @@ const { MonthPicker } = DatePicker
 
 const Search = ({
   schools,
+  searchQuery: { school },
   onSearch,
   onExport,
   form: {
@@ -60,7 +61,7 @@ const Search = ({
         <Form layout="inline">
           <FormItem label="校区" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('school', {
-              initialValue: 'sh01',
+              initialValue: school,
               onChange: handleChange,
             })(<Select style={{ width: 90 }} disabled={getSchool() !== 'global'}>
               <Option value="">全部</Option>
@@ -89,6 +90,7 @@ const Search = ({
 }
 
 Search.propTypes = {
+  searchQuery: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
   schools: PropTypes.array.isRequired,
   onSearch: PropTypes.func.isRequired,

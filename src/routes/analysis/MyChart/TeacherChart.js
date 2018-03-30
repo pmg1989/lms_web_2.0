@@ -15,11 +15,11 @@ const LessonChart = ({ loading, teacher: { data } }) => {
   }
 
   const legendData = [
-    `专业VIP课时 | ${values.pro_vip}`,
-    `专业精品课时 | ${values.pro_jp}`,
-    `未完成课时 | ${values.left}`,
-    `被代课时 | ${values.substitutee}`,
-    `已代课时 | ${values.substituter}`,
+    `专业VIP课时 : ${values.pro_vip}`,
+    `专业精品课时 : ${values.pro_jp}`,
+    `待完成课时 : ${values.left}`,
+    `被代课时 : ${values.substitutee}`,
+    `已代课时 : ${values.substituter}`,
   ]
 
   const seriesData = [
@@ -33,7 +33,7 @@ const LessonChart = ({ loading, teacher: { data } }) => {
   const option = {
     title: {
       text: '本月课时统计',
-      subtext: '老师本月课时统计报表',
+      subtext: `老师课时统计月报表(保底课时：${(data && data.teacher_lessonsum_monthly) || 0})`,
       x: 'left',
     },
     tooltip: {

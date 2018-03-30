@@ -31,7 +31,7 @@ const ModalForm = ({
       dataIndex: 'category_summary',
       key: 'category_summary',
       render (summary, record) {
-        return <Link onClick={onCancelAll} to={`/lesson/detail?lessonid=${record.id}`}>{summary}</Link>
+        return <Link onClick={onCancelAll} to={`/lesson/update?lessonid=${record.id}`}>{summary}</Link>
       },
     }, {
       title: '任课老师',

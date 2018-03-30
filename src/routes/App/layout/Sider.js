@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Icon, Switch } from 'antd'
+import { Link } from 'dva/router'
 import QueueAnim from 'rc-queue-anim'
 import { config } from 'utils'
 import styles from './Layout.less'
@@ -19,8 +20,10 @@ function Sider ({ siderFold, darkTheme, location, changeTheme, navOpenKeys, user
     <div>
       <QueueAnim delay={200} type="top">
         <div className={styles.logo} key="1">
-          <img src={config.logoSrc} alt={config.logoSrc} />
-          {siderFold ? '' : <span>{config.logoText}</span>}
+          <Link to="/">
+            <img src={config.logoSrc} alt={config.logoSrc} />
+            {siderFold ? '' : <span>{config.logoText}</span>}
+          </Link>
         </div>
       </QueueAnim>
       <Menus {...menusProps} />

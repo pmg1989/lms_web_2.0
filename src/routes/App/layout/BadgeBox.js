@@ -75,18 +75,20 @@ class BadgeBox extends Component {
   }
 
   componentWillMount () {
-    const { dispatch, user } = this.props
+    const { user } = this.props
     if (roles.includes(user.rolename)) {
-      dispatch({ type: `${namespace}/queryComingLessons` })
+      // 获取即将到来的事件，功能暂时隐藏了
+      // dispatch({ type: `${namespace}/queryComingLessons` })
     }
   }
 
   render () {
-    const { dispatch, messageList, user, comingLessons } = this.props
+    const { dispatch, messageList } = this.props
 
-    const scheduleBoxProps = {
-      list: comingLessons,
-    }
+    // const { dispatch, messageList, user, comingLessons } = this.props
+    // const scheduleBoxProps = {
+    //   list: comingLessons,
+    // }
 
     const messageBoxProps = {
       list: messageList,
@@ -97,7 +99,7 @@ class BadgeBox extends Component {
 
     return (
       <div className={styles.badgeBox}>
-        {roles.includes(user.rolename) && <ScheduleBox {...scheduleBoxProps} />}
+        {/* {roles.includes(user.rolename) && <ScheduleBox {...scheduleBoxProps} />} */}
         <MessageBox {...messageBoxProps} />
       </div>
     )

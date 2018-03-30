@@ -19,14 +19,14 @@ const LessonChart = ({ loading, teacher: { searchQuery: { name }, data } }) => {
   }
 
   const legendData = [
-    `专业VIP课时 | ${values.pro_vip}`,
-    `专业精品课时 | ${values.pro_jp}`,
-    `专业其他课时 | ${values.pro_other}`,
-    `互动课时 | ${values.hd}`,
-    `交流课时 | ${values.jl}`,
-    `未完成课时 | ${values.left}`,
-    `被代课时 | ${values.substitutee}`,
-    `已代课时 | ${values.substituter}`,
+    `专业VIP课时 : ${values.pro_vip}`,
+    `专业精品课时 : ${values.pro_jp}`,
+    `专业编曲课时 : ${values.pro_other}`,
+    `互动课时 : ${values.hd}`,
+    `交流课时 : ${values.jl}`,
+    `待完成课时 : ${values.left}`,
+    `被代课时 : ${values.substitutee}`,
+    `已代课时 : ${values.substituter}`,
   ]
 
   const seriesData = [

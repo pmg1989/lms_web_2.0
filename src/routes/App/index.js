@@ -60,6 +60,7 @@ function App ({ children, location, dispatch, app }) {
             <QueueAnim delay={[450, 0]} type={['right', 'left']} appear={false}>
               { children && React.cloneElement(children, { curPowers, key: location.pathname })}
             </QueueAnim>
+            {/* {children && React.cloneElement(children, { curPowers, key: location.pathname })} */}
           </div>
         </div>
         <Footer />

@@ -9,6 +9,8 @@ const FormItem = Form.Item
 const Option = Select.Option
 
 const Search = ({
+  searchQuery,
+  user,
   addPower,
   schools,
   onSearch,
@@ -21,9 +23,9 @@ const Search = ({
   const searchGroupProps = {
     size: 'large',
     select: true,
-    selectOptions: [{ value: 'username', name: '用户名' }, { value: 'firstname', name: '真实姓名' }, { value: 'phone2', name: '手机号' }],
+    selectOptions: [{ value: 'alternatename', name: '艺名' }, { value: 'firstname', name: '真实姓名' }, { value: 'username', name: '用户名' }, { value: 'phone2', name: '手机号' }],
     selectProps: {
-      defaultValue: 'username',
+      defaultValue: 'alternatename',
     },
     onSearch: (value) => {
       const fieldsValue = getFieldsValue()
@@ -61,9 +63,9 @@ const Search = ({
           </FormItem>
           <FormItem label="角色" style={{ marginBottom: 20, marginRight: 40 }}>
             {getFieldDecorator('rolename', {
-              initialValue: '',
+              initialValue: searchQuery.rolename || '',
               onChange: handleChange,
-            })(<Select style={{ width: 90 }}>
+            })(<Select style={{ width: 90 }} disabled={user.rolename === 'hr'}>
               <Option value="">全部</Option>
               {Object.entries(roleNames).map(([key, value]) => {
                 return <Option key={key} value={key}>{value}</Option>
@@ -113,6 +115,8 @@ Search.propTypes = {
   onSearch: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
   addPower: PropTypes.bool.isRequired,
+  searchQuery: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
 }
 
 export default Form.create()(Search)

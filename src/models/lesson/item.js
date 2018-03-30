@@ -2,6 +2,7 @@ import { getCurPowers } from 'utils'
 import { routerRedux } from 'dva/router'
 import { message } from 'antd'
 import { query, update, enrollesson, unenrollesson, querylessonStudents } from 'services/lesson/item'
+import { remove, removeCourse } from 'services/lesson/list'
 
 export default {
   namespace: 'lessonItem',
@@ -39,6 +40,7 @@ export default {
           payload: {
             item: data,
             type: payload.type,
+            studentList: [], // 清空之前搜索的数据
           },
         })
       }
@@ -56,15 +58,14 @@ export default {
       yield put({ type: 'query', payload })
     },
     * queryStudents2 ({ payload }, { call, put }) {
-      const { params, phone2 } = payload
-      console.log(params, phone2)
+      const { params } = payload
       const { data, success } = yield call(querylessonStudents, params)
       if (success) {
         yield put({
           type: 'queryStudentsSuccess',
           payload: {
             studentList: data,
-            phone2,
+            phone2: params.phone2,
           },
         })
       }
@@ -88,6 +89,20 @@ export default {
         if (success) {
           message.success('成功删除代课老师！')
         }
+      }
+    },
+    * remove ({ payload }, { call, put }) {
+      const { params } = payload
+      const { success } = yield call(remove, params)
+      if (success) {
+        yield put(routerRedux.goBack())
+      }
+    },
+    * removeCourse ({ payload }, { call, put }) {
+      const { params } = payload
+      const { success } = yield call(removeCourse, params)
+      if (success) {
+        yield put(routerRedux.goBack())
       }
     },
   },

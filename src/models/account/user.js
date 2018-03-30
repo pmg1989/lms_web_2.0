@@ -1,6 +1,6 @@
 import { getCurPowers, renderQuery, getSchool } from 'utils'
 import { query, queryItem, update } from 'services/account/admin'
-import { queryContractList, updateTeacher, queryHistoryList, queryContractLesson } from 'services/account/user'
+import { queryContractList, updateTeacher, queryHistoryList, queryContractLesson, queryFreezeInfo } from 'services/account/user'
 
 const page = {
   current: 1,
@@ -110,11 +110,13 @@ export default {
         yield put({ type: 'modal/setSubItem', payload: { teacherList: data, contract } })
       }
     },
-    * setTeacher ({ payload }, { call, put }) {
-      const { curItem } = payload
-      const { success } = yield call(updateTeacher, curItem)
+    * setTeacher ({ payload }, { call, put, select }) {
+      const { success } = yield call(updateTeacher, payload.curItem)
       if (success) {
         yield put({ type: 'modal/hideModal', payload: { showParent: true } })
+        // 修改完老师后重新获取合同信息，用以展示修改后的老师名
+        const { curItem, type } = yield select(({ modal }) => modal)
+        yield put({ type: 'showModal', payload: { type, curItem } })
       }
     },
     * showHistoryListModal ({ payload }, { call, put }) {
@@ -139,6 +141,16 @@ export default {
             lessons: data.lessons.filter(item => now >= item.available),
             lessons2: data.lessons.filter(item => now < item.available),
           } })
+      }
+    },
+    * showFreezeModal ({ payload }, { call, put }) {
+      const { type, id, curItem } = payload
+
+      yield put({ type: 'modal/showModal', payload: { type, id } })
+
+      const { data, success } = yield call(queryFreezeInfo, { userid: curItem.id })
+      if (success) {
+        yield put({ type: 'modal/setSubItem', payload: { list: data.freezelist } })
       }
     },
   },

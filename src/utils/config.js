@@ -2,7 +2,7 @@
 export default {
   name: '牛班音乐学校',
   prefix: '',
-  footerText: 'newband 版权所有 © 2017 由 felixpan 提供支持',
+  footerText: '上海纽班文化发展有限公司 版权所有©️2018 由 牛班技术部提供支持',
   logoSrc: 'https://o9u2lnvze.qnssl.com/web/global/brand.png',
   logoText: 'NEWBAND LMS',
   wstoken: '65b6372750516f21e18d27037edad0e0',

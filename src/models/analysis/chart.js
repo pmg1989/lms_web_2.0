@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { getCurPowers } from 'utils'
+import { getCurPowers, getSchool } from 'utils'
 import { queryTeacherChart, queryLessonCompleteChart, queryProTeacherChart } from 'services/analysis/chart'
 
 const renderTeacherChart = (list) => {
@@ -103,21 +103,21 @@ const renderProTeacherChart = (list) => {
 
 const searchTeacherQuery = {
   isPostBack: true,
-  school: 'sh01',
+  school: getSchool(),
   name: 'all',
   deadline: moment().endOf('month').format('X'),
 }
 
 const searchLessonCompleteQuery = {
   isPostBack: true,
-  school: 'sh01',
+  school: getSchool(),
   idNumber: 'all',
   deadline: moment().endOf('month').format('X'),
 }
 
 const searchProTeacherQuery = {
   isPostBack: true,
-  school: 'sh01',
+  school: getSchool(),
   name: 'all',
   deadline: moment().endOf('month').format('X'),
 }

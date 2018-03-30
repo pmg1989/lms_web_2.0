@@ -12,6 +12,7 @@ import styles from './List.less'
 
 const confirm = Modal.confirm
 let selectedKeys = []
+const now = +moment().format('X')
 
 function List ({
   lessonList: {
@@ -79,12 +80,17 @@ function List ({
       title: '课程名称',
       dataIndex: 'category_summary',
       key: 'category_summary',
+      render: (title, record) => (
+        <span className={classnames(record.available < now && styles.title)}>{title}</span>
+      ),
       sorter: (a, b) => a.category_summary.localeCompare(b.category_summary),
     }, {
       title: '开课时间',
       dataIndex: 'available',
       key: 'available',
-      render: (available, record) => (<span>{moment.unix(available).format('YYYY-MM-DD')}<br />{moment.unix(available).format('HH:mm')} - {moment.unix(record.deadline).format('HH:mm')}</span>),
+      render: (available, record) => (
+        <span className={classnames(record.available < now && styles.title)}>{moment.unix(available).format('YYYY-MM-DD')}<br />{moment.unix(available).format('HH:mm')} - {moment.unix(record.deadline).format('HH:mm')}</span>
+      ),
       sorter: (a, b) => a.available - b.available,
     }, {
       title: '科目',

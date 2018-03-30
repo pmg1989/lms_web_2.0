@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { getCurPowers, renderQuery, getSchool } from 'utils'
+import { getCurPowers, getSchool } from 'utils'
 import { query, remove, removeCourse, deleteBatch } from 'services/lesson/list'
 
 const page = {
@@ -9,8 +9,9 @@ const page = {
 
 const initParams = {
   school: getSchool(),
-  available: moment().startOf('month').format('X'),
-  deadline: moment().endOf('month').format('X'),
+  available: moment().startOf('day').format('X'),
+  deadline: moment().subtract(1, 'day').add(1, 'month').endOf('day')
+    .format('X'),
 }
 
 export default {
@@ -46,10 +47,7 @@ export default {
     * query ({ payload }, { select, call, put }) {
       const { searchQuery, pagination } = yield select(({ lessonList }) => lessonList)
       const { isPostBack, isSearch, current, pageSize, ...queryParams } = payload
-      const querys = renderQuery(searchQuery, queryParams)
-      console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
-      console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
-      console.log(querys)
+      const querys = { ...searchQuery, ...queryParams }
       // 判断是否是首次加载页面，作为前端分页判断标识符
       if (isPostBack) {
         const { data, success } = yield call(query, querys)

@@ -37,7 +37,7 @@ const AgendaEvent = ({ event }) => {
   return (
     <Link to={`/lesson/update?lessonid=${event.id}`} className={classnames(styles.title_box, styles.dark)}>
       <span className={`icon ${event.category}-${event.iconType}`} />
-      <span className={styles.title}>{`${event.teacher_alternatename} - ${event.category_summary} - ${event.classroom}教室`}</span>
+      <span className={styles.title}>{`${event.teacher_alternatename} - ${event.category_summary} - ${event.classroom}教室 ${event.is_profession_vip ? ' V' : ''}`}</span>
     </Link>
   )
 }

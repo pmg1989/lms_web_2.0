@@ -72,10 +72,10 @@ function List ({
 
   const columns = [
     {
-      title: '用户名',
-      dataIndex: 'username',
-      key: 'username',
-      sorter: (a, b) => a.username.localeCompare(b.username),
+      title: '真实姓名',
+      dataIndex: 'firstname',
+      key: 'firstname',
+      sorter: (a, b) => a.firstname.localeCompare(b.firstname),
     }, {
       title: '艺名',
       dataIndex: 'alternatename',

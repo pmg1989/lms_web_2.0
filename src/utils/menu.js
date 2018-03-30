@@ -45,7 +45,7 @@ const menu = [
         id: 24,
         key: 'update',
         name: '修改课程',
-        power: [2, 4, 12, 13, 14],
+        power: [2, 4, 5, 12, 13, 14],
       },
       {
         id: 25,
@@ -139,36 +139,26 @@ const menu = [
   },
   // practice
   {
-    id: 6,
-    key: 'practice',
-    icon: 'customer-service',
-    name: '练声曲管理',
-    clickable: false,
+    id: 61,
+    key: 'practice-list',
+    icon: 'rocket',
+    name: '练声曲',
     power: [1],
-    children: [
-      {
-        id: 61,
-        key: 'list',
-        icon: 'bars',
-        name: '练声曲',
-        power: [1],
-        outLink: () => {
-          const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}')
-          return `${praceticeDoman}/signin/practice/${userInfo.teacher_info}`
-        },
-      },
-      {
-        id: 62,
-        key: 'test',
-        icon: 'bars',
-        name: '学员测试',
-        power: [1],
-        outLink: () => {
-          const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}')
-          return `${praceticeDoman}/signin/exam/${userInfo.teacher_info}`
-        },
-      },
-    ],
+    outLink: () => {
+      const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}')
+      return `${praceticeDoman}/signin/practice/${userInfo.teacher_info}`
+    },
+  },
+  {
+    id: 62,
+    key: 'user-test',
+    icon: 'contacts',
+    name: '学员测试',
+    power: [1],
+    outLink: () => {
+      const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}')
+      return `${praceticeDoman}/signin/exam/${userInfo.teacher_info}`
+    },
   },
 ]
 

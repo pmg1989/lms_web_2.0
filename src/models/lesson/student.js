@@ -54,7 +54,7 @@ export default {
     },
     * showCommentModal ({ payload }, { call, put }) {
       const { type, params } = payload
-      yield put({ type: 'modal/showModal', payload: { type, id: 1 } })
+      yield put({ type: 'modal/showModal', payload: { type, id: 1, curItem: { userid: params.userid } } })
       if (type !== 'create') {
         const { data, success } = yield call(queryComment, params)
         if (success) {
@@ -70,6 +70,10 @@ export default {
         yield put({
           type: 'commentSuccess',
           payload: { id: params.userid },
+        })
+        yield put({
+          type: 'lessonItem/query',
+          payload: { lessonid: params.lessonid },
         })
         yield put({ type: 'modal/hideModal' })
       }

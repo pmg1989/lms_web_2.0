@@ -33,7 +33,7 @@ export const roleNames = {
   hr: 'HR专员',
   specialist: '课程专家',
   student: '学生',
-  assitant: '校助',
+  assistant: '校助',
   director: '教学主管',
 }
 

@@ -19,6 +19,7 @@ const formItemLayout = {
 const ModalForm = ({
   modal: { curItem, type, visible },
   loading,
+  isTeacher,
   onCancel,
   form: {
     getFieldDecorator,
@@ -52,11 +53,11 @@ const ModalForm = ({
               initialValue: curItem.firstname,
             })(<Input disabled />)}
           </FormItem>
-          <FormItem label="手机号" {...formItemLayout}>
+          {!isTeacher && <FormItem label="手机号" {...formItemLayout}>
             {getFieldDecorator('phone2', {
               initialValue: curItem.phone2,
             })(<Input disabled />)}
-          </FormItem>
+          </FormItem>}
           <FormItem label="校区" {...formItemLayout}>
             {getFieldDecorator('school', {
               initialValue: curItem.school,
@@ -91,6 +92,7 @@ ModalForm.propTypes = {
   modal: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
+  isTeacher: PropTypes.bool.isRequired,
   onCancel: PropTypes.func.isRequired,
 }
 

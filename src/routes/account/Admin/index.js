@@ -10,7 +10,7 @@ import LevelModal from './LevelModal'
 
 const namespace = 'accountAdmin'
 
-function Admin ({ dispatch, curPowers, accountAdmin, modal, loading, commonModel }) {
+function Admin ({ dispatch, curPowers, accountAdmin, modal, loading, commonModel, user }) {
   const addPower = checkPower(ADD, curPowers)
   const updatePower = checkPower(UPDATE, curPowers)
   const detailPower = checkPower(DETAIL, curPowers)
@@ -19,6 +19,8 @@ function Admin ({ dispatch, curPowers, accountAdmin, modal, loading, commonModel
   const resetPasswordPower = checkPower(RESET_PASSWORD, curPowers)
 
   const searchProps = {
+    user,
+    searchQuery: accountAdmin.searchQuery,
     schools: commonModel.schools,
     addPower,
     onSearch (fieldsValue) {
@@ -140,10 +142,11 @@ Admin.propTypes = {
   modal: PropTypes.object,
   loading: PropTypes.object.isRequired,
   commonModel: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
 }
 
-function mapStateToProps ({ accountAdmin, modal, loading, commonModel }) {
-  return { accountAdmin, modal, loading, commonModel }
+function mapStateToProps ({ accountAdmin, modal, loading, commonModel, app }) {
+  return { accountAdmin, modal, loading, commonModel, user: app.user }
 }
 
 export default connect(mapStateToProps)(Admin)

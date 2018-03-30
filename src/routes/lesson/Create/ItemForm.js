@@ -40,15 +40,16 @@ class ItemForm extends Component {
     timeStarts: timeList,
     timeEnds: timeList,
     teachers: [],
+    teachersLoaded: false,
     fetching: false,
     errorMsg: '请先完善课程信息！',
   }
 
   componentWillReceiveProps (nextProps) {
     const { lessonItem: { studentList }, commonModel: { teachers2Dic } } = nextProps
-    if (!this.state.teachers.length && Object.keys(teachers2Dic).length) {
+    if (!this.state.teachersLoaded && Object.keys(teachers2Dic).length) {
       const teachersState = teachers2Dic[this.state.schoolId] || []
-      teachersState.length && this.setState({ teachers: teachersState })
+      teachersState.length && this.setState({ teachers: teachersState, teachersLoaded: true })
     }
     if (this.props.queryStudentsLoading && !nextProps.queryStudentsLoading && !studentList.length) {
       this.setState({ fetching: false, errorMsg: '没有可匹配的学员列表！' })
@@ -66,7 +67,7 @@ class ItemForm extends Component {
   }
 
   changeStudentForm = (idnumber) => {
-    this.setState({ showStudentForm: !idnumber.includes('-vip-') })
+    this.setState({ showStudentForm: !idnumber.includes('jl-') })
   }
 
   handleSchoolChange = (schoolId) => {
@@ -83,9 +84,13 @@ class ItemForm extends Component {
     const { lessonItem: { courseCategorys }, commonModel: { teachers2Dic }, form: { getFieldValue, setFieldsValue } } = this.props
     const schoolId = getFieldValue('school_id')
     const courseCategory = courseCategorys.find(cur => cur.id === categoryid)
+    const idnumber = courseCategory && courseCategory.idnumber
     const teachers = teachers2Dic[schoolId] || []
-    this.setState({ teachers: teachers.filter(cur => courseCategory && courseCategory.idnumber.includes(cur.teacher_subject)) })
-
+    if (idnumber.includes('jl-')) {
+      this.setState({ teachers })
+    } else {
+      this.setState({ teachers: teachers.filter(cur => idnumber.includes(cur.teacher_subject)) })
+    }
     const oldCategoryid = getFieldValue('categoryid')
     const oldCourseCategory = courseCategorys.find(cur => cur.id === oldCategoryid)
     if (oldCourseCategory && oldCourseCategory.idnumber.split('-')[0] !== courseCategory.idnumber.split('-')[0]) {
@@ -136,11 +141,15 @@ class ItemForm extends Component {
       }
 
       this.setState({ fetching: true })
+      const available = params.available
       const stateDate = params.startdate
-      params.startdate = stateDate.startOf('day').format('X')
+      const nextStartDate = moment(stateDate.format('YYYY-MM-DD')).add(params.numsections - 1, 'weeks').format('YYYY-MM-DD')
       params.openweekday = params.openweekday.sort().join(',')
       params.available = moment(`${stateDate.format('YYYY-MM-DD')} ${params.available}`).format('X')
-      params.deadline = moment(`${stateDate.format('YYYY-MM-DD')} ${params.deadline}`).format('X')
+      params.deadline = moment(`${nextStartDate} ${available}`).format('X')
+      delete params.startdate
+      delete params.numsections
+      delete params.openweekday
       onQueryStudentList(params, phone2)
     } else {
       console.log('error')

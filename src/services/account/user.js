@@ -15,3 +15,7 @@ export async function queryHistoryList (params) {
 export async function queryContractLesson (params) {
   return request({ wsfunction: 'mod_frontservice_get_enrolledlessons_cc', ...params })
 }
+
+export async function queryFreezeInfo (params) {
+  return request({ wsfunction: 'mod_frontservice_get_freezeinfo', ...params })
+}

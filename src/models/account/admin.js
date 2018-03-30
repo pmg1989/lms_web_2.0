@@ -43,7 +43,11 @@ export default {
       const { isPostBack, ...queryParams } = payload
       const querys = renderQuery(searchQuery, queryParams)
       if (isPostBack) {
-        const { data, success } = yield call(query, { rolename: 'staff', school: querys.school })
+        const { user } = yield select(({ app }) => app)
+        if (user.rolename === 'hr') {
+          querys.rolename = 'teacher'
+        }
+        const { data, success } = yield call(query, { rolename: querys.rolename || 'staff', school: querys.school })
         if (success) {
           yield put({
             type: 'querySuccess',

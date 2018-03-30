@@ -7,6 +7,12 @@ import { DETAIL, UPDATE } from 'constants/options'
 import { isMobile } from 'utils'
 import styles from './List.less'
 
+const statusDic = {
+  NORMAL: '',
+  FREEZING: '（即将冻结）',
+  FROZEN: '（已冻结）',
+}
+
 function List ({
   accountUser: {
     searchQuery,
@@ -17,14 +23,14 @@ function List ({
   loading,
   onPageChange,
   detailPower,
-  // updatePower,
+  isTeacher,
   onDetailItem,
-  onEditItem,
+  onFreezeItem,
 }) {
   const handleMenuClick = (key, record) => {
     return {
       [DETAIL]: onDetailItem,
-      [UPDATE]: onEditItem,
+      [UPDATE]: onFreezeItem,
     }[key](record)
   }
 
@@ -34,10 +40,13 @@ function List ({
       dataIndex: 'firstname',
       key: 'firstname',
       sorter: (a, b) => a.firstname.localeCompare(b.firstname),
+      render: (firstname, record) => (
+        <span>{firstname} {statusDic[record.student_contract_status]}</span>
+      ),
     }, {
-      title: '手机号',
-      dataIndex: 'phone2',
-      key: 'phone2',
+      title: isTeacher ? '用户名' : '手机号',
+      dataIndex: isTeacher ? 'username' : 'phone2',
+      key: isTeacher ? 'username' : 'phone2',
     }, {
       title: '学号',
       dataIndex: 'idnumber',
@@ -62,7 +71,7 @@ function List ({
         <DropMenu>
           <Menu onClick={({ key }) => handleMenuClick(key, record)}>
             {detailPower && <Menu.Item key={DETAIL}>查看</Menu.Item>}
-            {/* {updatePower && <Menu.Item key={UPDATE}>编辑</Menu.Item>} */}
+            {detailPower && record.student_contract_status !== 'NORMAL' && <Menu.Item key={UPDATE}>查看冻结信息</Menu.Item>}
           </Menu>
         </DropMenu>
       ),
@@ -109,10 +118,10 @@ List.propTypes = {
   schools: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,
   detailPower: PropTypes.bool.isRequired,
+  isTeacher: PropTypes.bool.isRequired,
   onPageChange: PropTypes.func.isRequired,
-  // updatePower: PropTypes.bool.isRequired,
   onDetailItem: PropTypes.func.isRequired,
-  onEditItem: PropTypes.func.isRequired,
+  onFreezeItem: PropTypes.func.isRequired,
 }
 
 export default List

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import { Form, Modal, Input, Select, Spin, Button, Row, Col, DatePicker, Tag } from 'antd'
 import moment from 'moment'
 import { getSchool, getUserInfo } from 'utils'
@@ -26,9 +27,12 @@ const formItemLayout = {
 class ItemForm extends Component {
   static propTypes = {
     updatePower: PropTypes.bool.isRequired,
+    deletePower: PropTypes.bool.isRequired,
     addDaiTeacherPower: PropTypes.bool.isRequired,
     addDeleteStudentPower: PropTypes.bool.isRequired,
     otherStudentPower: PropTypes.bool.isRequired,
+    onDeleteItem: PropTypes.func.isRequired,
+    onDeleteCourseItem: PropTypes.func.isRequired,
     lessonItem: PropTypes.object.isRequired,
     commonModel: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
@@ -195,7 +199,12 @@ class ItemForm extends Component {
       this.setState({ fetching: true })
       params.available = moment(`${params.startdate.format('YYYY-MM-DD')} ${params.available}`).format('X')
       delete params.startdate
-      onQueryStudentList2(params, phone2)
+      onQueryStudentList2({
+        teacherid: params.teacherid,
+        lessonid: item.id,
+        classroomid: params.classroomid,
+        phone2,
+      })
     } else {
       console.log('error')
       this.setState({ fetching: false, errorMsg: '请先完善表单数据！' })
@@ -233,11 +242,31 @@ class ItemForm extends Component {
     })
   }
 
+  handleDelete = () => {
+    const { lessonItem: { item }, onDeleteItem } = this.props
+    confirm({
+      title: '您确定要删除课程吗?',
+      onOk () {
+        onDeleteItem({ lessonid: item.id })
+      },
+    })
+  }
+
+  handleDeleteCourse = () => {
+    const { lessonItem: { item }, onDeleteCourseItem } = this.props
+    confirm({
+      title: '您确定要删除课程吗?',
+      onOk () {
+        onDeleteCourseItem({ courseid: item.course })
+      },
+    })
+  }
+
   render () {
     const {
       lessonItem: { type, item, studentList },
       commonModel: { schools, classroomsDic },
-      updatePower, addDeleteStudentPower, otherStudentPower,
+      updatePower, deletePower, addDeleteStudentPower, otherStudentPower,
       loading, onGoBack,
       form: { getFieldDecorator },
     } = this.props
@@ -257,11 +286,11 @@ class ItemForm extends Component {
               initialValue: item.category_summary,
             })(<Input disabled={disabled || disabledEdit} placeholder="请输入课程名称" />)}
           </FormItem>
-          <FormItem label="课程编号" hasFeedbac {...formItemLayout}>
+          {/* <FormItem label="课程编号" hasFeedbac {...formItemLayout}>
             {getFieldDecorator('course_idnumber', {
               initialValue: item.course_idnumber,
             })(<Input disabled={disabled || disabledEdit} placeholder="请输入课程编号" />)}
-          </FormItem>
+          </FormItem> */}
           <FormItem label="校区" hasFeedback {...formItemLayout}>
             {getFieldDecorator('school_id', {
               initialValue: (item.school_id && item.school_id.toString()) || getUserInfo().school_id.toString(),
@@ -373,6 +402,12 @@ class ItemForm extends Component {
           <FormItem wrapperCol={{ span: 17, offset: 4 }}>
             {updatePower && type === 'update' &&
               <Button className={styles.btn} onClick={this.handleUpdate} type="primary" size="large">修改</Button>
+            }
+            {deletePower && type === 'update' &&
+              <Button className={classnames(styles.btn, styles.del)} onClick={this.handleDelete} type="primary" size="large">删除</Button>
+            }
+            {deletePower && type === 'update' &&
+              <Button className={classnames(styles.btn, styles.del)} onClick={this.handleDeleteCourse} type="primary" size="large">删除系列</Button>
             }
             <Button className={styles.btn} type="default" onClick={onGoBack} size="large">返回</Button>
           </FormItem>

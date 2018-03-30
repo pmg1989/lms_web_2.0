@@ -2,19 +2,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { checkPower } from 'utils'
-import { DETAIL, UPDATE, SET_TEACHER, GET_HISTORY_LIST } from 'constants/options'
+import { DETAIL, SET_TEACHER, GET_HISTORY_LIST } from 'constants/options'
 import List from './List'
 import Search from './Search'
 import Modal from './ModalForm'
 import TeacherModal from './TeacherModal'
 import HistoryListModal from './HistoryListModal'
 import LessonsModal from './LessonsModal'
+import FreezeModal from './FreezeModal'
 
 const namespace = 'accountUser'
 
-function User ({ curPowers, dispatch, accountUser, modal, loading, commonModel }) {
+function User ({ curPowers, dispatch, accountUser, modal, loading, commonModel, user }) {
   const detailPower = checkPower(DETAIL, curPowers)
-  const updatePower = checkPower(UPDATE, curPowers)
   const setTeacherPower = checkPower(SET_TEACHER, curPowers)
   const getHistoryPower = checkPower(GET_HISTORY_LIST, curPowers)
 
@@ -28,12 +28,14 @@ function User ({ curPowers, dispatch, accountUser, modal, loading, commonModel }
     },
   }
 
+  const isTeacher = user.rolename === 'teacher'
+
   const listProps = {
     accountUser,
     schools: commonModel.schools,
     loading: loading.effects[`${namespace}/query`],
     detailPower,
-    updatePower,
+    isTeacher,
     onPageChange (fieldsValue) {
       dispatch({
         type: `${namespace}/query`,
@@ -46,16 +48,17 @@ function User ({ curPowers, dispatch, accountUser, modal, loading, commonModel }
         payload: { type: 'detail', curItem: item },
       })
     },
-    onEditItem (item) {
+    onFreezeItem (item) {
       dispatch({
-        type: `${namespace}/showModal`,
-        payload: { type: 'update', curItem: item },
+        type: `${namespace}/showFreezeModal`,
+        payload: { type: 'detail', id: 5, curItem: item },
       })
     },
   }
 
   const modalProps = {
     modal,
+    isTeacher,
     loading: loading.effects[`${namespace}/showModal`],
     setTeacherPower,
     getHistoryPower,
@@ -127,14 +130,23 @@ function User ({ curPowers, dispatch, accountUser, modal, loading, commonModel }
     },
   }
 
+  const freezeModalProps = {
+    modal,
+    loading: loading.models.accountUser,
+    onCancel () {
+      dispatch({ type: 'modal/hideModal' })
+    },
+  }
+
   return (
     <div className="content-inner">
       <Search {...searchProps} />
       <List {...listProps} />
-      {modal.visible && modal.id >= 1 && <Modal {...modalProps} />}
+      {modal.visible && modal.id >= 1 && modal.id !== 5 && <Modal {...modalProps} />}
       {modal.visible && modal.id === 2 && <TeacherModal {...teacherModalProps} />}
       {modal.visible && modal.id === 3 && <HistoryListModal {...historyListModalProps} />}
       {modal.visible && modal.id === 4 && <LessonsModal {...lessonsModalProps} />}
+      {modal.visible && modal.id === 5 && <FreezeModal {...freezeModalProps} />}
     </div>
   )
 }
@@ -146,10 +158,11 @@ User.propTypes = {
   loading: PropTypes.object.isRequired,
   modal: PropTypes.object.isRequired,
   commonModel: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
 }
 
-function mapStateToProps ({ accountUser, modal, loading, commonModel }) {
-  return { accountUser, modal, loading, commonModel }
+function mapStateToProps ({ accountUser, modal, loading, commonModel, app }) {
+  return { accountUser, modal, loading, commonModel, user: app.user }
 }
 
 export default connect(mapStateToProps)(User)

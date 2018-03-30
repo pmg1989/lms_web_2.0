@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { getCurPowers, renderQuery, getSchool } from 'utils'
+import { getCurPowers, getSchool } from 'utils'
 import { query } from 'services/lesson/list'
 
 const initParams = {
@@ -20,17 +20,25 @@ function getCateIcon (lesson) {
 const renderList = (data) => {
   let lessons = []
   if (data[0] && data[0].list) {
-    lessons = data[0].list.map((lesson) => {
+    data[0].list.forEach((lesson) => {
       const start = moment.unix(lesson.available)
       const end = moment.unix(lesson.deadline)
-      lesson.title = ''
-      lesson.text = `${lesson.teacher_alternatename}(${lesson.classroom}${lesson.category.includes('-vip-') ? ' V' : ''})`
-      lesson.start = new Date(start.year(), start.month(), start.date(), start.hour(), start.minute(), 0)
-      lesson.end = new Date(end.year(), end.month(), end.date(), end.hour(), end.minute(), 0)
-      lesson.category = lesson.category_idnumber.split('-')[0]
-      lesson.iconType = getCateIcon(lesson)
-      lesson.allDay = false
-      return lesson
+      const item = {
+        title: '',
+        id: lesson.id,
+        available: lesson.available,
+        deadline: lesson.deadline,
+        category_summary: lesson.category_summary,
+        teacher_alternatename: lesson.teacher_alternatename,
+        classroom: lesson.classroom,
+        is_profession_vip: lesson.is_profession_vip,
+        text: `${lesson.teacher_alternatename}(${lesson.classroom}${lesson.is_profession_vip ? ' V' : ''})`,
+        start: new Date(start.year(), start.month(), start.date(), start.hour(), start.minute(), 0),
+        end: new Date(end.year(), end.month(), end.date(), end.hour(), end.minute(), 0),
+        category: lesson.category_idnumber.split('-')[0],
+        iconType: getCateIcon(lesson),
+      }
+      lessons.push(item)
     })
   }
   return lessons
@@ -68,18 +76,15 @@ export default {
     * query ({ payload }, { select, call, put }) {
       const { searchQuery, curDate } = yield select(({ lessonCalendar }) => lessonCalendar)
       const { isPostBack, ...queryParams } = payload
-      const querys = renderQuery(searchQuery, queryParams)
-      console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
-      console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
-      console.log(querys)
+      const querys = { ...searchQuery, ...queryParams }
       const { data, success } = yield call(query, querys)
-      querys.curDate = curDate
       if (success) {
         yield put({
           type: 'querySuccess',
           payload: {
             lessons: renderList(data),
             isPostBack: false,
+            curDate,
             searchQuery: querys,
           },
         })
@@ -87,6 +92,7 @@ export default {
         yield put({
           type: 'queryPrev',
           payload: {
+            curDate,
             ...querys,
             available: moment.unix(querys.available).subtract(1, 'month').startOf('month').format('X'),
             deadline: moment.unix(querys.available).startOf('month').format('X'),
@@ -95,6 +101,7 @@ export default {
         yield put({
           type: 'queryNext',
           payload: {
+            curDate,
             ...querys,
             available: querys.deadline,
             deadline: moment.unix(querys.deadline).add(1, 'months').startOf('month').format('X'),
@@ -104,9 +111,6 @@ export default {
     },
     * queryPrev ({ payload }, { call, put }) {
       const { curDate, ...querys } = payload
-      console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
-      console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
-      console.log(querys)
       const { data, success } = yield call(query, querys)
       if (success) {
         yield put({
@@ -121,9 +125,6 @@ export default {
     },
     * queryNext ({ payload }, { call, put }) {
       const { curDate, ...querys } = payload
-      console.log(moment.unix(querys.available).format('YYYY-MM-DD HH:mm:ss'))
-      console.log(moment.unix(querys.deadline).format('YYYY-MM-DD HH:mm:ss'))
-      console.log(querys)
       const { data, success } = yield call(query, querys)
       if (success) {
         yield put({
@@ -140,7 +141,7 @@ export default {
       const { searchQuery, curDate } = yield select(({ lessonCalendar }) => lessonCalendar)
       payload.available = moment.unix(curDate).startOf('month').format('X')
       payload.deadline = moment.unix(curDate).add(1, 'month').startOf('month').format('X')
-      const querys = renderQuery(searchQuery, payload)
+      const querys = { ...searchQuery, ...payload }
       yield put({
         type: 'query',
         payload: querys,
@@ -153,8 +154,8 @@ export default {
   },
   reducers: {
     querySuccess (state, action) {
-      const { lessons, isPostBack, searchQuery: { curDate, ...otherQuery } } = action.payload
-      return { ...state, isPostBack, curDate, searchQuery: otherQuery, lessons }
+      const { lessons, isPostBack, searchQuery, curDate } = action.payload
+      return { ...state, isPostBack, curDate, searchQuery, lessons }
     },
     queryPrevSuccess (state, action) {
       const { lessons, available, curDate } = action.payload
