@@ -54,10 +54,10 @@
 克隆项目文件:
 
 ```
-git clone git@git.coding.net:newband-dev/lms_web_2.0.git
+git clone git@github.com:pmg1989/react_teacher_2.0.git
 ```
 
-cd lms_web_2.0 进入目录安装依赖:
+cd react_teacher_2.0 进入目录安装依赖:
 
 ```
 npm install 或者 yarn 或者 yarn install
@@ -73,58 +73,8 @@ npm run dev
 打开 http://localhost:8000
 ```
 
-
-staging环境构建发布：
-
-```bash
-本地环境
-git checkout build-staging
-git merge develop
-yarn run build-staging
-git acm 'fix some bugs' or (git add . && git commit -m 'fix some bugs')
-git push
-git checkout develop 切换回开发模式继续后续的开发
-
-登录staging服务器
-cd /var/www/html/lms_mobile
-git checkout build-staging
-git pull
-```
-
-release环境构建发布：
-```bash
-本地环境
-git checkout build-release
-git merge develop
-yarn run build-release
-git acm 'fix some bugs' or (git add . && git commit -m 'fix some bugs')
-git push
-git checkout develop 切换回开发模式继续后续的开发
-
-登录production服务器
-cd /var/www/html/lms_web_2.0
-git checkout build-release
-git pull
-```
-
-release环境本地开启调试：
-```bash
-git checkout develop
-npm run start
-
-打开 http://localhost:8000
-```
-
 代码检测：
 
 ```bash
 git项目提交时，会自动run precommit 进而执行 npm run lint，执行esLint代码检测
 ```
-
-### 注意事项
-
-- buid-staing、build-release两个分支目前只作为发布分支在本地发布时使用，切莫在此分之下直接开发，而应该切换至develop分支下进行开发
-- 切莫将buid-staing与build-release两个分支合并至master 或 develop 分支上，合并会导致主分支添加不必要的发布信息log
-- 在开发任务完成后，发布时才切换至buid-staing、build-release相应分支进行发布部署
-- 本地发布完成并push后，登录相关环境服务器，cd至目标地址，直接 git pull 即可完成发布部署
-- buid-staing、build-release两个分支作为本地发布分支，是一种本地发布服务器拉取发布的一种流程，后期也可以升级服务器的nodeJS环境，直接将发布流程移动至服务器发布部署
